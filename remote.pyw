@@ -558,11 +558,10 @@ def list_tivos(tivos):
 
     window, table = make_small_window('Choose a TiVo:')
 
-    tivodict = dict(tivos)
-    names = tivodict.keys()
+    names = tivos.keys()
     names.sort()
     for i, name in enumerate(names):
-        make_tivo_button(table, window, i + 1, name, tivodict[name])
+        make_tivo_button(table, window, i + 1, name, tivos[name])
 
     if use_gtk:
         window.show_all()
@@ -571,11 +570,11 @@ def list_tivos(tivos):
         window.mainloop()
 
 if not tivo_address:
-    tivos = list(find_tivos().items())
+    tivos = find_tivos()
     if not tivos:
         get_address()
     elif len(tivos) == 1:
-        tivo_name, tivo_address = tivos[0]
+        tivo_name, tivo_address = list(tivos.items())[0]
     else:
         list_tivos(tivos)
 
