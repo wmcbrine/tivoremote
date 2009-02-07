@@ -437,7 +437,7 @@ def find_tivos():
 
     # Collect the queries made in response. These come quickly.
     while True:
-        isock, junk1, junk2 = select.select([hsock], [], [], 0.2)
+        isock, junk1, junk2 = select.select([hsock], [], [], 0.5)
         if not isock:
             break
         client, address = hsock.accept()
