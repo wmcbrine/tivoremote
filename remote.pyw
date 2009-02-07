@@ -58,7 +58,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.16'
+__version__ = '0.17'
 __license__ = 'GPL'
 
 import random
@@ -72,7 +72,6 @@ import time
 
 tivo_address = ''
 tivo_name = ''
-tivo_swversion = 0.0
 landscape = False
 use_gtk = True
 focus_button = None   # This is just a widget to jump to when leaving 
@@ -227,12 +226,7 @@ def irsend(*codes):
 
 def closed_caption(widget=None):
     """ Toggle closed captioning. """
-    irsend('CLEAR', 'INFO', 'DOWN', 'DOWN', 'DOWN', 'DOWN', 'SELECT')
-    if tivo_swversion < 9.4:
-        time.sleep(1.5)
-        irsend('DOWN', 'RIGHT', 'UP', 'SELECT')
-        time.sleep(3)
-    irsend('CLEAR')
+    irsend('CLEAR', 'INFO', 'DOWN', 'DOWN', 'DOWN', 'DOWN', 'SELECT', 'CLEAR')
 
 def sps30(widget=None):
     """ Toggle the 30-second skip function of the Advance button. """
@@ -387,7 +381,6 @@ def get_name(address):
     port = 0
     our_beacon = ANNOUNCE % locals()
     machine_name = re.compile('machine=(.*)\n').search
-    swversion = re.compile('swversion=(\d*.\d*)').search
 
     try:
         tsock = socket.socket()
@@ -402,12 +395,10 @@ def get_name(address):
         tsock.close()
 
         name = machine_name(tivo_beacon).groups()[0]
-        version = float(swversion(tivo_beacon).groups()[0])
     except:
         name = address
-        version = 0.0
 
-    return name, version
+    return name
 
 def find_tivos():
     """ Find TiVos on the LAN by broadcasting an announcement, and
@@ -547,15 +538,15 @@ def get_address():
 
 def list_tivos(tivos):
     """ TiVo chooser -- show buttons with TiVo names. """
-    def choose_tivo(window, addrver, name):
-        global tivo_address, tivo_name, tivo_swversion
-        tivo_address, tivo_swversion = addrver
+    def choose_tivo(window, address, name):
+        global tivo_address, tivo_name
+        tivo_address = address
         tivo_name = name
         window.destroy()
 
-    def make_tivo_button(widget, window, y, name, addrver):
-        command = lambda w=None: choose_tivo(window, addrver, name)
-        text = '%s: %s' % (name, addrver[0])
+    def make_tivo_button(widget, window, y, name, address):
+        command = lambda w=None: choose_tivo(window, address, name)
+        text = '%s: %s' % (name, address)
         if use_gtk:
             button = gtk.Button(text)
             button.connect('clicked', command)
@@ -568,9 +559,8 @@ def list_tivos(tivos):
 
     tivodict = {}
     for tcd in tivos:
-        address, namever = tcd[1]
-        name, version = namever
-        tivodict[name] = (address, version)
+        address, name = tcd[1]
+        tivodict[name] = address
 
     names = tivodict.keys()
     names.sort()
@@ -588,8 +578,7 @@ if not tivo_address:
     if not tivos:
         get_address()
     elif len(tivos) == 1:
-        tivo_address, namever = tivos[0][1]
-        tivo_name, tivo_swversion = namever
+        tivo_address, tivo_name = tivos[0][1]
     else:
         list_tivos(tivos)
 
@@ -597,7 +586,7 @@ if not tivo_address:
     exit()
 
 if not tivo_name:
-    tivo_name, tivo_swversion = get_name(tivo_address)
+    tivo_name = get_name(tivo_address)
 
 try:
     sock = socket.socket()
@@ -606,8 +595,6 @@ try:
     sock.settimeout(None)
 except Exception, msg:
     msg = 'Could not connect to %s:\n%s' % (tivo_name, msg)
-    if tivo_swversion >= 9.4:
-        msg += '\nMake sure Settings -> Remote -> Network RC is Enabled'
     error_window(msg)
 
 if use_gtk:
