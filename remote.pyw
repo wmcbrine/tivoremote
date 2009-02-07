@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3/HD, v0.16
-# Copyright 2008 William McBrine
+# TCP/IP remote for TiVo Series 3/HD, v0.17
+# Copyright 2009 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -407,7 +407,7 @@ def find_tivos():
 
     """
     tcd_id = re.compile('TiVo_TCD_ID: (.*)\r\n').search
-    tivos = {}
+    tcds = {}
 
     # Find and bind a free port for our fake server.
     hsock = socket.socket()
@@ -445,15 +445,16 @@ def find_tivos():
         client.close()  # This is rather rude.
         tcd = tcd_id(message).groups()[0]
         if tcd[:3] in ('648', '652', '658'):  # We only support S3/HD.
-            tivos[tcd] = address[0]
+            tcds[tcd] = address[0]
 
     hsock.close()
 
     # Unfortunately the HTTP requests don't include the machine names, 
     # so we find them by making direct TCD connections to each TiVo.
 
-    for tcd, address in tivos.items():
-        tivos[tcd] = (address, get_name(address))
+    tivos = {}
+    for tcd, address in tcds.items():
+        tivos[get_name(address)] = address
 
     return tivos
 
@@ -538,14 +539,14 @@ def get_address():
 
 def list_tivos(tivos):
     """ TiVo chooser -- show buttons with TiVo names. """
-    def choose_tivo(window, address, name):
-        global tivo_address, tivo_name
-        tivo_address = address
+    def choose_tivo(window, name, address):
+        global tivo_name, tivo_address
         tivo_name = name
+        tivo_address = address
         window.destroy()
 
     def make_tivo_button(widget, window, y, name, address):
-        command = lambda w=None: choose_tivo(window, address, name)
+        command = lambda w=None: choose_tivo(window, name, address)
         text = '%s: %s' % (name, address)
         if use_gtk:
             button = gtk.Button(text)
@@ -557,11 +558,7 @@ def list_tivos(tivos):
 
     window, table = make_small_window('Choose a TiVo:')
 
-    tivodict = {}
-    for tcd in tivos:
-        address, name = tcd[1]
-        tivodict[name] = address
-
+    tivodict = dict(tivos)
     names = tivodict.keys()
     names.sort()
     for i, name in enumerate(names):
@@ -578,7 +575,7 @@ if not tivo_address:
     if not tivos:
         get_address()
     elif len(tivos) == 1:
-        tivo_address, tivo_name = tivos[0][1]
+        tivo_name, tivo_address = tivos[0]
     else:
         list_tivos(tivos)
 
