@@ -74,6 +74,7 @@ tivo_address = ''
 tivo_name = ''
 landscape = False
 use_gtk = True
+have_zc = True
 focus_button = None   # This is just a widget to jump to when leaving 
                       # key_text in Gtk, since I can't focus on a Label 
                       # there. (Set in make_button().) I use 'Enter' so 
@@ -178,6 +179,14 @@ if len(sys.argv) > 1:
             landscape = True
         else:
             tivo_address = opt
+
+# Zeroconf or not?
+
+try:
+    assert(have_zc)
+    import Zeroconf
+except:
+    have_zc = False
 
 # Gtk or Tk?
 
@@ -458,6 +467,44 @@ def find_tivos():
 
     return tivos
 
+def find_tivos_zc():
+    """ Find TiVos on the LAN using Zeroconf. This is simpler and
+        cleaner than the fake HTTP method, but slightly slower, and
+        requires the Zeroconf module. (It's still much faster than
+        waiting for beacons.)
+
+    """
+    class ZCListener:
+        def __init__(self, names):
+            self.names = names
+
+        def removeService(self, server, type, name):
+            self.names.remove(name)
+
+        def addService(self, server, type, name):
+            self.names.append(name)
+
+    REMOTE = '_tivo-remote._tcp.local.'
+
+    tivos = {}
+    tivo_names = []
+
+    # Get the names of TiVos offering network remote control
+    serv = Zeroconf.Zeroconf()
+    browser = Zeroconf.ServiceBrowser(serv, REMOTE, ZCListener(tivo_names))
+
+    # Give them half a second to respond
+    time.sleep(0.5)
+
+    # Now get the addresses -- this is the slow part
+    for t in tivo_names:
+        name = t.replace('.' + REMOTE, '')
+        address = socket.inet_ntoa(serv.getServiceInfo(REMOTE, t).getAddress())
+        tivos[name] = address
+
+    serv.close()
+    return tivos
+
 def make_tk_window(title):
     """ Tk only -- create a new top-level window and suppress the
         console window.
@@ -570,7 +617,11 @@ def list_tivos(tivos):
         window.mainloop()
 
 if not tivo_address:
-    tivos = find_tivos()
+    tivos = {}
+    if have_zc:
+        tivos = find_tivos_zc()
+    if not tivos:
+        tivos = find_tivos()
     if not tivos:
         get_address()
     elif len(tivos) == 1:
