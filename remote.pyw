@@ -41,6 +41,9 @@
 
     -v, --version    Print the version and exit.
 
+    -z, --nozeroconf Don't try the Zeroconf-based method of detecting 
+                     TiVos.
+
     <address>        Any other command-line option is treated as the IP
                      address (name or numeric) of the TiVo to connect
                      to. Connection is automatic on startup, and
@@ -177,6 +180,8 @@ if len(sys.argv) > 1:
             use_gtk = False
         elif opt in ('-l', '--landscape'):
             landscape = True
+        elif opt in ('-z', '--nozeroconf'):
+            have_zc = False
         else:
             tivo_address = opt
 
