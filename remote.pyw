@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3/HD, v0.17
+# TCP/IP remote for TiVo Series 3/HD, v0.18
 # Copyright 2009 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.17'
+__version__ = '0.18'
 __license__ = 'GPL'
 
 import random
@@ -458,7 +458,7 @@ def find_tivos():
         message = client.recv(1500)
         client.close()  # This is rather rude.
         tcd = tcd_id(message).groups()[0]
-        if tcd[:3] in ('648', '652', '658'):  # We only support S3/HD.
+        if tcd[:3] in ('648', '652', '658', '663'):  # We only support S3/HD.
             tcds[tcd] = address[0]
 
     hsock.close()
