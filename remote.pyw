@@ -290,6 +290,11 @@ def keyboard(widget=None):
         elif ch == ' ':
             irsend('FORWARD')
 
+    for i in xrange(current_y):
+        irsend('UP')
+    for i in xrange(current_x):
+        irsend('LEFT')
+
     if use_gtk:
         key_text.set_text('')
         focus_button.grab_focus()
