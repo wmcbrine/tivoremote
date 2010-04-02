@@ -294,8 +294,13 @@ def kbd_direct(text):
 
     """
     for ch in text.strip().upper():
-        sock.sendall('KEYBOARD %s\r' % ch)
-        time.sleep(0.1)
+        if 'A' <= ch <= 'Z':
+            sock.sendall('KEYBOARD %s\r' % ch)
+            time.sleep(0.1)
+        elif '0' <= ch <= '9':
+            irsend('NUM' + ch)
+        elif ch == ' ':
+            irsend('FORWARD')
 
 def keyboard(widget=None):
     """ Take input from the key_text Entry widget and send it to the
