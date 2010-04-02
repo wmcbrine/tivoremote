@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3/HD, v0.18
-# Copyright 2009 William McBrine
+# TCP/IP remote for TiVo Series 3+, v0.18
+# Copyright 2010 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,11 +16,11 @@
 # You didn't receive a copy of the license with this program because 
 # you already have dozens of copies, don't you? If not, visit gnu.org.
 
-""" TCP/IP remote for TiVo Series 3/HD
+""" TCP/IP remote for TiVo Series 3+
 
-    A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3
-    or TiVo HD, using the port 31339 TCP/IP interface as reverse- 
-    engineered by TCF user Omikron.
+    A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3,
+    TiVo HD or TiVo Premiere, using the port 31339 TCP/IP interface as 
+    reverse-engineered by TCF user Omikron.
 
     Command-line options:
 
@@ -57,6 +57,9 @@
     and the program will do it automatically. Make sure that "Cols:"
     matches the number of columns in the keyboard, and that the selector
     is on 'A' at the start. Case changes are ignored.
+
+    To use the new direct text entry method with a TiVo Premiere, set 
+    "Cols:" to zero. Note that this may not work on all input fields.
 
 """
 
@@ -163,7 +166,7 @@ services=TiVoMediaServer:%(port)d/http
 if len(sys.argv) > 1:
     for opt in sys.argv[1:]:
         if opt in ('-v', '--version'):
-            print 'TCP/IP remote for TiVo Series 3/HD', __version__
+            print 'TCP/IP remote for TiVo Series 3+', __version__
             exit()
         elif opt in ('-h', '--help'):
             print __doc__
@@ -250,19 +253,13 @@ def sps9(widget=None):
     """ Toggle display of the on-screen clock. """
     irsend('SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 'CLEAR')
 
-def keyboard(widget=None):
-    """ Take input from the key_text Entry widget and translate it to a
-        series of cursor motions for the on-screen keyboard. The
-        key_width widget specifies the number of columns.
+def kbd_arrows(text, width):
+    """ Translate 'text' to a series of cursor motions for the on-screen 
+        keyboard. Assumes the standard A-Z layout, with 'width' number 
+        of columns. The cursor must be positioned on 'A' at the start, 
+        or Bad Things will happen.
 
     """
-    if use_gtk:
-        text = key_text.get_text()
-        width = key_width.get_value_as_int()
-    else:
-        text = key_text.get()
-        width = int(key_width.get())
-
     current_x, current_y = 0, 0
 
     for ch in text.strip().upper():
@@ -294,6 +291,33 @@ def keyboard(widget=None):
         irsend('UP')
     for i in xrange(current_x):
         irsend('LEFT')
+
+def kbd_direct(text):
+    """ Send 'text' using the KEYBOARD command. As of now, this works 
+        only on the TiVo Premiere, and not on HME menus there. Select 
+        this mode by settings 'Cols' to 0.
+
+    """
+    for ch in text.strip().upper():
+        sock.sendall('KEYBOARD %s\r' % ch)
+        time.sleep(0.1)
+
+def keyboard(widget=None):
+    """ Take input from the key_text Entry widget and send it to the
+        TiVo. The key_width widget specifies the number of columns.
+
+    """
+    if use_gtk:
+        text = key_text.get_text()
+        width = key_width.get_value_as_int()
+    else:
+        text = key_text.get()
+        width = int(key_width.get())
+
+    if width:
+        kbd_arrows(text, width)
+    else:
+        kbd_direct(text)
 
     if use_gtk:
         key_text.set_text('')
@@ -676,7 +700,7 @@ if use_gtk:
     key_text.connect('key_press_event', handle_escape)
     table.attach(key_text, X2 + 1, X2 + 3, KBD_ROW, KBD_ROW + 1)
 
-    adj = gtk.Adjustment(value=4, lower=4, upper=9, step_incr=1)
+    adj = gtk.Adjustment(value=4, lower=0, upper=9, step_incr=1)
     key_width = gtk.SpinButton(adjustment=adj)
     table.attach(key_width, X2 + 1, X2 + 2, KBD_ROW + 1, KBD_ROW + 2)
 else:
@@ -712,7 +736,9 @@ else:
     key_text.bind('<Escape>', lambda w: label.focus_set())
     key_text.grid(column=(X2 + 1), row=KBD_ROW, columnspan=2, sticky='ew')
 
-    key_width = Tkinter.Spinbox(table, from_=4, to=9, width=2)
+    key_width = Tkinter.Spinbox(table, from_=0, to=9, width=2)
+    key_width.delete(0, 'end')
+    key_width.insert(0, '4')
     key_width.grid(column=(X2 + 1), row=(KBD_ROW + 1), sticky='ew')
 
     # Keyboard shortcuts
