@@ -287,11 +287,6 @@ def kbd_arrows(text, width):
         elif ch == ' ':
             irsend('FORWARD')
 
-    for i in xrange(current_y):
-        irsend('UP')
-    for i in xrange(current_x):
-        irsend('LEFT')
-
 def kbd_direct(text):
     """ Send 'text' using the KEYBOARD command. As of now, this works 
         only on the TiVo Premiere, and not on HME menus there. Select 
