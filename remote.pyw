@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.18
+# TCP/IP remote for TiVo Series 3+, v0.19
 # Copyright 2010 William McBrine
 #
 # This program is free software; you can redistribute it and/or
