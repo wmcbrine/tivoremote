@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.19
+# TCP/IP remote for TiVo Series 3+, v0.20
 # Copyright 2010 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -64,7 +64,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.18'
+__version__ = '0.20'
 __license__ = 'GPL'
 
 import random
@@ -93,26 +93,29 @@ focus_button = None   # This is just a widget to jump to when leaving
 # include the buttons that send a series of codes, or those that call 
 # anything other than irsend().
 
-BUTTONS = ((0, 0, 'TiVo', 'TIVO', 3),
-           (1, 0, 'Aspect', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
-           (2, 0, 'Guide', 'GUIDE', 3),
+BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
+            (1, 0, 'Aspect', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
+            (2, 0, 'Guide', 'GUIDE', 3)),
 
-           (4, 1, 'Up'),
-           (5, 0, 'Left'), (5, 1, 'Select'), (5, 2, 'Right'),
-           (6, 1, 'Down'),
-           (6, 0, 'ThDn', 'THUMBSDOWN'), (6, 2, 'ThUp', 'THUMBSUP'),
+           ((0, 1, 'Up'),
+            (1, 0, 'Left'), (1, 1, 'Select'), (1, 2, 'Right'),
+            (2, 1, 'Down'),
+            (2, 0, 'ThDn', 'THUMBSDOWN'), (2, 2, 'ThUp', 'THUMBSUP')),
 
-           (8, 2, 'Ch+', 'CHANNELUP'), (9, 1, 'Rec', 'RECORD'),
-           (9, 2, 'Ch-', 'CHANNELDOWN'))
+           ((0, 2, 'Ch+', 'CHANNELUP'), (1, 1, 'Rec', 'RECORD'),
+            (1, 2, 'Ch-', 'CHANNELDOWN')),
 
-BUTTONS2 = ((0, 1, 'Play'), (1, 0, 'Rev', 'REVERSE'),
+           ((0, 1, 'Play'), (1, 0, 'Rev', 'REVERSE'),
             (1, 1, 'Pause'), (1, 2, 'FF', 'FORWARD'),
-            (2, 0, 'Replay'), (2, 1, 'Slow'), (2, 2, 'Skip', 'ADVANCE'),
+            (2, 0, 'Replay'), (2, 1, 'Slow'), (2, 2, 'Skip', 'ADVANCE')),
 
-            (4, 0, '1'), (4, 1, '2'), (4, 2, '3'),
-            (5, 0, '4'), (5, 1, '5'), (5, 2, '6'),
-            (6, 0, '7'), (6, 1, '8'), (6, 2, '9'), 
-            (7, 0, 'Clear'), (7, 1, '0'), (7, 2, 'Enter'))
+           ((0, 0, 'A', 'ACTION_A'), (0, 1, 'B', 'ACTION_B'),
+            (0, 2, 'C', 'ACTION_C'), (0, 3, 'D', 'ACTION_D')),
+
+           ((0, 0, '1'), (0, 1, '2'), (0, 2, '3'),
+            (1, 0, '4'), (1, 1, '5'), (1, 2, '6'),
+            (2, 0, '7'), (2, 1, '8'), (2, 2, '9'), 
+            (3, 0, 'Clear'), (3, 1, '0'), (3, 2, 'Enter')))
 
 # Keyboard shortcuts and their corresponding IR codes
 
@@ -208,26 +211,6 @@ try:
 except:
     import Tkinter
     use_gtk = False
-
-# Landscape or portrait?
-
-if landscape:
-    Y2 = 0         # Y2, X2 are the starting coordinates
-    X2 = 4         # for the second group of buttons
-    STBY_ROW = 12
-    LBL_ROW = 12
-else:
-    Y2 = 11
-    X2 = 0
-    STBY_ROW = 23
-    LBL_ROW = 25
-
-KBD_ROW = Y2 + 9
-
-# Tk's grid() skips empty rows and columns, so I prevent that by filling 
-# them with blank Labels.
-
-BLANKS = (3, 7, 10, KBD_ROW - 1, KBD_ROW + 2, LBL_ROW - 1)
 
 def go_away(widget=None):
     sock.close()
@@ -383,20 +366,13 @@ def handle_escape(widget, event):
     return False
 
 def make_ircode(widget, y, x, text, value='', width=1):
-    """ Make an IRCODE command from an entry in BUTTONS, then make a
-        button with it.
-
-    """
+    """ Make an IRCODE command, then make a button with it. """
     if not value:
         if '0' <= text <= '9':
             value = 'NUM' + text
         else:
             value = text.upper()
     make_button(widget, y, x, text, lambda w=None: irsend(value), width)
-
-def make_ircode2(widget, y, x, text, value='', width=1):
-    """ Make an IRCODE button in the second group, at an offset. """
-    make_ircode(widget, y + Y2, x + X2, text, value, width)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
@@ -569,7 +545,7 @@ def make_small_window(label):
     else:
         window = make_tk_window(TITLE)
         table = Tkinter.Frame(window, borderwidth=10)
-        table.pack()
+        table.grid()
         Tkinter.Label(table, text=label).grid(column=0, row=0)
 
     return window, table
@@ -683,63 +659,76 @@ if use_gtk:
     window = gtk.Window()
     window.set_title(tivo_name)
     window.connect('destroy', go_away)
-    table = gtk.Table(homogeneous=True)
-    table.set_border_width(20)
-    window.add(table)
-
-    # Status line
+    outer = gtk.Table()
+    vbox1 = gtk.VBox()
+    vbox2 = gtk.VBox()
     label = gtk.Label()
-    table.attach(label, 0, 3, LBL_ROW, LBL_ROW + 1)
+    table = [gtk.Table(homogeneous=True) for i in xrange(8)]
+    outer.set_border_width(10)
+    for tb in table:
+        tb.set_border_width(5)
+    for i in xrange(4):
+        vbox1.add(table[i])
+        vbox2.add(table[i + 4])
+    vbox1.set_border_width(5)
+    vbox2.set_border_width(5)
+    window.add(outer)
+    if landscape:
+        outer.attach(vbox1, 0, 1, 0, 1)
+        outer.attach(vbox2, 1, 2, 0, 1)
+        outer.attach(label, 0, 2, 2, 3)
+    else:
+        outer.attach(vbox1, 0, 1, 0, 1)
+        outer.attach(vbox2, 0, 1, 1, 2)
+        outer.attach(label, 0, 1, 2, 3)
 
     # Text entry
-    table.attach(gtk.Label('Text:'), X2, X2 + 1, KBD_ROW, KBD_ROW + 1)
-    table.attach(gtk.Label('Cols:'), X2, X2 + 1, KBD_ROW + 1, KBD_ROW + 2)
+    table[6].attach(gtk.Label('Text:'), 0, 1, 0, 1)
+    table[6].attach(gtk.Label('Cols:'), 0, 1, 1, 2)
 
     key_text = gtk.Entry()
     key_text.connect('activate', keyboard)
     key_text.connect('key_press_event', handle_escape)
-    table.attach(key_text, X2 + 1, X2 + 3, KBD_ROW, KBD_ROW + 1)
+    table[6].attach(key_text, 1, 3, 0, 1)
 
     adj = gtk.Adjustment(value=4, lower=0, upper=9, step_incr=1)
     key_width = gtk.SpinButton(adjustment=adj)
-    table.attach(key_width, X2 + 1, X2 + 2, KBD_ROW + 1, KBD_ROW + 2)
+    table[6].attach(key_width, 1, 2, 1, 2)
 else:
     # Init
     window = make_tk_window(tivo_name)
     window.protocol('WM_DELETE_WINDOW', go_away)
-    table = Tkinter.Frame(window, borderwidth=20)
-    table.pack(fill='both', expand=1)
-    for i in xrange(3 + X2):
-        table.grid_columnconfigure(i, weight=1)
-    for i in xrange(LBL_ROW + 1):
-        table.grid_rowconfigure(i, weight=1)
-
-    for each in BLANKS:
-        Tkinter.Label(table).grid(row=each, rowspan=1)
-
-    # And one more blank, depending on the layout:
+    outer = Tkinter.Frame(window, borderwidth=10)
+    outer.grid()
+    vbox1 = Tkinter.Frame(outer, borderwidth=5)
+    vbox2 = Tkinter.Frame(outer, borderwidth=5)
+    label = Tkinter.Label(outer)
+    table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
+             [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
+    for tb in table:
+        tb.grid()
     if landscape:
-        Tkinter.Label(table).grid(column=3, columnspan=1, ipadx=20)
+        vbox1.grid(row=0)
+        vbox2.grid(row=0, column=1)
+        label.grid(row=1, columnspan=2)
     else:
-        Tkinter.Label(table).grid(row=14, rowspan=1)
-
-    # Status line
-    label = Tkinter.Label(table)
-    label.grid(row=LBL_ROW, columnspan=3)
+        vbox1.grid(row=0)
+        vbox2.grid(row=1)
+        label.grid(row=2)
 
     # Text entry
-    Tkinter.Label(table, text='Text:').grid(column=X2, row=KBD_ROW)
-    Tkinter.Label(table, text='Cols:').grid(column=X2, row=(KBD_ROW + 1))
+    Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
+    Tkinter.Label(table[6], text='Cols:').grid(column=0, row=1)
 
-    key_text = Tkinter.Entry(table, width=15)
+    key_text = Tkinter.Entry(table[6], width=15)
     key_text.bind('<Return>', keyboard)
     key_text.bind('<Escape>', lambda w: label.focus_set())
-    key_text.grid(column=(X2 + 1), row=KBD_ROW, columnspan=2, sticky='ew')
+    key_text.grid(column=1, row=0, columnspan=2, sticky='ew')
 
-    key_width = Tkinter.Spinbox(table, from_=0, to=9, width=2)
+    key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
     key_width.delete(0, 'end')
     key_width.insert(0, '4')
-    key_width.grid(column=(X2 + 1), row=(KBD_ROW + 1), sticky='ew')
+    key_width.grid(column=1, row=1, sticky='ew')
 
     # Keyboard shortcuts
     for each in KEYS:
@@ -749,18 +738,16 @@ else:
     label.bind('q', go_away)
     label.focus_set()
 
-for each in BUTTONS:
-    make_ircode(table, *each)
+for i, button_group in enumerate(BUTTONS):
+    for each in button_group:
+        make_ircode(table[i], *each)
 
-for each in BUTTONS2:
-    make_ircode2(table, *each)
-
-make_button(table, 8, 1, 'CC', closed_caption)
-make_button(table, 8, 0, 'SPS30', sps30)
-make_button(table, 9, 0, 'Clock', sps9)
-make_button(table, KBD_ROW + 1, X2 + 2, 'Kbd', keyboard)
-make_ircode(table, STBY_ROW, X2, 'Standby', 'STANDBY', 2)
-make_button(table, STBY_ROW, X2 + 2, 'Quit', go_away)
+make_button(table[2], 0, 1, 'CC', closed_caption)
+make_button(table[2], 0, 0, 'SPS30', sps30)
+make_button(table[2], 1, 0, 'Clock', sps9)
+make_button(table[6], 1, 2, 'Kbd', keyboard)
+make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
+make_button(table[7], 0, 2, 'Quit', go_away)
 
 thread.start_new_thread(status_update, ())
 
