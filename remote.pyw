@@ -530,6 +530,14 @@ def make_tk_window(title):
     window.title(title)
     return window
 
+def make_widget_expandable(widget):
+    """ Tk only -- mark each cell as expandable. """
+    width, height = widget.grid_size()
+    for i in xrange(width):
+        widget.columnconfigure(i, weight=1)
+    for i in xrange(height):
+        widget.rowconfigure(i, weight=1)
+
 def make_small_window(label):
     """ Common init for get_address() and list_tivos(). """
     TITLE = 'TiVo Remote'
@@ -704,27 +712,22 @@ else:
     window.protocol('WM_DELETE_WINDOW', go_away)
     outer = Tkinter.Frame(window, borderwidth=10)
     outer.pack(fill='both', expand=1)
-    outer.rowconfigure(0, weight=1)
-    outer.columnconfigure(0, weight=1)
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
     vbox2 = Tkinter.Frame(outer, borderwidth=5)
     table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
              [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
+    for tb in table:
+        tb.grid(sticky='news')
     if landscape:
         label = Tkinter.Label(vbox2)
         vbox1.grid(row=0, sticky='news')
         vbox2.grid(row=0, column=1, sticky='news')
-        outer.columnconfigure(1, weight=1)
+        label.grid(row=4)
     else:
         label = Tkinter.Label(outer)
         vbox1.grid(row=0, sticky='news')
         vbox2.grid(row=1, sticky='news')
         label.grid(row=2)
-        outer.rowconfigure(1, weight=1)
-    for vb in (vbox1, vbox2):
-        vb.columnconfigure(0, weight=1)
-        for i in xrange(4):
-            vb.rowconfigure(i, weight=1)
 
     # Text entry
     Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
@@ -760,15 +763,8 @@ make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
 make_button(table[7], 0, 2, 'Quit', go_away)
 
 if not use_gtk:
-    for tb in table:
-        tb.grid(sticky='news')
-        width, height = tb.grid_size()
-        for i in xrange(width):
-            tb.columnconfigure(i, weight=1)
-        for i in xrange(height):
-            tb.rowconfigure(i, weight=1)
-    if landscape:
-        label.grid(row=4)
+    for w in table + [vbox1, vbox2, outer]:
+        make_widget_expandable(w)
 
 thread.start_new_thread(status_update, ())
 
