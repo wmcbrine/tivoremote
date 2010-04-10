@@ -120,7 +120,7 @@ BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
 # Keyboard shortcuts and their corresponding IR codes
 
 KEYS = {'t': 'TIVO',
-        'a': 'WINDOW', 'i': 'INFO', 'l': 'LIVETV',
+        'w': 'WINDOW', 'i': 'INFO', 'l': 'LIVETV',
         'g': 'GUIDE',
 
         'Up': 'UP',
@@ -134,6 +134,8 @@ KEYS = {'t': 'TIVO',
         'p': 'PLAY', 'v': 'REVERSE',
         'space': 'PAUSE', 'f': 'FORWARD',
         'x': 'REPLAY', 'o': 'SLOW', 's': 'ADVANCE',
+
+        'a': 'ACTION_A', 'b': 'ACTION_B', 'c': 'ACTION_C', 'd': 'ACTION_D',
 
         '1': 'NUM1', '2': 'NUM2', '3': 'NUM3',
         '4': 'NUM4', '5': 'NUM5', '6': 'NUM6',
@@ -153,7 +155,7 @@ KEYS = {'t': 'TIVO',
 
         'bracketleft': 'REVERSE', 'bracketright': 'FORWARD',
         'minus': 'REPLAY', 'equal': 'ADVANCE', 'e': 'ENTER',
-        'w': 'WINDOW', 'grave': 'STOP'}
+        'z': 'WINDOW', 'grave': 'STOP'}
 
 # Beacon template for find_tivos() and get_name()
 
