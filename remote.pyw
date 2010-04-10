@@ -661,7 +661,7 @@ if use_gtk:
     window = gtk.Window()
     window.set_title(tivo_name)
     window.connect('destroy', go_away)
-    outer = gtk.Table()
+    outer = gtk.VBox()
     vbox1 = gtk.VBox()
     vbox2 = gtk.VBox()
     label = gtk.Label()
@@ -679,12 +679,12 @@ if use_gtk:
         hbox = gtk.HBox(homogeneous=True)
         hbox.add(vbox1)
         hbox.add(vbox2)
-        outer.attach(hbox, 0, 1, 0, 1)
-        outer.attach(label, 0, 1, 1, 2)
+        outer.add(hbox)
+        vbox2.add(label)
     else:
-        outer.attach(vbox1, 0, 1, 0, 1)
-        outer.attach(vbox2, 0, 1, 1, 2)
-        outer.attach(label, 0, 1, 2, 3)
+        outer.add(vbox1)
+        outer.add(vbox2)
+        outer.add(label)
 
     # Text entry
     table[6].attach(gtk.Label('Text:'), 0, 1, 0, 1)
@@ -706,7 +706,6 @@ else:
     outer.grid()
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
     vbox2 = Tkinter.Frame(outer, borderwidth=5)
-    label = Tkinter.Label(outer)
     table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
              [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
     for tb in table:
@@ -715,10 +714,12 @@ else:
             tb.columnconfigure(i, weight=1)
     table[4].columnconfigure(3, weight=1)
     if landscape:
+        label = Tkinter.Label(vbox2)
         vbox1.grid(row=0, sticky='ew')
         vbox2.grid(row=0, column=1, sticky='ew')
-        label.grid(row=1, columnspan=2)
+        label.grid(row=4)
     else:
+        label = Tkinter.Label(outer)
         vbox1.grid(row=0, sticky='ew')
         vbox2.grid(row=1, sticky='ew')
         label.grid(row=2)
