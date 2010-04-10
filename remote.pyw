@@ -279,7 +279,7 @@ def kbd_arrows(text, width):
 def kbd_direct(text):
     """ Send 'text' using the KEYBOARD command. As of now, this works 
         only on the TiVo Premiere, and not on HME menus there. Select 
-        this mode by settings 'Cols' to 0.
+        this mode by setting 'Cols' to 0.
 
     """
     for ch in text.strip().upper():
