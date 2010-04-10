@@ -322,7 +322,7 @@ def make_button(widget, y, x, text, command, width=1):
             global focus_button
             focus_button = button
     else:
-        button = Tkinter.Button(widget, text=text, command=command)
+        button = Tkinter.Button(widget, text=text, command=command, width=5)
         button.grid(column=x, row=y, columnspan=width, sticky='ew')
 
 def make_tk_key(key, code):
@@ -703,8 +703,7 @@ else:
     window = make_tk_window(tivo_name)
     window.protocol('WM_DELETE_WINDOW', go_away)
     outer = Tkinter.Frame(window, borderwidth=10)
-    outer.grid(sticky='ew')
-    outer.columnconfigure(0, weight=1)
+    outer.grid()
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
     vbox2 = Tkinter.Frame(outer, borderwidth=5)
     label = Tkinter.Label(outer)
