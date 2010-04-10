@@ -323,7 +323,7 @@ def make_button(widget, y, x, text, command, width=1):
             focus_button = button
     else:
         button = Tkinter.Button(widget, text=text, command=command, width=5)
-        button.grid(column=x, row=y, columnspan=width, sticky='ew')
+        button.grid(column=x, row=y, columnspan=width, sticky='news')
 
 def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
@@ -709,19 +709,19 @@ else:
     table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
              [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
     for tb in table:
-        tb.grid(sticky='ew')
+        tb.grid(sticky='news')
         for i in xrange(3):
             tb.columnconfigure(i, weight=1)
     table[4].columnconfigure(3, weight=1)
     if landscape:
         label = Tkinter.Label(vbox2)
-        vbox1.grid(row=0, sticky='ew')
-        vbox2.grid(row=0, column=1, sticky='ew')
+        vbox1.grid(row=0, sticky='news')
+        vbox2.grid(row=0, column=1, sticky='news')
         label.grid(row=4)
     else:
         label = Tkinter.Label(outer)
-        vbox1.grid(row=0, sticky='ew')
-        vbox2.grid(row=1, sticky='ew')
+        vbox1.grid(row=0, sticky='news')
+        vbox2.grid(row=1, sticky='news')
         label.grid(row=2)
     for vb in (vbox1, vbox2):
         vb.columnconfigure(0, weight=1)
@@ -733,12 +733,12 @@ else:
     key_text = Tkinter.Entry(table[6], width=15)
     key_text.bind('<Return>', keyboard)
     key_text.bind('<Escape>', lambda w: label.focus_set())
-    key_text.grid(column=1, row=0, columnspan=2, sticky='ew')
+    key_text.grid(column=1, row=0, columnspan=2, sticky='news')
 
     key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
     key_width.delete(0, 'end')
     key_width.insert(0, '4')
-    key_width.grid(column=1, row=1, sticky='ew')
+    key_width.grid(column=1, row=1, sticky='news')
 
     # Keyboard shortcuts
     for each in KEYS:
