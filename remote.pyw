@@ -94,7 +94,7 @@ focus_button = None   # This is just a widget to jump to when leaving
 # anything other than irsend().
 
 BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
-            (1, 0, 'Aspect', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
+            (1, 0, 'Zoom', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
             (2, 0, 'Guide', 'GUIDE', 3)),
 
            ((0, 1, 'Up'),
@@ -120,7 +120,7 @@ BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
 # Keyboard shortcuts and their corresponding IR codes
 
 KEYS = {'t': 'TIVO',
-        'w': 'WINDOW', 'i': 'INFO', 'l': 'LIVETV',
+        'z': 'WINDOW', 'i': 'INFO', 'l': 'LIVETV',
         'g': 'GUIDE',
 
         'Up': 'UP',
@@ -155,7 +155,7 @@ KEYS = {'t': 'TIVO',
 
         'bracketleft': 'REVERSE', 'bracketright': 'FORWARD',
         'minus': 'REPLAY', 'equal': 'ADVANCE', 'e': 'ENTER',
-        'z': 'WINDOW', 'grave': 'STOP'}
+        'w': 'WINDOW', 'grave': 'STOP'}
 
 # Beacon template for find_tivos() and get_name()
 
