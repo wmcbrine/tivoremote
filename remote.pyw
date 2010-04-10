@@ -703,28 +703,28 @@ else:
     window = make_tk_window(tivo_name)
     window.protocol('WM_DELETE_WINDOW', go_away)
     outer = Tkinter.Frame(window, borderwidth=10)
-    outer.grid()
+    outer.pack(fill='both', expand=1)
+    outer.rowconfigure(0, weight=1)
+    outer.columnconfigure(0, weight=1)
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
     vbox2 = Tkinter.Frame(outer, borderwidth=5)
     table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
              [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
-    for tb in table:
-        tb.grid(sticky='news')
-        for i in xrange(3):
-            tb.columnconfigure(i, weight=1)
-    table[4].columnconfigure(3, weight=1)
     if landscape:
         label = Tkinter.Label(vbox2)
         vbox1.grid(row=0, sticky='news')
         vbox2.grid(row=0, column=1, sticky='news')
-        label.grid(row=4)
+        outer.columnconfigure(1, weight=1)
     else:
         label = Tkinter.Label(outer)
         vbox1.grid(row=0, sticky='news')
         vbox2.grid(row=1, sticky='news')
         label.grid(row=2)
+        outer.rowconfigure(1, weight=1)
     for vb in (vbox1, vbox2):
         vb.columnconfigure(0, weight=1)
+        for i in xrange(4):
+            vb.rowconfigure(i, weight=1)
 
     # Text entry
     Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
@@ -758,6 +758,17 @@ make_button(table[2], 1, 0, 'Clock', sps9)
 make_button(table[6], 1, 2, 'Kbd', keyboard)
 make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
 make_button(table[7], 0, 2, 'Quit', go_away)
+
+if not use_gtk:
+    for tb in table:
+        tb.grid(sticky='news')
+        width, height = tb.grid_size()
+        for i in xrange(width):
+            tb.columnconfigure(i, weight=1)
+        for i in xrange(height):
+            tb.rowconfigure(i, weight=1)
+    if landscape:
+        label.grid(row=4)
 
 thread.start_new_thread(status_update, ())
 
