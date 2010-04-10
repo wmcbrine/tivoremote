@@ -109,8 +109,8 @@ BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
             (1, 1, 'Pause'), (1, 2, 'FF', 'FORWARD'),
             (2, 0, 'Replay'), (2, 1, 'Slow'), (2, 2, 'Skip', 'ADVANCE')),
 
-           ((0, 0, 'A', 'ACTION_A'), (0, 1, 'B', 'ACTION_B'),
-            (0, 2, 'C', 'ACTION_C'), (0, 3, 'D', 'ACTION_D')),
+           ((0, 0, 'A', 'ACTION_A', 1, 3), (0, 1, 'B', 'ACTION_B', 1, 3),
+            (0, 2, 'C', 'ACTION_C', 1, 3), (0, 3, 'D', 'ACTION_D', 1, 3)),
 
            ((0, 0, '1'), (0, 1, '2'), (0, 2, '3'),
             (1, 0, '4'), (1, 1, '5'), (1, 2, '6'),
@@ -311,19 +311,19 @@ def keyboard(widget=None):
         key_text.delete(0, 'end')
         label.focus_set()
 
-def make_button(widget, y, x, text, command, width=1):
+def make_button(widget, y, x, text, command, cols=1, width=5):
     """ Create one button, given its coordinates, text and command. """
     if use_gtk:
         button = gtk.Button(text)
         button.connect('clicked', command)
         button.connect('key_press_event', handle_gtk_key)
-        widget.attach(button, x, x + width, y, y + 1)
+        widget.attach(button, x, x + cols, y, y + 1)
         if text == 'Enter':
             global focus_button
             focus_button = button
     else:
-        button = Tkinter.Button(widget, text=text, command=command, width=5)
-        button.grid(column=x, row=y, columnspan=width, sticky='news')
+        button = Tkinter.Button(widget, text=text, command=command, width=width)
+        button.grid(column=x, row=y, columnspan=cols, sticky='news')
 
 def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
@@ -367,14 +367,14 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, text, value='', width=1):
+def make_ircode(widget, y, x, text, value='', cols=1, width=5):
     """ Make an IRCODE command, then make a button with it. """
     if not value:
         if '0' <= text <= '9':
             value = 'NUM' + text
         else:
             value = text.upper()
-    make_button(widget, y, x, text, lambda w=None: irsend(value), width)
+    make_button(widget, y, x, text, lambda w=None: irsend(value), cols, width)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
