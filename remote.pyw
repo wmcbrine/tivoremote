@@ -676,9 +676,11 @@ if use_gtk:
     vbox2.set_border_width(5)
     window.add(outer)
     if landscape:
-        outer.attach(vbox1, 0, 1, 0, 1)
-        outer.attach(vbox2, 1, 2, 0, 1)
-        outer.attach(label, 0, 2, 2, 3)
+        hbox = gtk.HBox(homogeneous=True)
+        hbox.add(vbox1)
+        hbox.add(vbox2)
+        outer.attach(hbox, 0, 1, 0, 1)
+        outer.attach(label, 0, 1, 1, 2)
     else:
         outer.attach(vbox1, 0, 1, 0, 1)
         outer.attach(vbox2, 0, 1, 1, 2)
@@ -701,22 +703,28 @@ else:
     window = make_tk_window(tivo_name)
     window.protocol('WM_DELETE_WINDOW', go_away)
     outer = Tkinter.Frame(window, borderwidth=10)
-    outer.grid()
+    outer.grid(sticky='ew')
+    outer.columnconfigure(0, weight=1)
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
     vbox2 = Tkinter.Frame(outer, borderwidth=5)
     label = Tkinter.Label(outer)
     table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
              [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
     for tb in table:
-        tb.grid()
+        tb.grid(sticky='ew')
+        for i in xrange(3):
+            tb.columnconfigure(i, weight=1)
+    table[4].columnconfigure(3, weight=1)
     if landscape:
-        vbox1.grid(row=0)
-        vbox2.grid(row=0, column=1)
+        vbox1.grid(row=0, sticky='ew')
+        vbox2.grid(row=0, column=1, sticky='ew')
         label.grid(row=1, columnspan=2)
     else:
-        vbox1.grid(row=0)
-        vbox2.grid(row=1)
+        vbox1.grid(row=0, sticky='ew')
+        vbox2.grid(row=1, sticky='ew')
         label.grid(row=2)
+    for vb in (vbox1, vbox2):
+        vb.columnconfigure(0, weight=1)
 
     # Text entry
     Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
