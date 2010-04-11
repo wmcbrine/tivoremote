@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.20
+# TCP/IP remote for TiVo Series 3+, v0.21
 # Copyright 2010 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -64,7 +64,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.20'
+__version__ = '0.21'
 __license__ = 'GPL'
 
 import random
@@ -87,6 +87,8 @@ focus_button = None   # This is just a widget to jump to when leaving
                       # that I can tab from there to key_text, as in Tk.
 
 # Other globals: window, label, key_text, key_width (all widgets)
+
+TITLE = 'TiVo Remote'
 
 # Coordinates (Y, X), text, IR code (if different from the text) and 
 # width (if greater than one) for each simple button -- this doesn't 
@@ -219,7 +221,8 @@ except:
     use_gtk = False
 
 def go_away(widget=None):
-    sock.close()
+    if sock:
+        sock.close()
     if use_gtk:
         gtk.main_quit()
     else:
@@ -521,19 +524,6 @@ def find_tivos_zc():
     serv.close()
     return tivos
 
-def make_tk_window(title):
-    """ Tk only -- create a new top-level window and suppress the
-        console window.
-
-    """
-    window = Tkinter.Tk()
-    try:
-        window.tk.call('console', 'hide')  # fix a problem on Mac OS X
-    except Tkinter.TclError:
-        pass
-    window.title(title)
-    return window
-
 def make_widget_expandable(widget):
     """ Tk only -- mark each cell as expandable. """
     width, height = widget.grid_size()
@@ -544,11 +534,7 @@ def make_widget_expandable(widget):
 
 def make_small_window(label):
     """ Common init for get_address() and list_tivos(). """
-    TITLE = 'TiVo Remote'
     if use_gtk:
-        window = gtk.Window()
-        window.set_title(TITLE)
-        window.connect('destroy', gtk.main_quit)
         table = gtk.Table()
         table.set_border_width(10)
         vbox = gtk.VBox()
@@ -557,15 +543,14 @@ def make_small_window(label):
         table.attach(vbox, 0, 1, 0, 1)
         window.add(table)
     else:
-        window = make_tk_window(TITLE)
         table = Tkinter.Frame(window, borderwidth=10)
         table.grid()
         Tkinter.Label(table, text=label).grid(column=0, row=0)
 
-    return window, table
+    return table
 
 def error_window(message):
-    window, table = make_small_window(message)
+    table = make_small_window(message)
     if use_gtk:
         button = gtk.Button('Ok')
         button.connect('clicked', gtk.main_quit)
@@ -586,9 +571,14 @@ def get_address():
             tivo_address = address.get_text()
         else:
             tivo_address = address.get()
-        window.destroy()
+        if use_gtk:
+            table.destroy()
+            gtk.main_quit()
+        else:
+            table.grid_forget()
+            window.quit()
 
-    window, table = make_small_window('Enter a TiVo address:')
+    table = make_small_window('Enter a TiVo address:')
 
     if use_gtk:
         address = gtk.Entry()
@@ -614,7 +604,12 @@ def list_tivos(tivos):
         global tivo_name, tivo_address
         tivo_name = name
         tivo_address = address
-        window.destroy()
+        if use_gtk:
+            table.destroy()
+            gtk.main_quit()
+        else:
+            table.grid_forget()
+            window.quit()
 
     def make_tivo_button(widget, window, y, name, address):
         command = lambda w=None: choose_tivo(window, name, address)
@@ -627,7 +622,7 @@ def list_tivos(tivos):
             button = Tkinter.Button(widget, text=text, command=command)
             button.grid(column=0, row=y, sticky='ew')
 
-    window, table = make_small_window('Choose a TiVo:')
+    table = make_small_window('Choose a TiVo:')
 
     names = tivos.keys()
     names.sort()
@@ -639,6 +634,21 @@ def list_tivos(tivos):
         gtk.main()
     else:
         window.mainloop()
+
+sock = None
+
+if use_gtk:
+    window = gtk.Window()
+    window.connect('destroy', go_away)
+    window.set_title(TITLE)
+else:
+    window = Tkinter.Tk()
+    try:
+        window.tk.call('console', 'hide')  # fix a problem on Mac OS X
+    except Tkinter.TclError:
+        pass
+    window.title(TITLE)
+    window.protocol('WM_DELETE_WINDOW', go_away)
 
 if not tivo_address:
     tivos = {}
@@ -670,9 +680,7 @@ except Exception, msg:
 
 if use_gtk:
     # Init
-    window = gtk.Window()
     window.set_title(tivo_name)
-    window.connect('destroy', go_away)
     outer = gtk.VBox()
     vbox1 = gtk.VBox()
     vbox2 = gtk.VBox()
@@ -712,8 +720,7 @@ if use_gtk:
     table[6].attach(key_width, 1, 2, 1, 2)
 else:
     # Init
-    window = make_tk_window(tivo_name)
-    window.protocol('WM_DELETE_WINDOW', go_away)
+    window.title(tivo_name)
     outer = Tkinter.Frame(window, borderwidth=10)
     outer.pack(fill='both', expand=1)
     vbox1 = Tkinter.Frame(outer, borderwidth=5)
