@@ -90,10 +90,12 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
-# Coordinates (Y, X), text, IR code (if different from the text) and 
-# width (if greater than one) for each simple button -- this doesn't 
-# include the buttons that send a series of codes, or those that call 
-# anything other than irsend().
+# Coordinates (Y, X), text, IR code (if different from the text) and
+# number of columns (if greater than one) for each simple button -- this
+# doesn't include the buttons that send a series of codes, or those that
+# call anything other than irsend(). Finally, the ACTION_ buttons have a
+# sixth parameter, which is the button "width" in "text units", vs. the 
+# default of 5. This is used only in Tk, to align the buttons.
 
 BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
             (1, 0, 'Zoom', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
