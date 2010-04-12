@@ -578,7 +578,7 @@ def get_address():
             table.destroy()
             gtk.main_quit()
         else:
-            table.grid_forget()
+            table.forget()
             window.quit()
 
     table = make_small_window('Enter a TiVo address:')
@@ -612,7 +612,7 @@ def list_tivos(tivos):
             table.destroy()
             gtk.main_quit()
         else:
-            table.grid_forget()
+            table.forget()
             window.quit()
 
     def make_tivo_button(widget, window, y, name, address):
