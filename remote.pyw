@@ -546,7 +546,7 @@ def make_small_window(label):
         window.add(table)
     else:
         table = Tkinter.Frame(window, borderwidth=10)
-        table.grid()
+        table.pack(fill='both', expand=1)
         Tkinter.Label(table, text=label).grid(column=0, row=0)
 
     return table
@@ -561,7 +561,8 @@ def error_window(message):
         gtk.main()
     else:
         button = Tkinter.Button(table, text='Ok', command=window.quit)
-        button.grid(column=0, row=1, sticky='ew')
+        button.grid(column=0, row=1, sticky='news')
+        make_widget_expandable(table)
         window.mainloop()
     exit()
 
@@ -587,7 +588,7 @@ def get_address():
         table.attach(address, 0, 1, 1, 2)
     else:
         address = Tkinter.Entry(table)
-        address.grid(column=0, row=1, sticky='ew')
+        address.grid(column=0, row=1, sticky='news')
         address.focus_set()
 
     command = lambda w=None: set_address(window, address)
@@ -598,6 +599,7 @@ def get_address():
         gtk.main()
     else:
         address.bind('<Return>', command)
+        make_widget_expandable(table)
         window.mainloop()
 
 def list_tivos(tivos):
@@ -622,7 +624,7 @@ def list_tivos(tivos):
             widget.attach(button, 0, 1, y, y + 1)
         else:
             button = Tkinter.Button(widget, text=text, command=command)
-            button.grid(column=0, row=y, sticky='ew')
+            button.grid(column=0, row=y, sticky='news')
 
     table = make_small_window('Choose a TiVo:')
 
@@ -635,6 +637,7 @@ def list_tivos(tivos):
         window.show_all()
         gtk.main()
     else:
+        make_widget_expandable(table)
         window.mainloop()
 
 sock = None
