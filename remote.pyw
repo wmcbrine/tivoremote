@@ -81,6 +81,8 @@ tivo_name = ''
 landscape = False
 use_gtk = True
 have_zc = True
+sock = None
+outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
                       # key_text in Gtk, since I can't focus on a Label 
                       # there. (Set in make_button().) I use 'Enter' so 
@@ -230,17 +232,25 @@ def go_away(widget=None):
     else:
         window.quit()
 
+def connect():
+    global sock
+    try:
+        sock = socket.socket()
+        sock.settimeout(5)
+        sock.connect((tivo_address, 31339))
+        sock.settimeout(None)
+    except Exception, msg:
+        msg = 'Could not connect to %s:\n%s' % (tivo_name, msg)
+        error_window(msg)
+
 def send(message):
+    if not sock:
+        connect()
+        thread.start_new_thread(status_update, ())
     try:
         sock.sendall(message)
         time.sleep(0.1)
     except Exception, msg:
-        if use_gtk:
-            outer.destroy()
-            gtk.main_quit()
-        else:
-            outer.forget()
-            window.quit()
         error_window(str(msg))
 
 def irsend(*codes):
@@ -399,6 +409,7 @@ def status_update():
         display them.
 
     """
+    global sock
     while True:
         try:
             status = sock.recv(80)
@@ -415,6 +426,8 @@ def status_update():
         else:
             label.config(text=message)
         if not status:
+            sock.close()
+            sock = None
             break
 
 def get_name(address):
@@ -526,8 +539,11 @@ def find_tivos_zc():
     tivo_names = []
 
     # Get the names of TiVos offering network remote control
-    serv = Zeroconf.Zeroconf()
-    browser = Zeroconf.ServiceBrowser(serv, REMOTE, ZCListener(tivo_names))
+    try:
+        serv = Zeroconf.Zeroconf()
+        browser = Zeroconf.ServiceBrowser(serv, REMOTE, ZCListener(tivo_names))
+    except:
+        return tivos
 
     # Give them half a second to respond
     time.sleep(0.5)
@@ -567,6 +583,13 @@ def make_small_window(label):
     return table
 
 def error_window(message):
+    if outer:
+        if use_gtk:
+            outer.destroy()
+            gtk.main_quit()
+        else:
+            outer.forget()
+            window.quit()
     table = make_small_window(message)
     if use_gtk:
         button = gtk.Button('Ok')
@@ -655,8 +678,6 @@ def list_tivos(tivos):
         make_widget_expandable(table)
         window.mainloop()
 
-sock = None
-
 if use_gtk:
     window = gtk.Window()
     window.connect('destroy', go_away)
@@ -689,14 +710,7 @@ if not tivo_address:
 if not tivo_name:
     tivo_name = get_name(tivo_address)
 
-try:
-    sock = socket.socket()
-    sock.settimeout(5)
-    sock.connect((tivo_address, 31339))
-    sock.settimeout(None)
-except Exception, msg:
-    msg = 'Could not connect to %s:\n%s' % (tivo_name, msg)
-    error_window(msg)
+connect()
 
 if use_gtk:
     # Init
