@@ -230,10 +230,22 @@ def go_away(widget=None):
     else:
         window.quit()
 
+def send(message):
+    try:
+        sock.sendall(message)
+        time.sleep(0.1)
+    except Exception, msg:
+        if use_gtk:
+            outer.destroy()
+            gtk.main_quit()
+        else:
+            outer.forget()
+            window.quit()
+        error_window(str(msg))
+
 def irsend(*codes):
     for each in codes:
-        sock.sendall('IRCODE %s\r' % each)
-        time.sleep(0.1)
+        send('IRCODE %s\r' % each)
 
 def closed_caption(widget=None):
     """ Toggle closed captioning. """
@@ -289,8 +301,7 @@ def kbd_direct(text):
     """
     for ch in text.strip().upper():
         if 'A' <= ch <= 'Z':
-            sock.sendall('KEYBOARD %s\r' % ch)
-            time.sleep(0.1)
+            send('KEYBOARD %s\r' % ch)
         elif '0' <= ch <= '9':
             irsend('NUM' + ch)
         elif ch == ' ':
@@ -389,16 +400,22 @@ def status_update():
 
     """
     while True:
-        status = sock.recv(80)
-        if not status:
-            break
-        status = status.strip().title()
+        try:
+            status = sock.recv(80)
+        except:
+            status = None
+        if status:
+            message = status.strip().title()
+        else:
+            message = 'Connection Lost'
         if use_gtk:
             gtk.gdk.threads_enter()
-            label.set_text(status)
+            label.set_text(message)
             gtk.gdk.threads_leave()
         else:
-            label.config(text=status)
+            label.config(text=message)
+        if not status:
+            break
 
 def get_name(address):
     """ Exchange TiVo Connect Discovery beacons, and extract the machine
