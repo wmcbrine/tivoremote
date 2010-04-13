@@ -357,8 +357,6 @@ def handle_gtk_key(widget, event):
     key = gtk.gdk.keyval_name(event.keyval)
     if key in KEYS:
         irsend(KEYS[key])
-    elif key == 'c':
-        closed_caption()
     elif key == 'q':
         go_away()
     else:
@@ -763,7 +761,6 @@ else:
     for each in KEYS:
         make_tk_key(each, KEYS[each])
 
-    label.bind('c', closed_caption)
     label.bind('q', go_away)
     label.focus_set()
 
