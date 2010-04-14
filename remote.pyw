@@ -414,17 +414,14 @@ def status_update():
         try:
             status = sock.recv(80)
         except:
-            status = None
-        if status:
-            message = status.strip().title()
-        else:
-            message = 'Connection Lost'
+            status = ''
+        status = status.strip().title()
         if use_gtk:
             gtk.gdk.threads_enter()
-            label.set_text(message)
+            label.set_text(status)
             gtk.gdk.threads_leave()
         else:
-            label.config(text=message)
+            label.config(text=status)
         if not status:
             sock.close()
             sock = None
