@@ -6,83 +6,12 @@ A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3,
 TiVo HD or TiVo Premiere, using the port 31339 TCP/IP interface as
 reverse-engineered by TCF user Omikron. Released under the GPL 2+.
 
-    Command-line options:
 
-    -t, --force-tk   Use the Tkinter GUI even if PyGTK is available. As
-                     an alternative to using this option, you can set
-                     the "use_gtk" variable to False.
+Buttons
+-------
 
-    -l, --landscape  Move the second half of the button display to a
-                     position to the right of the first half, instead of
-                     below it. The default layout is similar to a real
-                     TiVo peanut, which makes for a very tall, narrow
-                     window -- too tall for some environments. The
-                     "landscape" variable specifies the default.
-
-    -h, --help       Print help and exit.
-
-    -k, --keys       Print the list of keyboard shortcuts and exit.
-
-    -v, --version    Print the version and exit.
-
-    -z, --nozeroconf Don't try the Zeroconf-based method of detecting 
-                     TiVos.
-
-    <address>        Any other command-line option is treated as the IP
-                     address (name or numeric) of the TiVo to connect
-                     to. Connection is automatic on startup, and
-                     disconnection on exit. The "tivo_address" variable
-                     gives the default.
-
-    Text entry:
-
-    For the TiVo's on-screen keyboards, instead of moving the cursor
-    around manually to select each letter, you can type your text here,
-    and the program will do it automatically. Make sure that "Cols:"
-    matches the number of columns in the keyboard, and that the selector
-    is on 'A' at the start. Case changes are ignored.
-
-    To use the new direct text entry method with a TiVo Premiere, set 
-    "Cols:" to zero. Note that this may not work on all input fields.
-
-    0               NUM0                1               NUM1           
-    2               NUM2                3               NUM3           
-    4               NUM4                5               NUM5           
-    6               NUM6                7               NUM7           
-    8               NUM8                9               NUM9           
-    Down            DOWN                Escape          CLEAR          
-    F1              TIVO                F10             INFO           
-    F11             TIVO                F2              LIVETV         
-    F3              GUIDE               F5              THUMBSUP       
-    F6              THUMBSDOWN          F7              CHANNELUP      
-    F8              CHANNELDOWN         F9              RECORD         
-    KP_0            NUM0                KP_1            NUM1           
-    KP_2            NUM2                KP_3            NUM3           
-    KP_4            NUM4                KP_5            NUM5           
-    KP_6            NUM6                KP_7            NUM7           
-    KP_8            NUM8                KP_9            NUM9           
-    KP_Decimal      ENTER               KP_Down         DOWN           
-    KP_Enter        SELECT              KP_Left         LEFT           
-    KP_Page_Down    CHANNELDOWN         KP_Page_Up      CHANNELUP      
-    KP_Right        RIGHT               KP_Up           UP             
-    Left            LEFT                Page_Down       CHANNELDOWN    
-    Page_Up         CHANNELUP           Return          SELECT         
-    Right           RIGHT               Up              UP             
-    a               ACTION_A            b               ACTION_B       
-    bracketleft     REVERSE             bracketright    FORWARD        
-    c               ACTION_C            d               ACTION_D       
-    e               ENTER               equal           ADVANCE        
-    f               FORWARD             g               GUIDE          
-    grave           STOP                i               INFO           
-    l               LIVETV              minus           REPLAY         
-    o               SLOW                p               PLAY           
-    period          ENTER               r               RECORD         
-    s               ADVANCE             space           PAUSE          
-    t               TIVO                u               THUMBSUP       
-    v               REVERSE             w               WINDOW         
-    x               REPLAY              z               WINDOW         
-
-Most keys should be obvious, but a few may need explanation:
+The function of most buttons should be obvious, but a few may need 
+explanation:
 
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
@@ -104,10 +33,10 @@ Skip -- Also known as "Advance" and "the button with an arrow pointing
 
 A/B/C/D -- Currently these only work on the Premiere.
 
-Kbd -- Sends the text in the "Text:" window. Note that you can just hit
-       "Enter" on your keyboard when the text field is in focus to
-       accomplish the same thing (not to be confused with "Enter" on the
-       remote).
+Kbd -- Sends the text in the "Text:" window (see below). Note that you
+       can just hit "Enter" on your keyboard when the text field is in
+       focus to accomplish the same thing (not to be confused with
+       "Enter" on the remote).
 
 Standby -- Puts the TiVo into standby mode, or pulls it out of it (into
            LiveTV) if it already was. This function is available as a
@@ -118,3 +47,91 @@ Quit -- Exits the remote program; doesn't send anything to the TiVo.
 
 SPS30, CC and Clock should be used only when playing back a recording or 
 in LiveTV mode. Otherwise, the results are unpredictable.
+
+
+Keyboard Shortcuts
+------------------
+
+Most buttons have keyboard shortcuts, which can be much more convenient 
+to use than mousing around and clicking. Of course these don't work when 
+the text input window has focus. Numbers, letters (A/B/C/D) and arrow 
+keys are what you'd expect; other shortcuts are:
+
+TiVo          T, F1, or F11
+Zoom          Z or W
+Info          I or F10
+LiveTV        L or F2
+Guide         G or F3
+Select        Enter/Return
+Thumbs Down   D or F6
+Thumbs Up     U or F5
+Channel Up    PgUp or F7
+Channel Down  PgDn or F8
+Record        R or F9
+Play          P
+Reverse       V or [
+Pause         Spacebar
+Forward       F or ]
+Replay        X or -
+Slow          O
+Skip          S or =
+Clear         Esc
+Enter         E or .
+Quit          Q
+
+As a bonus, only available via keyboard shortcut:
+
+Stop          `
+
+Some of these are taken from the keys used with TiVo's HME simulator 
+from the Java SDK. The function keys are what the Premiere recognizes 
+from an attached USB keyboard.
+
+Buttons with no corresponding keyboard shortcuts: SPS30, CC, Clock, and 
+Standby.
+
+
+Text entry
+----------
+
+For the TiVo's on-screen keyboards, instead of moving the cursor around 
+manually to select each letter, you can type your text here, and the 
+program will do it automatically. Set "Cols:" to the number of columns 
+in the keyboard, and ensure that the selector is on 'A' when you start 
+sending the text. If these aren't set correctly, the results are 
+unpredicatble. And even when they _are_ set correctly, there's still a 
+risk on some screens, such as Search by Title, which moves the selector 
+to the right as soon as it finds an exact match; to get around this, you 
+might want to type only the first few letters there.
+
+As a special case, set "Cols:" to zero to use the new direct text entry 
+method with a TiVo Premiere. I recommend using this whenever possible, 
+since it's faster and reduces the risk of arrowing into the wrong place. 
+But note that it doesn't work with HME apps yet, which includes YouTube. 
+Where it's not supported, only spaces and numbers will come through in 
+this mode.
+
+
+Command-line options
+--------------------
+
+-t, --force-tk   Use the Tkinter GUI even if PyGTK is available.
+
+-l, --landscape  Move the second half of the button display to a
+                 position to the right of the first half, instead of 
+                 below it. The default layout is similar to a real TiVo 
+                 peanut, which makes for a very tall, narrow window -- 
+                 too tall for some environments.
+
+-h, --help       Print help and exit.
+
+-k, --keys       Print the list of keyboard shortcuts and exit.
+
+-v, --version    Print the version and exit.
+
+-z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
+
+<address>        Any other command-line option is treated as the IP
+                 address (name or numeric) of the TiVo to connect to.
+                 Connection is automatic on startup, and disconnection
+                 on exit.
