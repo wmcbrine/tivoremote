@@ -135,3 +135,60 @@ Command-line options
                  address (name or numeric) of the TiVo to connect to.
                  Connection is automatic on startup, and disconnection
                  on exit.
+
+
+Changes
+-------
+
+0.21 -- Use a single window instead of creating and destroying multiple
+        windows (eliminates the losing focus problem). Note that this
+        causes some weirdness with Tkinter: if you manually resize the
+        selector window, the new size is retained for the full window,
+        otherwise the full window resizes itself properly.
+
+0.20 -- A, B, C and D buttons for the Premiere; new layout with less
+        excess space; function key shortcuts; "Aspect" becomes "Zoom".
+
+0.19 -- Space and numbers weren't working in direct text input.
+
+0.18 -- Direct text input for the Premiere; minor Zeroconf fixes;
+        support for Australian/NZ TiVos and the Premiere in non-Zeroconf
+        autodection.
+
+0.17 -- Zeroconf-based autodetection. (This was the last version for 14
+        months, until the release of the Premiere motivated me to resume
+        development.)
+
+0.16 -- Add TiVo HD XL to the supported list.
+
+0.15 -- Make it compatible with Python 2.3; suppress the console window
+        on Macs.
+
+0.14 -- Adapt CC button for 9.4; pop up error on connection failure.
+
+0.13 -- Autoconnect was failing on single-TiVo networks.
+
+0.12 -- Delay between commands to address crashing TiVos; prompt for
+        address if autodetect fails; minor fixes.
+
+0.11 -- Autodetect TiVos; fix -h.
+
+0.10 -- Fixes for numeric keypad in Tkinter on some platforms.
+
+0.9  -- Shortcuts from the HME simulator, fix for Gtk in Windows, CLEAR
+        at end of SPS30 and Clock, support numeric keypad.
+
+0.8  -- More command-line options, fixes for keyboard shortcuts.
+
+0.7  -- Landscape mode.
+
+0.6  -- Keyboard shortcuts.
+
+0.5  -- Text entry.
+
+0.4  -- CC, SPS30, Clock.
+
+0.3  -- Show status messages; allow address on command line; minor
+        layout changes.
+
+0.2  -- Added Tkinter support.
