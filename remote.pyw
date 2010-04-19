@@ -225,6 +225,7 @@ except:
     use_gtk = False
 
 def go_away(widget=None):
+    """ Non-error GUI exit. """
     if sock:
         sock.close()
     if use_gtk:
@@ -233,6 +234,7 @@ def go_away(widget=None):
         window.quit()
 
 def connect():
+    """ Connect to the TiVo within five seconds or report error. """
     global sock
     try:
         sock = socket.socket()
@@ -244,6 +246,11 @@ def connect():
         error_window(msg)
 
 def send(message):
+    """ The core output function, called from irsend() and kbd_direct().
+        Re-connect if necessary (including restarting the status_update
+        thread), send message, sleep, and check for errors.
+
+    """
     if not sock:
         connect()
         thread.start_new_thread(status_update, ())
@@ -254,6 +261,7 @@ def send(message):
         error_window(str(msg))
 
 def irsend(*codes):
+    """ Expand a command sequence for send(). """
     for each in codes:
         send('IRCODE %s\r' % each)
 
@@ -580,6 +588,7 @@ def make_small_window(label):
     return table
 
 def error_window(message):
+    """ Display an error message, and exit the program. """
     if outer:
         if use_gtk:
             outer.destroy()
