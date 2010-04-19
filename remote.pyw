@@ -176,54 +176,6 @@ identity=remote-%(port)x
 services=TiVoMediaServer:%(port)d/http
 """
 
-# Process the command line
-
-if len(sys.argv) > 1:
-    for opt in sys.argv[1:]:
-        if opt in ('-v', '--version'):
-            print 'TCP/IP remote for TiVo Series 3+', __version__
-            exit()
-        elif opt in ('-h', '--help'):
-            print __doc__
-            exit()
-        elif opt in ('-k', '--keys'):
-            keynames = KEYS.keys()
-            keynames.sort()
-            for i, each in enumerate(keynames):
-                print '   ', each.ljust(15), KEYS[each].ljust(15),
-                if i & 1:
-                    print
-            exit()
-        elif opt in ('-t', '--force-tk'):
-            use_gtk = False
-        elif opt in ('-l', '--landscape'):
-            landscape = True
-        elif opt in ('-z', '--nozeroconf'):
-            have_zc = False
-        else:
-            tivo_address = opt
-
-# Zeroconf or not?
-
-try:
-    assert(have_zc)
-    import Zeroconf
-except:
-    have_zc = False
-
-# Gtk or Tk?
-
-try:
-    assert(use_gtk)
-    import pygtk
-    pygtk.require('2.0')
-    import gobject
-    import gtk
-    gobject.threads_init()
-except:
-    import Tkinter
-    use_gtk = False
-
 def go_away(widget=None):
     """ Non-error GUI exit. """
     if sock:
@@ -562,6 +514,22 @@ def find_tivos_zc():
     serv.close()
     return tivos
 
+def init_window():
+    """ Create the program's window. """
+    global window
+    if use_gtk:
+        window = gtk.Window()
+        window.connect('destroy', go_away)
+        window.set_title(TITLE)
+    else:
+        window = Tkinter.Tk()
+        try:
+            window.tk.call('console', 'hide')  # fix a problem on Mac OS X
+        except Tkinter.TclError:
+            pass
+        window.title(TITLE)
+        window.protocol('WM_DELETE_WINDOW', go_away)
+
 def make_widget_expandable(widget):
     """ Tk only -- mark each cell as expandable. """
     width, height = widget.grid_size()
@@ -684,143 +652,192 @@ def list_tivos(tivos):
         make_widget_expandable(table)
         window.mainloop()
 
-if use_gtk:
-    window = gtk.Window()
-    window.connect('destroy', go_away)
-    window.set_title(TITLE)
-else:
-    window = Tkinter.Tk()
+def pick_tivo():
+    """ Find the desired TiVo's name and address, using several possible
+        methods; if none is set, exit the program.
+
+    """
+    global tivo_address, tivo_name
+    if not tivo_address:
+        tivos = {}
+        if have_zc:
+            tivos = find_tivos_zc()
+        if not tivos:
+            tivos = find_tivos()
+        if not tivos:
+            get_address()
+        elif len(tivos) == 1:
+            tivo_name, tivo_address = list(tivos.items())[0]
+        else:
+            list_tivos(tivos)
+
+    if not tivo_address:
+        exit()
+
+    if not tivo_name:
+        tivo_name = get_name(tivo_address)
+
+def main_window():
+    """ Draw the main window and handle its events. """
+    global window, outer, label, key_text, key_width
+
+    if use_gtk:
+        # Init
+        window.set_title(tivo_name)
+        outer = gtk.VBox()
+        vbox1 = gtk.VBox()
+        vbox2 = gtk.VBox()
+        label = gtk.Label()
+        table = [gtk.Table(homogeneous=True) for i in xrange(8)]
+        outer.set_border_width(10)
+        for tb in table:
+            tb.set_border_width(5)
+        for i in xrange(4):
+            vbox1.add(table[i])
+            vbox2.add(table[i + 4])
+        vbox1.set_border_width(5)
+        vbox2.set_border_width(5)
+        window.add(outer)
+        if landscape:
+            hbox = gtk.HBox(homogeneous=True)
+            hbox.add(vbox1)
+            hbox.add(vbox2)
+            outer.add(hbox)
+            vbox2.add(label)
+        else:
+            outer.add(vbox1)
+            outer.add(vbox2)
+            outer.add(label)
+
+        # Text entry
+        table[6].attach(gtk.Label('Text:'), 0, 1, 0, 1)
+        table[6].attach(gtk.Label('Cols:'), 0, 1, 1, 2)
+
+        key_text = gtk.Entry()
+        key_text.connect('activate', keyboard)
+        key_text.connect('key_press_event', handle_escape)
+        table[6].attach(key_text, 1, 3, 0, 1)
+
+        adj = gtk.Adjustment(value=4, lower=0, upper=9, step_incr=1)
+        key_width = gtk.SpinButton(adjustment=adj)
+        table[6].attach(key_width, 1, 2, 1, 2)
+    else:
+        # Init
+        window.title(tivo_name)
+        outer = Tkinter.Frame(window, borderwidth=10)
+        outer.pack(fill='both', expand=1)
+        vbox1 = Tkinter.Frame(outer, borderwidth=5)
+        vbox2 = Tkinter.Frame(outer, borderwidth=5)
+        table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
+                 [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
+        for tb in table:
+            tb.grid(sticky='news')
+        if landscape:
+            label = Tkinter.Label(vbox2)
+            vbox1.grid(row=0, sticky='news')
+            vbox2.grid(row=0, column=1, sticky='news')
+            label.grid(row=4)
+        else:
+            label = Tkinter.Label(outer)
+            vbox1.grid(row=0, sticky='news')
+            vbox2.grid(row=1, sticky='news')
+            label.grid(row=2)
+
+        # Text entry
+        Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
+        Tkinter.Label(table[6], text='Cols:').grid(column=0, row=1)
+
+        key_text = Tkinter.Entry(table[6], width=15)
+        key_text.bind('<Return>', keyboard)
+        key_text.bind('<Escape>', lambda w: label.focus_set())
+        key_text.grid(column=1, row=0, columnspan=2, sticky='news')
+
+        key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
+        key_width.delete(0, 'end')
+        key_width.insert(0, '4')
+        key_width.grid(column=1, row=1, sticky='news')
+
+        # Keyboard shortcuts
+        for each in KEYS:
+            make_tk_key(each, KEYS[each])
+
+        label.bind('q', go_away)
+        label.focus_set()
+
+    for i, button_group in enumerate(BUTTONS):
+        for each in button_group:
+            make_ircode(table[i], *each)
+
+    make_button(table[2], 0, 1, 'CC', closed_caption)
+    make_button(table[2], 0, 0, 'SPS30', sps30)
+    make_button(table[2], 1, 0, 'Clock', sps9)
+    make_button(table[6], 1, 2, 'Kbd', keyboard)
+    make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
+    make_button(table[7], 0, 2, 'Quit', go_away)
+
+    if not use_gtk:
+        for w in table + [vbox1, vbox2, outer]:
+            make_widget_expandable(w)
+
+    thread.start_new_thread(status_update, ())
+
+    if use_gtk:
+        window.show_all()
+        focus_button.grab_focus()
+        gtk.main()
+    else:
+        window.mainloop()
+
+if __name__ == '__main__':
+    # Process the command line
+
+    if len(sys.argv) > 1:
+        for opt in sys.argv[1:]:
+            if opt in ('-v', '--version'):
+                print 'TCP/IP remote for TiVo Series 3+', __version__
+                exit()
+            elif opt in ('-h', '--help'):
+                print __doc__
+                exit()
+            elif opt in ('-k', '--keys'):
+                keynames = KEYS.keys()
+                keynames.sort()
+                for i, each in enumerate(keynames):
+                    print '   ', each.ljust(15), KEYS[each].ljust(15),
+                    if i & 1:
+                        print
+                exit()
+            elif opt in ('-t', '--force-tk'):
+                use_gtk = False
+            elif opt in ('-l', '--landscape'):
+                landscape = True
+            elif opt in ('-z', '--nozeroconf'):
+                have_zc = False
+            else:
+                tivo_address = opt
+
+    # Zeroconf or not?
+
     try:
-        window.tk.call('console', 'hide')  # fix a problem on Mac OS X
-    except Tkinter.TclError:
-        pass
-    window.title(TITLE)
-    window.protocol('WM_DELETE_WINDOW', go_away)
+        assert(have_zc)
+        import Zeroconf
+    except:
+        have_zc = False
 
-if not tivo_address:
-    tivos = {}
-    if have_zc:
-        tivos = find_tivos_zc()
-    if not tivos:
-        tivos = find_tivos()
-    if not tivos:
-        get_address()
-    elif len(tivos) == 1:
-        tivo_name, tivo_address = list(tivos.items())[0]
-    else:
-        list_tivos(tivos)
+    # Gtk or Tk?
 
-if not tivo_address:
-    exit()
+    try:
+        assert(use_gtk)
+        import pygtk
+        pygtk.require('2.0')
+        import gobject
+        import gtk
+        gobject.threads_init()
+    except:
+        import Tkinter
+        use_gtk = False
 
-if not tivo_name:
-    tivo_name = get_name(tivo_address)
-
-connect()
-
-if use_gtk:
-    # Init
-    window.set_title(tivo_name)
-    outer = gtk.VBox()
-    vbox1 = gtk.VBox()
-    vbox2 = gtk.VBox()
-    label = gtk.Label()
-    table = [gtk.Table(homogeneous=True) for i in xrange(8)]
-    outer.set_border_width(10)
-    for tb in table:
-        tb.set_border_width(5)
-    for i in xrange(4):
-        vbox1.add(table[i])
-        vbox2.add(table[i + 4])
-    vbox1.set_border_width(5)
-    vbox2.set_border_width(5)
-    window.add(outer)
-    if landscape:
-        hbox = gtk.HBox(homogeneous=True)
-        hbox.add(vbox1)
-        hbox.add(vbox2)
-        outer.add(hbox)
-        vbox2.add(label)
-    else:
-        outer.add(vbox1)
-        outer.add(vbox2)
-        outer.add(label)
-
-    # Text entry
-    table[6].attach(gtk.Label('Text:'), 0, 1, 0, 1)
-    table[6].attach(gtk.Label('Cols:'), 0, 1, 1, 2)
-
-    key_text = gtk.Entry()
-    key_text.connect('activate', keyboard)
-    key_text.connect('key_press_event', handle_escape)
-    table[6].attach(key_text, 1, 3, 0, 1)
-
-    adj = gtk.Adjustment(value=4, lower=0, upper=9, step_incr=1)
-    key_width = gtk.SpinButton(adjustment=adj)
-    table[6].attach(key_width, 1, 2, 1, 2)
-else:
-    # Init
-    window.title(tivo_name)
-    outer = Tkinter.Frame(window, borderwidth=10)
-    outer.pack(fill='both', expand=1)
-    vbox1 = Tkinter.Frame(outer, borderwidth=5)
-    vbox2 = Tkinter.Frame(outer, borderwidth=5)
-    table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
-             [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
-    for tb in table:
-        tb.grid(sticky='news')
-    if landscape:
-        label = Tkinter.Label(vbox2)
-        vbox1.grid(row=0, sticky='news')
-        vbox2.grid(row=0, column=1, sticky='news')
-        label.grid(row=4)
-    else:
-        label = Tkinter.Label(outer)
-        vbox1.grid(row=0, sticky='news')
-        vbox2.grid(row=1, sticky='news')
-        label.grid(row=2)
-
-    # Text entry
-    Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
-    Tkinter.Label(table[6], text='Cols:').grid(column=0, row=1)
-
-    key_text = Tkinter.Entry(table[6], width=15)
-    key_text.bind('<Return>', keyboard)
-    key_text.bind('<Escape>', lambda w: label.focus_set())
-    key_text.grid(column=1, row=0, columnspan=2, sticky='news')
-
-    key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
-    key_width.delete(0, 'end')
-    key_width.insert(0, '4')
-    key_width.grid(column=1, row=1, sticky='news')
-
-    # Keyboard shortcuts
-    for each in KEYS:
-        make_tk_key(each, KEYS[each])
-
-    label.bind('q', go_away)
-    label.focus_set()
-
-for i, button_group in enumerate(BUTTONS):
-    for each in button_group:
-        make_ircode(table[i], *each)
-
-make_button(table[2], 0, 1, 'CC', closed_caption)
-make_button(table[2], 0, 0, 'SPS30', sps30)
-make_button(table[2], 1, 0, 'Clock', sps9)
-make_button(table[6], 1, 2, 'Kbd', keyboard)
-make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
-make_button(table[7], 0, 2, 'Quit', go_away)
-
-if not use_gtk:
-    for w in table + [vbox1, vbox2, outer]:
-        make_widget_expandable(w)
-
-thread.start_new_thread(status_update, ())
-
-if use_gtk:
-    window.show_all()
-    focus_button.grab_focus()
-    gtk.main()
-else:
-    window.mainloop()
+    init_window()
+    pick_tivo()
+    connect()
+    main_window()
