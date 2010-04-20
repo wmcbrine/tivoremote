@@ -140,6 +140,21 @@ Command-line options
 Changes
 -------
 
+0.22 -- The new keyboard shortcut for the 'C' button conflicted with the
+        one to toggle closed captions. Maybe closed caption toggling is
+        too dangerous to have a keyboard shortcut anyway.
+
+        Attempt to reconnect automatically.
+
+        Report more (hopefully all) errors to the GUI instead of the 
+        console.
+
+        Expand elements of small windows in Tk, as with the main window.
+
+        Some restructuring of the code, hopefully easier to follow.
+
+        Finally added a README.txt.
+
 0.21 -- Use a single window instead of creating and destroying multiple
         windows (eliminates the losing focus problem). Note that this
         causes some weirdness with Tkinter: if you manually resize the
