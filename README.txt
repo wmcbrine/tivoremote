@@ -1,4 +1,4 @@
-TCP/IP remote for TiVo Series 3+, v0.21
+TCP/IP remote for TiVo Series 3+, v0.22
 by William McBrine <wmcbrine@gmail.com>
 April 22, 2010
 
