@@ -1,10 +1,53 @@
 TCP/IP remote for TiVo Series 3+, v0.21
 by William McBrine <wmcbrine@gmail.com>
-April 17, 2010
+April 22, 2010
 
-A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3,
-TiVo HD or TiVo Premiere, using the port 31339 TCP/IP interface as
-reverse-engineered by TCF user Omikron. Released under the GPL 2+.
+An on-screen virtual remote control that can control your TiVo over the 
+network. It works with the Series 3 or any later TiVo model.
+
+Python 2.x is required (tested on 2.3 through 2.6), as well as Tkinter 
+(normally part of Python's standard library) or PyGTK. Mac OS X and 
+Linux users should have what they need already; Windows users should 
+visit http://python.org/ . The remote has also been tested on Windows CE 
+and other platforms.
+
+This program uses the network remote control interface first made public 
+by TCF user Omikron in this thread:
+
+http://tivocommunity.com/tivo-vb/showthread.php?t=392385
+
+which has doubled as the support thread for the app, and, previously, 
+the only place where it was distributed.
+
+Released under the GPL 2+.
+
+
+Quick Start
+-----------
+
+By default, the TiVo's network remote service is disabled. To enable it, 
+go into the "Messages and Settings" menu, then "Settings", "Remote, 
+CableCARD, & Devices", and finally "Network Remote Control", and check 
+"Enabled".
+
+Once Python is installed on your system, you should be able to just 
+extract the TiVo Remote archive anywhere, and click on "remote.pyw", or 
+run it from the command line. (Mac users may have to use the context 
+menu if starting it from the GUI. If you have Xcode, consider building 
+an applet.) No installation is required. remote.pyw is the only required 
+file, although Zeroconf.py is also needed if you want to use the 
+"modern" style of TiVo autodetection, which I recommend.
+
+If it's working properly, you should within a few seconds see a list of 
+available TiVos from which to select, or be immediately connected to 
+your TiVo if only one is found. If autodetection fails, you'll instead 
+get a prompt for your TiVo's address. Alternatively, you can directly 
+specify the TiVo's address on the command line (see below).
+
+Zeroconf-based autodetection needs to send and recieve UDP on port 5353. 
+Old-style autodetection sends and recieves TCP and UDP on port 2190, and 
+recieves TCP on a randomly-chosen port. The core remote functionality 
+will work as long as it can make outgoing TCP connections on port 31339.
 
 
 Buttons
