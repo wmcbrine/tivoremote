@@ -1,6 +1,6 @@
-TCP/IP remote for TiVo Series 3+, v0.22
+TCP/IP remote for TiVo Series 3+, v0.23
 by William McBrine <wmcbrine@gmail.com>
-April 22, 2010
+August 31, 2010
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -74,7 +74,7 @@ Skip -- Also known as "Advance" and "the button with an arrow pointing
         to a line". This is your 30-second skip/slip or catch-up button,
         also used to enter the dash for OTA channels.
 
-A/B/C/D -- Currently these only work on the Premiere.
+A/B/C/D -- The multicolored buttons found on the latest TiVo remotes.
 
 Kbd -- Sends the text in the "Text:" window (see below). Note that you
        can just hit "Enter" on your keyboard when the text field is in
@@ -127,8 +127,8 @@ As a bonus, only available via keyboard shortcut:
 Stop          `
 
 Some of these are taken from the keys used with TiVo's HME simulator 
-from the Java SDK. The function keys are what the Premiere recognizes 
-from an attached USB keyboard.
+from the Java SDK. The function keys are what the TiVo recognizes from 
+an attached USB keyboard.
 
 Buttons with no corresponding keyboard shortcuts: SPS30, CC, Clock, and 
 Standby.
@@ -139,20 +139,19 @@ Text entry
 
 For the TiVo's on-screen keyboards, instead of moving the cursor around 
 manually to select each letter, you can type your text here, and the 
-program will do it automatically. Set "Cols:" to the number of columns 
-in the keyboard, and ensure that the selector is on 'A' when you start 
-sending the text. If these aren't set correctly, the results are 
-unpredicatble. And even when they _are_ set correctly, there's still a 
-risk on some screens, such as Search by Title, which moves the selector 
-to the right as soon as it finds an exact match; to get around this, you 
-might want to type only the first few letters there.
+program will enter it for you. The typical case now is to use the TiVo's 
+new direct text entry method, which is selected by setting "Cols:" to 
+zero (the default). This now works on the Series 3, HD and Premiere, and 
+even works in HME apps if they've been updated to support it.
 
-As a special case, set "Cols:" to zero to use the new direct text entry 
-method with a TiVo Premiere. I recommend using this whenever possible, 
-since it's faster and reduces the risk of arrowing into the wrong place. 
-But note that it doesn't work with HME apps yet, which includes YouTube. 
-Where it's not supported, only spaces and numbers will come through in 
-this mode.
+For apps that still require the old method, set "Cols:" to the number of 
+columns in the keyboard, and ensure that the selector is on 'A' when you 
+start sending the text. If these aren't set correctly, the results are 
+unpredicatble.
+
+The new method should be used when possible, since it's faster and 
+reduces the risk of arrowing into the wrong place. Where it's not 
+supported, only spaces and numbers will come through in this mode.
 
 
 Command-line options
@@ -182,6 +181,13 @@ Command-line options
 
 Changes
 -------
+
+0.23 -- Direct text input for all supported TiVos, now based on the
+        IRCODE command instead of the KEYBOARD command (which is
+        equivalent except for being limited to the Premiere). This even
+        works in HME apps now (if they're updated to recognize it), so
+        this mode is now the default. Thanks to CT McCurdy for
+        discovering this.
 
 0.22 -- The new keyboard shortcut for the 'C' button conflicted with the
         one to toggle closed captions. Maybe closed caption toggling is
