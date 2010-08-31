@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.22
+# TCP/IP remote for TiVo Series 3+, v0.23
 # Copyright 2010 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -64,7 +64,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.22'
+__version__ = '0.23'
 __license__ = 'GPL'
 
 import random
@@ -198,9 +198,9 @@ def connect():
         error_window(msg)
 
 def send(message):
-    """ The core output function, called from irsend() and kbd_direct().
-        Re-connect if necessary (including restarting the status_update
-        thread), send message, sleep, and check for errors.
+    """ The core output function, called from irsend(). Re-connect if
+        necessary (including restarting the status_update thread), send
+        message, sleep, and check for errors.
 
     """
     if not sock:
@@ -230,10 +230,12 @@ def sps9(widget=None):
     irsend('SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 'CLEAR')
 
 def kbd_arrows(text, width):
-    """ Translate 'text' to a series of cursor motions for the on-screen 
-        keyboard. Assumes the standard A-Z layout, with 'width' number 
-        of columns. The cursor must be positioned on 'A' at the start, 
-        or Bad Things will happen.
+    """ Translate 'text' to a series of cursor motions for the on-screen
+        keyboard. Assumes the standard A-Z layout, with 'width' number
+        of columns. The cursor must be positioned on 'A' at the start,
+        or Bad Things will happen. This mode is now only needed with old
+        code (mostly old HME apps) that hasn't been updated to support
+        direct keyboard input.
 
     """
     current_x, current_y = 0, 0
@@ -264,14 +266,13 @@ def kbd_arrows(text, width):
             irsend('FORWARD')
 
 def kbd_direct(text):
-    """ Send 'text' using the KEYBOARD command. As of now, this works 
-        only on the TiVo Premiere, and not on HME menus there. Select 
-        this mode by setting 'Cols' to 0.
+    """ Send 'text' directly using the IRCODE command. Select this mode 
+        by setting 'Cols' to 0.
 
     """
     for ch in text.strip().upper():
         if 'A' <= ch <= 'Z':
-            send('KEYBOARD %s\r' % ch)
+            irsend(ch)
         elif '0' <= ch <= '9':
             irsend('NUM' + ch)
         elif ch == ' ':
@@ -718,7 +719,7 @@ def main_window():
         key_text.connect('key_press_event', handle_escape)
         table[6].attach(key_text, 1, 3, 0, 1)
 
-        adj = gtk.Adjustment(value=4, lower=0, upper=9, step_incr=1)
+        adj = gtk.Adjustment(lower=0, upper=9, step_incr=1)
         key_width = gtk.SpinButton(adjustment=adj)
         table[6].attach(key_width, 1, 2, 1, 2)
     else:
@@ -753,8 +754,6 @@ def main_window():
         key_text.grid(column=1, row=0, columnspan=2, sticky='news')
 
         key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
-        key_width.delete(0, 'end')
-        key_width.insert(0, '4')
         key_width.grid(column=1, row=1, sticky='news')
 
         # Keyboard shortcuts
