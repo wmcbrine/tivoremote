@@ -84,9 +84,7 @@ have_zc = True
 sock = None
 outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
-                      # key_text in Gtk, since I can't focus on a Label 
-                      # there. (Set in make_button().) I use 'Enter' so 
-                      # that I can tab from there to key_text, as in Tk.
+                      # key_text.
 
 # Other globals: window, label, key_text, key_width (all widgets)
 
@@ -300,7 +298,7 @@ def keyboard(widget=None):
         focus_button.grab_focus()
     else:
         key_text.delete(0, 'end')
-        label.focus_set()
+        focus_button.focus_set()
 
 def make_button(widget, y, x, text, command, cols=1, width=5):
     """ Create one button, given its coordinates, text and command. """
@@ -309,24 +307,22 @@ def make_button(widget, y, x, text, command, cols=1, width=5):
         button.connect('clicked', command)
         button.connect('key_press_event', handle_gtk_key)
         widget.attach(button, x, x + cols, y, y + 1)
-        if text == 'Enter':
-            global focus_button
-            focus_button = button
     else:
         button = Tkinter.Button(widget, text=text, command=command, width=width)
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
+    if text == 'Enter':
+        global focus_button
+        focus_button = button
 
 def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
-        For convenience, they're bound to the label widget, which
-        doesn't get highlighted when it receives focus.
 
     """
     key = key.replace('Page_Up', 'Prior').replace('Page_Down', 'Next')
     if len(key) > 1:
         key = '<' + key + '>'
     try:
-        label.bind(key, lambda w: irsend(code))
+        focus_button.bind(key, lambda w: irsend(code))
     except:
         pass  # allow for unknown keys
 
@@ -750,18 +746,11 @@ def main_window():
 
         key_text = Tkinter.Entry(table[6], width=15)
         key_text.bind('<Return>', keyboard)
-        key_text.bind('<Escape>', lambda w: label.focus_set())
+        key_text.bind('<Escape>', lambda w: focus_button.focus_set())
         key_text.grid(column=1, row=0, columnspan=2, sticky='news')
 
         key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
         key_width.grid(column=1, row=1, sticky='news')
-
-        # Keyboard shortcuts
-        for each in KEYS:
-            make_tk_key(each, KEYS[each])
-
-        label.bind('q', go_away)
-        label.focus_set()
 
     for i, button_group in enumerate(BUTTONS):
         for each in button_group:
@@ -777,6 +766,13 @@ def main_window():
     if not use_gtk:
         for w in table + [vbox1, vbox2, outer]:
             make_widget_expandable(w)
+
+        # Keyboard shortcuts
+        for each in KEYS:
+            make_tk_key(each, KEYS[each])
+
+        focus_button.bind('q', go_away)
+        focus_button.focus_set()
 
     thread.start_new_thread(status_update, ())
 
