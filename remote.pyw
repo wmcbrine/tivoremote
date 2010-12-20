@@ -121,6 +121,18 @@ BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
             (2, 0, '7'), (2, 1, '8'), (2, 2, '9'), 
             (3, 0, 'Clear'), (3, 1, '0'), (3, 2, 'Enter')))
 
+# The same, but for the macro buttons
+
+MACROS = (# Toggle closed captioning
+          (0, 1, 'CC', ('CLEAR', 'INFO', 'DOWN', 'DOWN', 'DOWN', 'DOWN', 
+                        'SELECT', 'CLEAR')),
+          # Toggle the 30-second skip function of the Advance button
+          (0, 0, 'SPS30', ('SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
+                           'SELECT', 'CLEAR')),
+          # Toggle display of the on-screen clock
+          (1, 0, 'Clock', ('SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
+                           'CLEAR')))
+
 # Keyboard shortcuts and their corresponding IR codes
 
 KEYS = {'t': 'TIVO',
@@ -214,18 +226,6 @@ def irsend(*codes):
     """ Expand a command sequence for send(). """
     for each in codes:
         send('IRCODE %s\r' % each)
-
-def closed_caption(widget=None):
-    """ Toggle closed captioning. """
-    irsend('CLEAR', 'INFO', 'DOWN', 'DOWN', 'DOWN', 'DOWN', 'SELECT', 'CLEAR')
-
-def sps30(widget=None):
-    """ Toggle the 30-second skip function of the Advance button. """
-    irsend('SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 'SELECT', 'CLEAR')
-
-def sps9(widget=None):
-    """ Toggle display of the on-screen clock. """
-    irsend('SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 'CLEAR')
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
@@ -360,6 +360,10 @@ def make_ircode(widget, y, x, text, value='', cols=1, width=5):
         else:
             value = text.upper()
     make_button(widget, y, x, text, lambda w=None: irsend(value), cols, width)
+
+def make_macro(widget, y, x, text, value, cols=1, width=5):
+    """ Make a macro button. """
+    make_button(widget, y, x, text, lambda w=None: irsend(*value), cols, width)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
@@ -756,9 +760,9 @@ def main_window():
         for each in button_group:
             make_ircode(table[i], *each)
 
-    make_button(table[2], 0, 1, 'CC', closed_caption)
-    make_button(table[2], 0, 0, 'SPS30', sps30)
-    make_button(table[2], 1, 0, 'Clock', sps9)
+    for each in MACROS:
+        make_macro(table[2], *each)
+
     make_button(table[6], 1, 2, 'Kbd', keyboard)
     make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
     make_button(table[7], 0, 2, 'Quit', go_away)
