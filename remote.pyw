@@ -239,7 +239,7 @@ def kbd_arrows(text, width):
     """
     current_x, current_y = 0, 0
 
-    for ch in text.strip().upper():
+    for ch in text.upper():
         if 'A' <= ch <= 'Z':
             pos = ord(ch) - ord('A')
             target_y = pos / width
