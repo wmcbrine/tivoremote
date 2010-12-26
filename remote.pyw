@@ -78,7 +78,7 @@ import time
 
 tivo_address = ''
 tivo_name = ''
-tivo_swversion = 0.0
+tivo_swversions = {}
 landscape = False
 use_gtk = True
 have_zc = True
@@ -178,7 +178,7 @@ KEYS = {'t': 'TIVO',
         'F6': 'THUMBSDOWN', 'F7': 'CHANNELUP', 'F8': 'CHANNELDOWN',
         'F9': 'RECORD', 'F10': 'INFO', 'F11': 'TIVO'}
 
-# Beacon template for find_tivos() and get_name()
+# Beacon template for find_tivos() and get_namever()
 
 ANNOUNCE = """tivoconnect=1
 method=%(method)s
@@ -304,7 +304,7 @@ def keyboard(widget=None):
     if width:
         kbd_arrows(text, width)
     else:
-        if tivo_swversion >= 12:
+        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
             kbd_direct_new(text)
         else:
             kbd_direct_old(text)
@@ -404,9 +404,9 @@ def status_update():
             sock = None
             break
 
-def get_name(address):
+def get_namever(address):
     """ Exchange TiVo Connect Discovery beacons, and extract the machine
-        name.
+        name and software version.
 
     """
     method = 'connected'
@@ -433,7 +433,7 @@ def get_name(address):
         name = address
         version = 0.0
 
-    return name
+    return name, version
 
 def find_tivos():
     """ Find TiVos on the LAN by broadcasting an announcement, and
@@ -489,7 +489,9 @@ def find_tivos():
 
     tivos = {}
     for tcd, address in tcds.items():
-        tivos[get_name(address)] = address
+        name, version = get_namever(address)
+        tivos[name] = address
+        tivo_swversions[name] = version
 
     return tivos
 
@@ -533,6 +535,7 @@ def find_tivos_zc():
         address = socket.inet_ntoa(s.getAddress())
         version = float(swversion(s.getProperties()['swversion']).groups()[0])
         tivos[name] = address
+        tivo_swversions[name] = version
 
     serv.close()
     return tivos
@@ -698,7 +701,8 @@ def pick_tivo():
         exit()
 
     if not tivo_name:
-        tivo_name = get_name(tivo_address)
+        tivo_name, version = get_namever(tivo_address)
+        tivo_swversions[tivo_name] = version
 
 def main_window():
     """ Draw the main window and handle its events. """
