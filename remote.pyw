@@ -264,11 +264,9 @@ def kbd_arrows(text, width):
         elif ch == ' ':
             irsend('FORWARD')
 
-def kbd_direct_old(text):
+def kbd_direct(text):
     """ Send 'text' directly using the IRCODE command. Select this mode
-        by setting 'Cols' to 0. The IRCODE method is used with the TiVo
-        Series 3 and TiVo HD, which don't yet support the more advanced
-        KEYBOARD command.
+        by setting 'Cols' to 0.
 
     """
     for ch in text.upper():
@@ -278,16 +276,6 @@ def kbd_direct_old(text):
             irsend('NUM' + ch)
         elif ch == ' ':
             irsend('FORWARD')
-
-def kbd_direct_new(text):
-    """ Send 'text' directly using the KEYBOARD command. Select this
-        mode by setting 'Cols' to 0. The KEYBOARD method is used with
-        the TiVo Premiere, and allows mixed case and symbols to be
-        passed directly.
-
-    """
-    for ch in text:
-        send('KEYBOARD %s\r' % ch)
 
 def keyboard(widget=None):
     """ Take input from the key_text Entry widget and send it to the
@@ -304,10 +292,7 @@ def keyboard(widget=None):
     if width:
         kbd_arrows(text, width)
     else:
-        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
-            kbd_direct_new(text)
-        else:
-            kbd_direct_old(text)
+        kbd_direct(text)
 
     if use_gtk:
         key_text.set_text('')
