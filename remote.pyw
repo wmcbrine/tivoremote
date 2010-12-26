@@ -78,6 +78,7 @@ import time
 
 tivo_address = ''
 tivo_name = ''
+tivo_swversion = 0.0
 landscape = False
 use_gtk = True
 have_zc = True
@@ -263,18 +264,30 @@ def kbd_arrows(text, width):
         elif ch == ' ':
             irsend('FORWARD')
 
-def kbd_direct(text):
-    """ Send 'text' directly using the IRCODE command. Select this mode 
-        by setting 'Cols' to 0.
+def kbd_direct_old(text):
+    """ Send 'text' directly using the IRCODE command. Select this mode
+        by setting 'Cols' to 0. The IRCODE method is used with the TiVo
+        Series 3 and TiVo HD, which don't yet support the more advanced
+        KEYBOARD command.
 
     """
-    for ch in text.strip().upper():
+    for ch in text.upper():
         if 'A' <= ch <= 'Z':
             irsend(ch)
         elif '0' <= ch <= '9':
             irsend('NUM' + ch)
         elif ch == ' ':
             irsend('FORWARD')
+
+def kbd_direct_new(text):
+    """ Send 'text' directly using the KEYBOARD command. Select this
+        mode by setting 'Cols' to 0. The KEYBOARD method is used with
+        the TiVo Premiere, and allows mixed case and symbols to be
+        passed directly.
+
+    """
+    for ch in text:
+        send('KEYBOARD %s\r' % ch)
 
 def keyboard(widget=None):
     """ Take input from the key_text Entry widget and send it to the
@@ -291,7 +304,10 @@ def keyboard(widget=None):
     if width:
         kbd_arrows(text, width)
     else:
-        kbd_direct(text)
+        if tivo_swversion >= 12:
+            kbd_direct_new(text)
+        else:
+            kbd_direct_old(text)
 
     if use_gtk:
         key_text.set_text('')
@@ -397,6 +413,7 @@ def get_name(address):
     port = 0
     our_beacon = ANNOUNCE % locals()
     machine_name = re.compile('machine=(.*)\n').search
+    swversion = re.compile('swversion=(\d*.\d*)').search
 
     try:
         tsock = socket.socket()
@@ -411,8 +428,10 @@ def get_name(address):
         tsock.close()
 
         name = machine_name(tivo_beacon).groups()[0]
+        version = float(swversion(tivo_beacon).groups()[0])
     except:
         name = address
+        version = 0.0
 
     return name
 
@@ -507,9 +526,12 @@ def find_tivos_zc():
     time.sleep(0.5)
 
     # Now get the addresses -- this is the slow part
+    swversion = re.compile('(\d*.\d*)').search
     for t in tivo_names:
         name = t.replace('.' + REMOTE, '')
-        address = socket.inet_ntoa(serv.getServiceInfo(REMOTE, t).getAddress())
+        s = serv.getServiceInfo(REMOTE, t)
+        address = socket.inet_ntoa(s.getAddress())
+        version = float(swversion(s.getProperties()['swversion']).groups()[0])
         tivos[name] = address
 
     serv.close()
