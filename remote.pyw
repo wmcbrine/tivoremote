@@ -441,6 +441,8 @@ def find_tivos():
         much, much faster than waiting for beacons from the TiVos.)
 
     """
+    global tivo_swversions
+
     tcd_id = re.compile('TiVo_TCD_ID: (.*)\r\n').search
     tcds = {}
 
@@ -502,6 +504,8 @@ def find_tivos_zc():
         waiting for beacons.)
 
     """
+    global tivo_swversions
+
     class ZCListener:
         def __init__(self, names):
             self.names = names
@@ -683,7 +687,7 @@ def pick_tivo():
         methods; if none is set, exit the program.
 
     """
-    global tivo_address, tivo_name
+    global tivo_address, tivo_name, tivo_swversions
     if not tivo_address:
         tivos = {}
         if have_zc:
