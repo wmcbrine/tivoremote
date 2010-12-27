@@ -1,6 +1,6 @@
-TCP/IP remote for TiVo Series 3+, v0.23
+TCP/IP remote for TiVo Series 3+, v0.24
 by William McBrine <wmcbrine@gmail.com>
-August 31, 2010
+December 26, 2010
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -181,6 +181,23 @@ Command-line options
 
 Changes
 -------
+
+0.24 -- Back to using the KEYBOARD command on the Premiere (only), as it
+        turns out it's not quite equivalent after all. This new mode
+        allows direct input of mixed case (instead of uppercasing
+        everything, as previously, and still on pre-Premiere units), and
+        of all standard keyboard symbols -- very close to the behavior
+        of a Slide remote or other USB keyboard.
+
+        The rearrangement of widget creation (?) in 0.20 effectively
+        broke the setting of focus to the label in Tk -- since tabbing
+        no longer went directly to the text entry field. Especialy
+        noticeable on Macs, where there's no button highlighting. So, I
+        now use focus_button, as in Gtk. Reported by "MelSmith".
+
+        Changed the "SPS30", "Clock", and "CC" buttons from hardwired
+        functions to ones built from a tuple, "MACROS". Perhaps these
+        will be easier to redefine?
 
 0.23 -- Direct text input for all supported TiVos, now based on the
         IRCODE command instead of the KEYBOARD command (which is
