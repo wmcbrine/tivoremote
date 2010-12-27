@@ -58,8 +58,8 @@
     matches the number of columns in the keyboard, and that the selector
     is on 'A' at the start. Case changes are ignored.
 
-    To use the new direct text entry method with a TiVo Premiere, set 
-    "Cols:" to zero. Note that this may not work on all input fields.
+    To use the new direct text entry method, set "Cols:" to zero. Note
+    that this may not work on all input fields.
 
 """
 
@@ -178,6 +178,26 @@ KEYS = {'t': 'TIVO',
         'F6': 'THUMBSDOWN', 'F7': 'CHANNELUP', 'F8': 'CHANNELDOWN',
         'F9': 'RECORD', 'F10': 'INFO', 'F11': 'TIVO'}
 
+# Named symbols for direct text input -- these work with IRCODE and
+# KEYBOARD commands
+
+SYMBOLS = {'-': 'MINUS', '=': 'EQUALS', '[': 'LBRACKET',
+           ']': 'RBRACKET', '\\': 'BACKSLASH', ';': 'SEMICOLON',
+           "'": 'QUOTE', ',': 'COMMA', '.': 'PERIOD', '/': 'SLASH',
+           '`': 'BACKQUOTE', ' ': 'SPACE', '1': 'NUM1', '2': 'NUM2',
+           '3': 'NUM3', '4': 'NUM4', '5': 'NUM5', '6': 'NUM6',
+           '7': 'NUM7', '8': 'NUM8', '9': 'NUM9', '0': 'NUM0'}
+
+# When in shift mode (with KEYBOARD command only), the same names
+# map to a different set of symbols
+
+SHIFT_SYMS = {'_': 'MINUS', '+': 'EQUALS', '{': 'LBRACKET',
+              '}': 'RBRACKET', '|': 'BACKSLASH', ':': 'SEMICOLON',
+              '"': 'QUOTE', '<': 'COMMA', '>': 'PERIOD', '?': 'SLASH',
+              '~': 'BACKQUOTE', '!': 'NUM1', '@': 'NUM2', '#': 'NUM3',
+              '$': 'NUM4', '%': 'NUM5', '^': 'NUM6', '&': 'NUM7',
+              '*': 'NUM8', '(': 'NUM9', ')': 'NUM0'}
+
 # Beacon template for find_tivos() and get_namever()
 
 ANNOUNCE = """tivoconnect=1
@@ -228,6 +248,11 @@ def irsend(*codes):
     for each in codes:
         send('IRCODE %s\r' % each)
 
+def kbsend(*codes):
+    """ Expand a KEYBOARD command sequence for send(). """
+    for each in codes:
+        send('KEYBOARD %s\r' % each)
+
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
         keyboard. Assumes the standard A-Z layout, with 'width' number
@@ -272,10 +297,23 @@ def kbd_direct(text):
     for ch in text.upper():
         if 'A' <= ch <= 'Z':
             irsend(ch)
-        elif '0' <= ch <= '9':
-            irsend('NUM' + ch)
-        elif ch == ' ':
-            irsend('FORWARD')
+        elif ch in SYMBOLS:
+            irsend(SYMBOLS[ch])
+
+def kbd_direct_new(text):
+    """ Send 'text' directly using the KEYBOARD command (Premiere only).
+        Select this mode by setting 'Cols' to 0.
+
+    """
+    for ch in text:
+        if 'A' <= ch <= 'Z':
+            kbsend('LSHIFT', ch)
+        elif 'a' <= ch <= 'z':
+            kbsend(ch.upper())
+        elif ch in SYMBOLS:
+            kbsend(SYMBOLS[ch])
+        elif ch in SHIFT_SYMS:
+            kbsend('LSHIFT', SHIFT_SYMS[ch])
 
 def keyboard(widget=None):
     """ Take input from the key_text Entry widget and send it to the
@@ -292,7 +330,10 @@ def keyboard(widget=None):
     if width:
         kbd_arrows(text, width)
     else:
-        kbd_direct(text)
+        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
+            kbd_direct_new(text)
+        else:
+            kbd_direct(text)
 
     if use_gtk:
         key_text.set_text('')
