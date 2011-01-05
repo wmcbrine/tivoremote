@@ -82,6 +82,7 @@ tivo_swversions = {}
 landscape = False
 use_gtk = True
 have_zc = True
+captions_on = False
 sock = None
 outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
@@ -124,10 +125,7 @@ BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
 
 # The same, but for the macro buttons
 
-MACROS = (# Toggle closed captioning
-          (0, 1, 'CC', ('CLEAR', 'INFO', 'DOWN', 'DOWN', 'DOWN', 'DOWN', 
-                        'SELECT', 'CLEAR')),
-          # Toggle the 30-second skip function of the Advance button
+MACROS = (# Toggle the 30-second skip function of the Advance button
           (0, 0, 'SPS30', ('SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
                            'SELECT', 'CLEAR')),
           # Toggle display of the on-screen clock
@@ -252,6 +250,15 @@ def kbsend(*codes):
     """ Expand a KEYBOARD command sequence for send(). """
     for each in codes:
         send('KEYBOARD %s\r' % each)
+
+def closed_caption(widget=None):
+    """ Toggle closed captioning. """
+    global captions_on
+    if captions_on:
+        irsend('CC_OFF')
+    else:
+        irsend('CC_ON')
+    captions_on = not captions_on
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
@@ -816,6 +823,7 @@ def main_window():
         for each in button_group:
             make_ircode(table[i], *each)
 
+    make_button(table[2], 0, 1, 'CC', closed_caption)
     for each in MACROS:
         make_macro(table[2], *each)
 
