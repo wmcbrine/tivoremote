@@ -1,6 +1,6 @@
-TCP/IP remote for TiVo Series 3+, v0.24
+TCP/IP remote for TiVo Series 3+, v0.25
 by William McBrine <wmcbrine@gmail.com>
-December 26, 2010
+January 5, 2011
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -181,6 +181,11 @@ Command-line options
 
 Changes
 -------
+
+0.25 -- The closed caption toggle is no longer a macro, but instead uses
+        IRCODE CC_ON/OFF to change the mode directly. (The program
+        assumes that captions are off at startup; if not, it just takes
+        an extra button press to synchronize with the TiVo's state.)
 
 0.24 -- Back to using the KEYBOARD command on the Premiere (only), as it
         turns out it's not quite equivalent after all. This new mode

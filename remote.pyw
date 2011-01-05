@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.24
-# Copyright 2010 William McBrine
+# TCP/IP remote for TiVo Series 3+, v0.25
+# Copyright 2011 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.24'
+__version__ = '0.25'
 __license__ = 'GPL'
 
 import random
