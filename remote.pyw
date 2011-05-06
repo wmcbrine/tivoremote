@@ -639,7 +639,7 @@ def error_window(message):
         button.grid(column=0, row=1, sticky='news')
         make_widget_expandable(table)
         window.mainloop()
-    exit()
+    sys.exit()
 
 def get_address():
     """ Prompt for an address. """
@@ -735,7 +735,7 @@ def pick_tivo():
             list_tivos(tivos)
 
     if not tivo_address:
-        exit()
+        sys.exit()
 
     if not tivo_name:
         tivo_name, version = get_namever(tivo_address)
@@ -858,10 +858,10 @@ if __name__ == '__main__':
         for opt in sys.argv[1:]:
             if opt in ('-v', '--version'):
                 print 'TCP/IP remote for TiVo Series 3+', __version__
-                exit()
+                sys.exit()
             elif opt in ('-h', '--help'):
                 print __doc__
-                exit()
+                sys.exit()
             elif opt in ('-k', '--keys'):
                 keynames = KEYS.keys()
                 keynames.sort()
@@ -869,7 +869,7 @@ if __name__ == '__main__':
                     print '   ', each.ljust(15), KEYS[each].ljust(15),
                     if i & 1:
                         print
-                exit()
+                sys.exit()
             elif opt in ('-t', '--force-tk'):
                 use_gtk = False
             elif opt in ('-l', '--landscape'):
