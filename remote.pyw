@@ -367,11 +367,15 @@ def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
 
     """
+    def send_and_break(code):
+        irsend(code)
+        return 'break'
+
     key = key.replace('Page_Up', 'Prior').replace('Page_Down', 'Next')
     if len(key) > 1:
         key = '<' + key + '>'
     try:
-        focus_button.bind(key, lambda w: irsend(code))
+        focus_button.bind(key, lambda w: send_and_break(code))
     except:
         pass  # allow for unknown keys
 
