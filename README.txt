@@ -1,11 +1,11 @@
-TCP/IP remote for TiVo Series 3+, v0.25
+TCP/IP remote for TiVo Series 3+, v0.26
 by William McBrine <wmcbrine@gmail.com>
-January 5, 2011
+May 7, 2011
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
 
-Python 2.x is required (tested on 2.3 through 2.6), as well as Tkinter 
+Python 2.x is required (tested on 2.3 through 2.7), as well as Tkinter 
 (normally part of Python's standard library) or PyGTK. Mac OS X and 
 Linux users should have what they need already; Windows users should 
 visit http://python.org/ . The remote has also been tested on Windows CE 
@@ -179,6 +179,11 @@ Command-line options
 
 Changes
 -------
+
+0.26 -- In some Tkinter installations, with versions 0.24 and 0.25,
+        pressing the space bar (to pause) would also invoke the default
+        button widget response of the space bar selecting the button
+        (in this case, the "Enter" button). First reported by "mjh".
 
 0.25 -- The closed caption toggle is no longer a macro, but instead uses
         IRCODE CC_ON/OFF to change the mode directly. (The program
