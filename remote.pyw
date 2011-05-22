@@ -449,8 +449,8 @@ def get_namever(address):
     method = 'connected'
     port = 0
     our_beacon = ANNOUNCE % locals()
-    machine_name = re.compile('machine=(.*)\n').search
-    swversion = re.compile('swversion=(\d*.\d*)').search
+    machine_name = re.compile('machine=(.*)\n').findall
+    swversion = re.compile('swversion=(\d*.\d*)').findall
 
     try:
         tsock = socket.socket()
@@ -464,8 +464,8 @@ def get_namever(address):
 
         tsock.close()
 
-        name = machine_name(tivo_beacon).groups()[0]
-        version = float(swversion(tivo_beacon).groups()[0])
+        name = machine_name(tivo_beacon)[0]
+        version = float(swversion(tivo_beacon)[0])
     except:
         name = address
         version = 0.0
@@ -480,7 +480,7 @@ def find_tivos():
     """
     global tivo_swversions
 
-    tcd_id = re.compile('TiVo_TCD_ID: (.*)\r\n').search
+    tcd_id = re.compile('TiVo_TCD_ID: (.*)\r\n').findall
     tcds = {}
 
     # Find and bind a free port for our fake server.
@@ -517,7 +517,7 @@ def find_tivos():
         client, address = hsock.accept()
         message = client.recv(1500)
         client.close()  # This is rather rude.
-        tcd = tcd_id(message).groups()[0]
+        tcd = tcd_id(message)[0]
         if tcd[0] >= '6' and tcd[:3] != '649':  # We only support S3/S4.
             tcds[tcd] = address[0]
 
@@ -569,14 +569,15 @@ def find_tivos_zc():
     time.sleep(0.5)
 
     # Now get the addresses -- this is the slow part
-    swversion = re.compile('(\d*.\d*)').search
+    swversion = re.compile('(\d*.\d*)').findall
     for t in tivo_names:
-        name = t.replace('.' + REMOTE, '')
         s = serv.getServiceInfo(REMOTE, t)
-        address = socket.inet_ntoa(s.getAddress())
-        version = float(swversion(s.getProperties()['swversion']).groups()[0])
-        tivos[name] = address
-        tivo_swversions[name] = version
+        if s:
+            name = t.replace('.' + REMOTE, '')
+            address = socket.inet_ntoa(s.getAddress())
+            version = float(swversion(s.getProperties()['swversion'])[0])
+            tivos[name] = address
+            tivo_swversions[name] = version
 
     serv.close()
     return tivos
