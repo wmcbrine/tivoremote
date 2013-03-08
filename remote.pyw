@@ -92,6 +92,53 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
+# These functions are referenced in BUTTONS
+
+def go_away(widget=None):
+    """ Non-error GUI exit. """
+    if sock:
+        sock.close()
+    if use_gtk:
+        gtk.main_quit()
+    else:
+        window.quit()
+
+def closed_caption(widget=None):
+    """ Toggle closed captioning. """
+    global captions_on
+    if captions_on:
+        irsend('CC_OFF')
+    else:
+        irsend('CC_ON')
+    captions_on = not captions_on
+
+def keyboard(widget=None):
+    """ Take input from the key_text Entry widget and send it to the
+        TiVo. The key_width widget specifies the number of columns.
+
+    """
+    if use_gtk:
+        text = key_text.get_text()
+        width = key_width.get_value_as_int()
+    else:
+        text = key_text.get()
+        width = int(key_width.get())
+
+    if width:
+        kbd_arrows(text, width)
+    else:
+        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
+            kbd_direct_new(text)
+        else:
+            kbd_direct(text)
+
+    if use_gtk:
+        key_text.set_text('')
+        focus_button.grab_focus()
+    else:
+        key_text.delete(0, 'end')
+        focus_button.focus_set()
+
 # Text, IR codes (if different from the text) and number of columns (if 
 # greater than one) for each simple button -- this doesn't include the 
 # buttons that call anything other than irsend(). The ACTION_ buttons 
@@ -100,47 +147,58 @@ TITLE = 'TiVo Remote'
 
 BUTTONS = [
            [
-               [['TiVo', [], 3]],
-               [['Zoom', ['WINDOW']], ['Info'], ['LiveTV']],
-               [['Guide', [], 3]]
+               [{'t': 'TiVo', 'cols': 3}],
+               [{'t': 'Zoom', 'val': ['WINDOW']},
+                {'t': 'Info'}, {'t': 'LiveTV'}],
+               [{'t': 'Guide', 'cols': 3}]
            ],
 
            [
-               [[], ['Up']],
-               [['Left'], ['Select'], ['Right']],
-               [['ThDn', ['THUMBSDOWN']], ['Down'], ['ThUp', ['THUMBSUP']]]
+               [{}, {'t': 'Up'}],
+               [{'t': 'Left'}, {'t': 'Select'}, {'t': 'Right'}],
+               [{'t': 'ThDn', 'val': ['THUMBSDOWN']}, {'t': 'Down'},
+                {'t': 'ThUp', 'val': ['THUMBSUP']}]
            ],
 
            [
-               [['SPS30', ['SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
-                           'SELECT', 'CLEAR']], [],
-                ['Ch+', ['CHANNELUP']]],
-               [['Clock', ['SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
-                           'CLEAR']],
-                ['Rec', ['RECORD']], ['Ch-', ['CHANNELDOWN']]]
+               [{'t': 'SPS30', 'val': ['SELECT', 'PLAY', 'SELECT', 
+                 'NUM3', 'NUM0', 'SELECT', 'CLEAR']},
+                {'t': 'CC', 'fn': closed_caption},
+                {'t': 'Ch+', 'val': ['CHANNELUP']}],
+               [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
+                 'NUM9', 'SELECT', 'CLEAR']},
+                {'t': 'Rec', 'val': ['RECORD']},
+                {'t': 'Ch-', 'val': ['CHANNELDOWN']}]
            ],
 
            [
-               [[], ['Play']],
-               [['Rev', ['REVERSE']], ['Pause'], ['FF', ['FORWARD']]],
-               [[ 'Replay'], ['Slow'], ['Skip', ['ADVANCE']]]
+               [{}, {'t': 'Play'}],
+               [{'t': 'Rev', 'val': ['REVERSE']}, {'t': 'Pause'},
+                {'t': 'FF', 'val': ['FORWARD']}],
+               [{'t': 'Replay'}, {'t': 'Slow'},
+                {'t': 'Skip', 'val': ['ADVANCE']}]
            ],
 
            [
-               [['A', ['ACTION_A'], 1, 3], ['B', ['ACTION_B'], 1, 3],
-                ['C', ['ACTION_C'], 1, 3], ['D', ['ACTION_D'], 1, 3]]
+               [{'t': 'A', 'val': ['ACTION_A'], 'width': 3},
+                {'t': 'B', 'val': ['ACTION_B'], 'width': 3},
+                {'t': 'C', 'val': ['ACTION_C'], 'width': 3},
+                {'t': 'D', 'val': ['ACTION_D'], 'width': 3}]
            ],
 
            [
-               [['1', ['NUM1']], ['2', ['NUM2']], ['3', ['NUM3']]], 
-               [['4', ['NUM4']], ['5', ['NUM5']], ['6', ['NUM6']]],
-               [['7', ['NUM7']], ['8', ['NUM8']], ['9', ['NUM9']]], 
-               [['Clear'], ['0', ['NUM0']], ['Enter']]
+               [{'t': '1', 'val': ['NUM1']}, {'t': '2', 'val': ['NUM2']},
+                {'t': '3', 'val': ['NUM3']}],
+               [{'t': '4', 'val': ['NUM4']}, {'t': '5', 'val': ['NUM5']},
+                {'t': '6', 'val': ['NUM6']}],
+               [{'t': '7', 'val': ['NUM7']}, {'t': '8', 'val': ['NUM8']},
+                {'t': '9', 'val': ['NUM9']}],
+               [{'t': 'Clear'}, {'t': '0', 'val': ['NUM0']}, {'t': 'Enter'}]
            ],
 
-           [],
+           [[], [{}, {}, {'t': 'Kbd', 'fn': keyboard}]],
 
-           [[['Standby', [], 2]]]
+           [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': go_away}]]
 ]
 
 # Keyboard shortcuts and their corresponding IR codes
@@ -216,15 +274,6 @@ identity=remote-%(port)x
 services=TiVoMediaServer:%(port)d/http
 """
 
-def go_away(widget=None):
-    """ Non-error GUI exit. """
-    if sock:
-        sock.close()
-    if use_gtk:
-        gtk.main_quit()
-    else:
-        window.quit()
-
 def connect():
     """ Connect to the TiVo within five seconds or report error. """
     global sock
@@ -261,15 +310,6 @@ def kbsend(*codes):
     """ Expand a KEYBOARD command sequence for send(). """
     for each in codes:
         send('KEYBOARD %s\r' % each)
-
-def closed_caption(widget=None):
-    """ Toggle closed captioning. """
-    global captions_on
-    if captions_on:
-        irsend('CC_OFF')
-    else:
-        irsend('CC_ON')
-    captions_on = not captions_on
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
@@ -333,33 +373,6 @@ def kbd_direct_new(text):
         elif ch in SHIFT_SYMS:
             kbsend('LSHIFT', SHIFT_SYMS[ch])
 
-def keyboard(widget=None):
-    """ Take input from the key_text Entry widget and send it to the
-        TiVo. The key_width widget specifies the number of columns.
-
-    """
-    if use_gtk:
-        text = key_text.get_text()
-        width = key_width.get_value_as_int()
-    else:
-        text = key_text.get()
-        width = int(key_width.get())
-
-    if width:
-        kbd_arrows(text, width)
-    else:
-        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
-            kbd_direct_new(text)
-        else:
-            kbd_direct(text)
-
-    if use_gtk:
-        key_text.set_text('')
-        focus_button.grab_focus()
-    else:
-        key_text.delete(0, 'end')
-        focus_button.focus_set()
-
 def make_button(widget, y, x, text, command, cols=1, width=5):
     """ Create one button, given its coordinates, text and command. """
     if use_gtk:
@@ -416,11 +429,13 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, text, value=[], cols=1, width=5):
+def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn=None):
     """ Make an IRCODE command, then make a button with it. """
-    if not value:
-        value = [text.upper()]
-    make_button(widget, y, x, text, lambda w=None: irsend(*value), cols, width)
+    if not fn:
+        if not val:
+            val = [t.upper()]
+        fn = lambda w=None: irsend(*val)
+    make_button(widget, y, x, t, fn, cols, width)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
@@ -832,11 +847,7 @@ def main_window():
         for y, row in enumerate(button_group):
             for x, each in enumerate(row):
                 if each:
-                    make_ircode(table[z], y, x, *each)
-
-    make_button(table[2], 0, 1, 'CC', closed_caption)
-    make_button(table[6], 1, 2, 'Kbd', keyboard)
-    make_button(table[7], 0, 2, 'Quit', go_away)
+                    make_ircode(table[z], y, x, **each)
 
     if not use_gtk:
         for w in table + [vbox1, vbox2, outer]:
