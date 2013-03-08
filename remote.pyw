@@ -145,6 +145,8 @@ def keyboard(widget=None):
 # have a fourth parameter, which is the button "width" in "text units", 
 # vs. the default of 5. This is used only in Tk, to align the buttons.
 
+# Each list is a group, each inner list is a row, each dict is a button.
+
 BUTTONS = [
            [
                [{'t': 'TiVo', 'cols': 3}],
@@ -196,6 +198,7 @@ BUTTONS = [
                [{'t': 'Clear'}, {'t': '0', 'val': ['NUM0']}, {'t': 'Enter'}]
            ],
 
+           # Text entry widgets will be added here
            [[], [{}, {}, {'t': 'Kbd', 'fn': keyboard}]],
 
            [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': go_away}]]
