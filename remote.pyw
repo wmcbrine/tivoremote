@@ -92,45 +92,48 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
-# Coordinates (Y, X), text, IR code (if different from the text) and
-# number of columns (if greater than one) for each simple button -- this
-# doesn't include the buttons that send a series of codes, or those that
-# call anything other than irsend(). Finally, the ACTION_ buttons have a
-# sixth parameter, which is the button "width" in "text units", vs. the 
-# default of 5. This is used only in Tk, to align the buttons.
+# Coordinates (Y, X), text, IR codes (if different from the text) and 
+# number of columns (if greater than one) for each simple button -- this 
+# doesn't include the buttons that call anything other than irsend(). 
+# Finally, the ACTION_ buttons have a sixth parameter, which is the 
+# button "width" in "text units", vs. the default of 5. This is used 
+# only in Tk, to align the buttons.
 
-BUTTONS = (((0, 0, 'TiVo', 'TIVO', 3),
-            (1, 0, 'Zoom', 'WINDOW'), (1, 1, 'Info'), (1, 2, 'LiveTV'),
-            (2, 0, 'Guide', 'GUIDE', 3)),
+BUTTONS = [[[0, 0, 'TiVo', [], 3],
+            [1, 0, 'Zoom', ['WINDOW']], [1, 1, 'Info'], [1, 2, 'LiveTV'],
+            [2, 0, 'Guide', [], 3]],
 
-           ((0, 1, 'Up'),
-            (1, 0, 'Left'), (1, 1, 'Select'), (1, 2, 'Right'),
-            (2, 1, 'Down'),
-            (2, 0, 'ThDn', 'THUMBSDOWN'), (2, 2, 'ThUp', 'THUMBSUP')),
+           [[0, 1, 'Up'],
+            [1, 0, 'Left'], [1, 1, 'Select'], [1, 2, 'Right'],
+            [2, 1, 'Down'],
+            [2, 0, 'ThDn', ['THUMBSDOWN']], [2, 2, 'ThUp', ['THUMBSUP']]],
 
-           ((0, 2, 'Ch+', 'CHANNELUP'), (1, 1, 'Rec', 'RECORD'),
-            (1, 2, 'Ch-', 'CHANNELDOWN')),
+           [# Toggle the 30-second skip function of the Advance button
+            [0, 0, 'SPS30', ['SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
+                             'SELECT', 'CLEAR']],
+            # Toggle display of the on-screen clock
+            [1, 0, 'Clock', ['SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
+                             'CLEAR']],
+            [0, 2, 'Ch+', ['CHANNELUP']], [1, 1, 'Rec', ['RECORD']],
+            [1, 2, 'Ch-', ['CHANNELDOWN']]],
 
-           ((0, 1, 'Play'), (1, 0, 'Rev', 'REVERSE'),
-            (1, 1, 'Pause'), (1, 2, 'FF', 'FORWARD'),
-            (2, 0, 'Replay'), (2, 1, 'Slow'), (2, 2, 'Skip', 'ADVANCE')),
+           [[0, 1, 'Play'], [1, 0, 'Rev', ['REVERSE']],
+            [1, 1, 'Pause'], [1, 2, 'FF', ['FORWARD']],
+            [2, 0, 'Replay'], [2, 1, 'Slow'], [2, 2, 'Skip', ['ADVANCE']]],
 
-           ((0, 0, 'A', 'ACTION_A', 1, 3), (0, 1, 'B', 'ACTION_B', 1, 3),
-            (0, 2, 'C', 'ACTION_C', 1, 3), (0, 3, 'D', 'ACTION_D', 1, 3)),
+           [[0, 0, 'A', ['ACTION_A'], 1, 3], [0, 1, 'B', ['ACTION_B'], 1, 3],
+            [0, 2, 'C', ['ACTION_C'], 1, 3], [0, 3, 'D', ['ACTION_D'], 1, 3]],
 
-           ((0, 0, '1'), (0, 1, '2'), (0, 2, '3'),
-            (1, 0, '4'), (1, 1, '5'), (1, 2, '6'),
-            (2, 0, '7'), (2, 1, '8'), (2, 2, '9'), 
-            (3, 0, 'Clear'), (3, 1, '0'), (3, 2, 'Enter')))
+           [[0, 0, '1', ['NUM1']], [0, 1, '2', ['NUM2']],
+            [0, 2, '3', ['NUM3']], [1, 0, '4', ['NUM4']],
+            [1, 1, '5', ['NUM5']], [1, 2, '6', ['NUM6']],
+            [2, 0, '7', ['NUM7']], [2, 1, '8', ['NUM8']],
+            [2, 2, '9', ['NUM9']], [3, 0, 'Clear'],
+            [3, 1, '0', ['NUM0']], [3, 2, 'Enter']],
 
-# The same, but for the macro buttons
+           [],
 
-MACROS = (# Toggle the 30-second skip function of the Advance button
-          (0, 0, 'SPS30', ('SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
-                           'SELECT', 'CLEAR')),
-          # Toggle display of the on-screen clock
-          (1, 0, 'Clock', ('SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
-                           'CLEAR')))
+           [[0, 0, 'Standby', [], 2]]]
 
 # Keyboard shortcuts and their corresponding IR codes
 
@@ -405,17 +408,10 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, text, value='', cols=1, width=5):
+def make_ircode(widget, y, x, text, value=[], cols=1, width=5):
     """ Make an IRCODE command, then make a button with it. """
     if not value:
-        if '0' <= text <= '9':
-            value = 'NUM' + text
-        else:
-            value = text.upper()
-    make_button(widget, y, x, text, lambda w=None: irsend(value), cols, width)
-
-def make_macro(widget, y, x, text, value, cols=1, width=5):
-    """ Make a macro button. """
+        value = [text.upper()]
     make_button(widget, y, x, text, lambda w=None: irsend(*value), cols, width)
 
 def status_update():
@@ -829,11 +825,7 @@ def main_window():
             make_ircode(table[i], *each)
 
     make_button(table[2], 0, 1, 'CC', closed_caption)
-    for each in MACROS:
-        make_macro(table[2], *each)
-
     make_button(table[6], 1, 2, 'Kbd', keyboard)
-    make_ircode(table[7], 0, 0, 'Standby', 'STANDBY', 2)
     make_button(table[7], 0, 2, 'Quit', go_away)
 
     if not use_gtk:
