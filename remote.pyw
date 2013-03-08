@@ -150,7 +150,7 @@ KEYS = {'t': 'TIVO',
         'space': 'PAUSE', 'f': 'FORWARD',
         'x': 'REPLAY', 'o': 'SLOW', 's': 'ADVANCE',
 
-        'a': 'ACTION_A', 'b': 'ACTION_B', 'c': 'ACTION_C', 'd': 'ACTION_D',
+        'A': 'ACTION_A', 'B': 'ACTION_B', 'C': 'ACTION_C', 'D': 'ACTION_D',
 
         '1': 'NUM1', '2': 'NUM2', '3': 'NUM3',
         '4': 'NUM4', '5': 'NUM5', '6': 'NUM6',
@@ -170,7 +170,7 @@ KEYS = {'t': 'TIVO',
 
         'bracketleft': 'REVERSE', 'bracketright': 'FORWARD',
         'minus': 'REPLAY', 'equal': 'ADVANCE', 'e': 'ENTER',
-        'w': 'WINDOW', 'grave': 'STOP',
+        'w': 'WINDOW', 'a': 'WINDOW', 'grave': 'STOP',
 
         'F1': 'TIVO', 'F2': 'LIVETV', 'F3': 'GUIDE', 'F5': 'THUMBSUP',
         'F6': 'THUMBSDOWN', 'F7': 'CHANNELUP', 'F8': 'CHANNELDOWN',
