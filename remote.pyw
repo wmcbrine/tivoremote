@@ -92,48 +92,57 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
-# Coordinates (Y, X), text, IR codes (if different from the text) and 
-# number of columns (if greater than one) for each simple button -- this 
-# doesn't include the buttons that call anything other than irsend(). 
-# Finally, the ACTION_ buttons have a sixth parameter, which is the 
-# button "width" in "text units", vs. the default of 5. This is used 
-# only in Tk, to align the buttons.
+# Text, IR codes (if different from the text) and number of columns (if 
+# greater than one) for each simple button -- this doesn't include the 
+# buttons that call anything other than irsend(). Finally, the ACTION_ 
+# buttons have a sixth parameter, which is the button "width" in "text 
+# units", vs. the default of 5. This is used only in Tk, to align the 
+# buttons.
 
-BUTTONS = [[[0, 0, 'TiVo', [], 3],
-            [1, 0, 'Zoom', ['WINDOW']], [1, 1, 'Info'], [1, 2, 'LiveTV'],
-            [2, 0, 'Guide', [], 3]],
+BUTTONS = [
+           [
+               [['TiVo', [], 3]],
+               [['Zoom', ['WINDOW']], ['Info'], ['LiveTV']],
+               [['Guide', [], 3]]
+           ],
 
-           [[0, 1, 'Up'],
-            [1, 0, 'Left'], [1, 1, 'Select'], [1, 2, 'Right'],
-            [2, 1, 'Down'],
-            [2, 0, 'ThDn', ['THUMBSDOWN']], [2, 2, 'ThUp', ['THUMBSUP']]],
+           [
+               [[], ['Up']],
+               [['Left'], ['Select'], ['Right']],
+               [['ThDn', ['THUMBSDOWN']], ['Down'], ['ThUp', ['THUMBSUP']]]
+           ],
 
-           [# Toggle the 30-second skip function of the Advance button
-            [0, 0, 'SPS30', ['SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
-                             'SELECT', 'CLEAR']],
-            # Toggle display of the on-screen clock
-            [1, 0, 'Clock', ['SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
-                             'CLEAR']],
-            [0, 2, 'Ch+', ['CHANNELUP']], [1, 1, 'Rec', ['RECORD']],
-            [1, 2, 'Ch-', ['CHANNELDOWN']]],
+           [
+               [['SPS30', ['SELECT', 'PLAY', 'SELECT', 'NUM3', 'NUM0', 
+                           'SELECT', 'CLEAR']], [],
+                ['Ch+', ['CHANNELUP']]],
+               [['Clock', ['SELECT', 'PLAY', 'SELECT', 'NUM9', 'SELECT', 
+                           'CLEAR']],
+                ['Rec', ['RECORD']], ['Ch-', ['CHANNELDOWN']]]
+           ],
 
-           [[0, 1, 'Play'], [1, 0, 'Rev', ['REVERSE']],
-            [1, 1, 'Pause'], [1, 2, 'FF', ['FORWARD']],
-            [2, 0, 'Replay'], [2, 1, 'Slow'], [2, 2, 'Skip', ['ADVANCE']]],
+           [
+               [[], ['Play']],
+               [['Rev', ['REVERSE']], ['Pause'], ['FF', ['FORWARD']]],
+               [[ 'Replay'], ['Slow'], ['Skip', ['ADVANCE']]]
+           ],
 
-           [[0, 0, 'A', ['ACTION_A'], 1, 3], [0, 1, 'B', ['ACTION_B'], 1, 3],
-            [0, 2, 'C', ['ACTION_C'], 1, 3], [0, 3, 'D', ['ACTION_D'], 1, 3]],
+           [
+               [['A', ['ACTION_A'], 1, 3], ['B', ['ACTION_B'], 1, 3],
+                ['C', ['ACTION_C'], 1, 3], ['D', ['ACTION_D'], 1, 3]]
+           ],
 
-           [[0, 0, '1', ['NUM1']], [0, 1, '2', ['NUM2']],
-            [0, 2, '3', ['NUM3']], [1, 0, '4', ['NUM4']],
-            [1, 1, '5', ['NUM5']], [1, 2, '6', ['NUM6']],
-            [2, 0, '7', ['NUM7']], [2, 1, '8', ['NUM8']],
-            [2, 2, '9', ['NUM9']], [3, 0, 'Clear'],
-            [3, 1, '0', ['NUM0']], [3, 2, 'Enter']],
+           [
+               [['1', ['NUM1']], ['2', ['NUM2']], ['3', ['NUM3']]], 
+               [['4', ['NUM4']], ['5', ['NUM5']], ['6', ['NUM6']]],
+               [['7', ['NUM7']], ['8', ['NUM8']], ['9', ['NUM9']]], 
+               [['Clear'], ['0', ['NUM0']], ['Enter']]
+           ],
 
            [],
 
-           [[0, 0, 'Standby', [], 2]]]
+           [[['Standby', [], 2]]]
+]
 
 # Keyboard shortcuts and their corresponding IR codes
 
@@ -820,9 +829,11 @@ def main_window():
         key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
         key_width.grid(column=1, row=1, sticky='news')
 
-    for i, button_group in enumerate(BUTTONS):
-        for each in button_group:
-            make_ircode(table[i], *each)
+    for z, button_group in enumerate(BUTTONS):
+        for y, row in enumerate(button_group):
+            for x, each in enumerate(row):
+                if each:
+                    make_ircode(table[z], y, x, *each)
 
     make_button(table[2], 0, 1, 'CC', closed_caption)
     make_button(table[6], 1, 2, 'Kbd', keyboard)
