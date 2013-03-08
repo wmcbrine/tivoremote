@@ -94,10 +94,9 @@ TITLE = 'TiVo Remote'
 
 # Text, IR codes (if different from the text) and number of columns (if 
 # greater than one) for each simple button -- this doesn't include the 
-# buttons that call anything other than irsend(). Finally, the ACTION_ 
-# buttons have a sixth parameter, which is the button "width" in "text 
-# units", vs. the default of 5. This is used only in Tk, to align the 
-# buttons.
+# buttons that call anything other than irsend(). The ACTION_ buttons 
+# have a fourth parameter, which is the button "width" in "text units", 
+# vs. the default of 5. This is used only in Tk, to align the buttons.
 
 BUTTONS = [
            [
