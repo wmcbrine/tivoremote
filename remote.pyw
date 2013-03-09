@@ -81,6 +81,7 @@ tivo_name = ''
 tivo_swversions = {}
 landscape = False
 use_gtk = True
+use_gr = False
 have_zc = True
 captions_on = False
 sock = None
@@ -109,10 +110,12 @@ BUTTONS = [
            ],
 
            [ #1
-               [{}, {'t': 'Up'}],
-               [{'t': 'Left'}, {'t': 'Select'}, {'t': 'Right'}],
-               [{'t': 'ThDn', 'val': ['THUMBSDOWN']}, {'t': 'Down'},
-                {'t': 'ThUp', 'val': ['THUMBSUP']}]
+               [{}, {'t': 'Up', 'gr': u'\u2191'}],
+               [{'t': 'Left', 'gr': u'\u2190'}, {'t': 'Select'},
+                {'t': 'Right', 'gr': u'\u2192'}],
+               [{'t': 'ThDn', 'val': ['THUMBSDOWN'], 'gr': u'\u261f'},
+                {'t': 'Down', 'gr': u'\u2193'},
+                {'t': 'ThUp', 'val': ['THUMBSUP'], 'gr': u'\u261d'}]
            ],
 
            [ #2
@@ -122,16 +125,18 @@ BUTTONS = [
                 {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM9', 'SELECT', 'CLEAR']},
-                {'t': 'Rec', 'val': ['RECORD']},
+                {'t': 'Rec', 'val': ['RECORD'], 'gr': u'\u25c9'},
                 {'t': 'Ch-', 'val': ['CHANNELDOWN']}]
            ],
 
            [ #3
-               [{}, {'t': 'Play'}],
-               [{'t': 'Rev', 'val': ['REVERSE']}, {'t': 'Pause'},
-                {'t': 'FF', 'val': ['FORWARD']}],
-               [{'t': 'Replay'}, {'t': 'Slow'},
-                {'t': 'Skip', 'val': ['ADVANCE']}]
+               [{}, {'t': 'Play', 'gr': u'\u25b6'}],
+               [{'t': 'Rev', 'val': ['REVERSE'], 'gr': u'\u25c0\u25c0'},
+                {'t': 'Pause', 'gr': u'\u2759\u2759'},
+                {'t': 'FF', 'val': ['FORWARD'], 'gr': u'\u25b6\u25b6'}],
+               [{'t': 'Replay', 'gr': u'\u21bb'},
+                {'t': 'Slow', 'gr': u'\u2759\u25b6'},
+                {'t': 'Skip', 'val': ['ADVANCE'], 'gr': u'\u21e5'}]
            ],
 
            [ #4
@@ -431,7 +436,7 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn=''):
+def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn='', gr=''):
     """ Make an IRCODE command, then make a button with it. """
     if fn:
         fn = eval(fn)
@@ -439,6 +444,8 @@ def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn=''):
         if not val:
             val = [t.upper()]
         fn = lambda w=None: irsend(*val)
+    if use_gr and gr:
+        t = gr
     make_button(widget, y, x, t, fn, cols, width)
 
 def status_update():
