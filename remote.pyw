@@ -121,8 +121,7 @@ BUTTONS = [
            ],
 
            [ #2
-               [{'t': 'SPS30', 'val': ['SELECT', 'PLAY', 'SELECT', 
-                 'NUM3', 'NUM0', 'SELECT', 'CLEAR']},
+               [{},
                 {'t': 'CC', 'fn': 'closed_caption'},
                 {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 

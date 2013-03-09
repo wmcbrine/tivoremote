@@ -59,10 +59,6 @@ explanation:
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
 
-SPS30 -- Sends the famous Select-Play-Select-3-0-Select sequence to
-         toggle the behavior of the "Skip" button, so you don't have to 
-         do it manually.
-
 CC -- Closed-caption toggle; now uses discrete commands for this purpose
       instead of the Info-Down-etc. sequence used in older versions.
 
@@ -86,8 +82,8 @@ Standby -- Puts the TiVo into standby mode, or pulls it out of it (into
 
 Quit -- Exits the remote program; doesn't send anything to the TiVo.
 
-SPS30 and Clock should be used only when playing back a recording or in
-LiveTV mode. Otherwise, the results are unpredictable.
+Clock should be used only when playing back a recording. Otherwise, the 
+results are unpredictable.
 
 
 Keyboard Shortcuts
@@ -128,7 +124,7 @@ Some of these are taken from the keys used with TiVo's HME simulator
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: SPS30, CC, Clock, and 
+Buttons with no corresponding keyboard shortcuts: CC, Clock, and 
 Standby.
 
 
