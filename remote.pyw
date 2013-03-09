@@ -44,6 +44,8 @@
     -z, --nozeroconf Don't try the Zeroconf-based method of detecting 
                      TiVos.
 
+    -g, --graphics   Use "graphical" labels for some buttons.
+
     <address>        Any other command-line option is treated as the IP
                      address (name or numeric) of the TiVo to connect
                      to. Connection is automatic on startup, and
@@ -905,6 +907,8 @@ if __name__ == '__main__':
                 landscape = True
             elif opt in ('-z', '--nozeroconf'):
                 have_zc = False
+            elif opt in ('-g', '--graphics'):
+                use_gr = True
             else:
                 tivo_address = opt
 
