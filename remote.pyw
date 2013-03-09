@@ -86,6 +86,7 @@ use_gtk = True
 use_gr = False
 have_zc = True
 captions_on = False
+aspect_ratio = 0
 sock = None
 outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
@@ -121,7 +122,7 @@ BUTTONS = [
            ],
 
            [ #2
-               [{},
+               [{'t': 'Aspect', 'fn': 'aspect_change'},
                 {'t': 'CC', 'fn': 'closed_caption'},
                 {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
@@ -291,6 +292,16 @@ def closed_caption(widget=None):
     else:
         irsend('CC_ON')
     captions_on = not captions_on
+
+def aspect_change(widget=None):
+    """ Toggle aspect ratio mode. """
+    global aspect_ratio
+    aspect_codes = ['ASPECT_CORRECTION_PANEL', 'ASPECT_CORRECTION_FULL',
+                    'ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_WIDE_ZOOM']
+    aspect_ratio += 1
+    if aspect_ratio == len(aspect_codes):
+        aspect_ratio = 0
+    irsend(aspect_codes[aspect_ratio])
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen

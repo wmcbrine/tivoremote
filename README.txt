@@ -59,6 +59,12 @@ explanation:
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
 
+Aspect -- Rather then sending the IRCODE, as the Zoom button does, this
+          cycles between zoom modes by sending discrete codes for each
+          mode. This is the only way to access the TiVo's hidden stretch
+          mode, and it's useful in HME apps that do video streaming, but
+          don't act on the Zoom IRCODE.
+
 CC -- Closed-caption toggle; now uses discrete commands for this purpose
       instead of the Info-Down-etc. sequence used in older versions.
 
@@ -124,7 +130,7 @@ Some of these are taken from the keys used with TiVo's HME simulator
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: CC, Clock, and 
+Buttons with no corresponding keyboard shortcuts: Aspect, CC, Clock, and 
 Standby.
 
 
