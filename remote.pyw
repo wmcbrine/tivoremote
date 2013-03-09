@@ -92,53 +92,6 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
-# These functions are referenced in BUTTONS
-
-def go_away(widget=None):
-    """ Non-error GUI exit. """
-    if sock:
-        sock.close()
-    if use_gtk:
-        gtk.main_quit()
-    else:
-        window.quit()
-
-def closed_caption(widget=None):
-    """ Toggle closed captioning. """
-    global captions_on
-    if captions_on:
-        irsend('CC_OFF')
-    else:
-        irsend('CC_ON')
-    captions_on = not captions_on
-
-def keyboard(widget=None):
-    """ Take input from the key_text Entry widget and send it to the
-        TiVo. The key_width widget specifies the number of columns.
-
-    """
-    if use_gtk:
-        text = key_text.get_text()
-        width = key_width.get_value_as_int()
-    else:
-        text = key_text.get()
-        width = int(key_width.get())
-
-    if width:
-        kbd_arrows(text, width)
-    else:
-        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
-            kbd_direct_new(text)
-        else:
-            kbd_direct(text)
-
-    if use_gtk:
-        key_text.set_text('')
-        focus_button.grab_focus()
-    else:
-        key_text.delete(0, 'end')
-        focus_button.focus_set()
-
 # Text, IR codes (if different from the text) and number of columns (if 
 # greater than one) for each simple button -- this doesn't include the 
 # buttons that call anything other than irsend(). The ACTION_ buttons 
@@ -165,7 +118,7 @@ BUTTONS = [
            [
                [{'t': 'SPS30', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM3', 'NUM0', 'SELECT', 'CLEAR']},
-                {'t': 'CC', 'fn': closed_caption},
+                {'t': 'CC', 'fn': 'closed_caption'},
                 {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM9', 'SELECT', 'CLEAR']},
@@ -199,9 +152,9 @@ BUTTONS = [
            ],
 
            # Text entry widgets will be added here
-           [[], [{}, {}, {'t': 'Kbd', 'fn': keyboard}]],
+           [[], [{}, {}, {'t': 'Kbd', 'fn': 'keyboard'}]],
 
-           [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': go_away}]]
+           [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': 'go_away'}]]
 ]
 
 # Keyboard shortcuts and their corresponding IR codes
@@ -277,6 +230,15 @@ identity=remote-%(port)x
 services=TiVoMediaServer:%(port)d/http
 """
 
+def go_away(widget=None):
+    """ Non-error GUI exit. """
+    if sock:
+        sock.close()
+    if use_gtk:
+        gtk.main_quit()
+    else:
+        window.quit()
+
 def connect():
     """ Connect to the TiVo within five seconds or report error. """
     global sock
@@ -313,6 +275,15 @@ def kbsend(*codes):
     """ Expand a KEYBOARD command sequence for send(). """
     for each in codes:
         send('KEYBOARD %s\r' % each)
+
+def closed_caption(widget=None):
+    """ Toggle closed captioning. """
+    global captions_on
+    if captions_on:
+        irsend('CC_OFF')
+    else:
+        irsend('CC_ON')
+    captions_on = not captions_on
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
@@ -376,6 +347,33 @@ def kbd_direct_new(text):
         elif ch in SHIFT_SYMS:
             kbsend('LSHIFT', SHIFT_SYMS[ch])
 
+def keyboard(widget=None):
+    """ Take input from the key_text Entry widget and send it to the
+        TiVo. The key_width widget specifies the number of columns.
+
+    """
+    if use_gtk:
+        text = key_text.get_text()
+        width = key_width.get_value_as_int()
+    else:
+        text = key_text.get()
+        width = int(key_width.get())
+
+    if width:
+        kbd_arrows(text, width)
+    else:
+        if tivo_swversions.get(tivo_name, 0.0) >= 12.0:
+            kbd_direct_new(text)
+        else:
+            kbd_direct(text)
+
+    if use_gtk:
+        key_text.set_text('')
+        focus_button.grab_focus()
+    else:
+        key_text.delete(0, 'end')
+        focus_button.focus_set()
+
 def make_button(widget, y, x, text, command, cols=1, width=5):
     """ Create one button, given its coordinates, text and command. """
     if use_gtk:
@@ -432,9 +430,11 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn=None):
+def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn=''):
     """ Make an IRCODE command, then make a button with it. """
-    if not fn:
+    if fn:
+        fn = eval(fn)
+    else:
         if not val:
             val = [t.upper()]
         fn = lambda w=None: irsend(*val)
