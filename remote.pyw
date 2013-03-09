@@ -92,30 +92,30 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 TITLE = 'TiVo Remote'
 
-# Text, IR codes (if different from the text) and number of columns (if 
-# greater than one) for each simple button -- this doesn't include the 
-# buttons that call anything other than irsend(). The ACTION_ buttons 
-# have a fourth parameter, which is the button "width" in "text units", 
-# vs. the default of 5. This is used only in Tk, to align the buttons.
+# Text, IR codes (if different from the text), number of columns (if 
+# greater than one), and function (if not irsend()), for each button. 
+# The ACTION_ buttons have an extra parameter, which is the button 
+# "width" in "text units", vs. the default of 5. This is used only in 
+# Tk, to align the buttons.
 
 # Each list is a group, each inner list is a row, each dict is a button.
 
 BUTTONS = [
-           [
+           [ #0
                [{'t': 'TiVo', 'cols': 3}],
                [{'t': 'Zoom', 'val': ['WINDOW']},
                 {'t': 'Info'}, {'t': 'LiveTV'}],
                [{'t': 'Guide', 'cols': 3}]
            ],
 
-           [
+           [ #1
                [{}, {'t': 'Up'}],
                [{'t': 'Left'}, {'t': 'Select'}, {'t': 'Right'}],
                [{'t': 'ThDn', 'val': ['THUMBSDOWN']}, {'t': 'Down'},
                 {'t': 'ThUp', 'val': ['THUMBSUP']}]
            ],
 
-           [
+           [ #2
                [{'t': 'SPS30', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM3', 'NUM0', 'SELECT', 'CLEAR']},
                 {'t': 'CC', 'fn': 'closed_caption'},
@@ -126,7 +126,7 @@ BUTTONS = [
                 {'t': 'Ch-', 'val': ['CHANNELDOWN']}]
            ],
 
-           [
+           [ #3
                [{}, {'t': 'Play'}],
                [{'t': 'Rev', 'val': ['REVERSE']}, {'t': 'Pause'},
                 {'t': 'FF', 'val': ['FORWARD']}],
@@ -134,14 +134,14 @@ BUTTONS = [
                 {'t': 'Skip', 'val': ['ADVANCE']}]
            ],
 
-           [
+           [ #4
                [{'t': 'A', 'val': ['ACTION_A'], 'width': 3},
                 {'t': 'B', 'val': ['ACTION_B'], 'width': 3},
                 {'t': 'C', 'val': ['ACTION_C'], 'width': 3},
                 {'t': 'D', 'val': ['ACTION_D'], 'width': 3}]
            ],
 
-           [
+           [ #5
                [{'t': '1', 'val': ['NUM1']}, {'t': '2', 'val': ['NUM2']},
                 {'t': '3', 'val': ['NUM3']}],
                [{'t': '4', 'val': ['NUM4']}, {'t': '5', 'val': ['NUM5']},
@@ -151,9 +151,10 @@ BUTTONS = [
                [{'t': 'Clear'}, {'t': '0', 'val': ['NUM0']}, {'t': 'Enter'}]
            ],
 
-           # Text entry widgets will be added here
+           #6 - Text entry widgets will be added here
            [[], [{}, {}, {'t': 'Kbd', 'fn': 'keyboard'}]],
 
+           #7
            [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': 'go_away'}]]
 ]
 
