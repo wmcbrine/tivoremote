@@ -1,6 +1,6 @@
-TCP/IP remote for TiVo Series 3+, v0.26
+TCP/IP remote for TiVo Series 3+, v0.27
 by William McBrine <wmcbrine@gmail.com>
-May 7, 2011
+March ??, 2013
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -17,7 +17,10 @@ by TCF user Omikron in this thread:
 http://tivocommunity.com/tivo-vb/showthread.php?t=392385
 
 which has doubled as the support thread for the app, and, previously, 
-the only place where it was distributed.
+the only place where it was distributed. Nowadays, the latest version 
+can be found at:
+
+http://wmcbrine.com/tivo/
 
 Released under the GPL 2+.
 
@@ -47,7 +50,7 @@ specify the TiVo's address on the command line (see below).
 Zeroconf-based autodetection needs to send and recieve UDP on port 5353. 
 Old-style autodetection sends and recieves TCP and UDP on port 2190, and 
 recieves TCP on a randomly-chosen port. The core remote functionality 
-will work as long as it can make outgoing TCP connections on port 31339.
+will work as long as it can make outgoing TCP connections to port 31339.
 
 
 Buttons
@@ -97,30 +100,31 @@ Keyboard Shortcuts
 
 Most buttons have keyboard shortcuts, which can be much more convenient 
 to use than mousing around and clicking. Of course these don't work when 
-the text input window has focus. Numbers, letters (A/B/C/D) and arrow 
-keys are what you'd expect; other shortcuts are:
+the text input window has focus. Numbers, letters (A/B/C/D buttons only; 
+not for direct text input) and arrow keys are what you'd expect (use 
+uppercase for A/B/C/D); other shortcuts are:
 
-TiVo          T, F1, or F11
-Zoom          Z or W
-Info          I or F10
-LiveTV        L or F2
-Guide         G or F3
+TiVo          t, F1, or F11
+Zoom          z or w
+Info          i or F10
+LiveTV        l or F2
+Guide         g or F3
 Select        Enter/Return
-Thumbs Down   D or F6
-Thumbs Up     U or F5
+Thumbs Down   d or F6
+Thumbs Up     u or F5
 Channel Up    PgUp or F7
 Channel Down  PgDn or F8
-Record        R or F9
-Play          P
-Reverse       V or [
+Record        r or F9
+Play          p
+Reverse       v or [
 Pause         Spacebar
-Forward       F or ]
-Replay        X or -
-Slow          O
-Skip          S or =
+Forward       f or ]
+Replay        x or -
+Slow          o
+Skip          s or =
 Clear         Esc
-Enter         E or .
-Quit          Q
+Enter         e or .
+Quit          q
 
 As a bonus, only available via keyboard shortcut:
 
@@ -173,6 +177,8 @@ Command-line options
 
 -z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
 
+-g, --graphics   Use "graphical" labels for some buttons.
+
 <address>        Any other command-line option is treated as the IP
                  address (name or numeric) of the TiVo to connect to.
                  Connection is automatic on startup, and disconnection
@@ -181,6 +187,8 @@ Command-line options
 
 Changes
 -------
+
+0.27 -- 
 
 0.26 -- In some Tkinter installations, with versions 0.24 and 0.25,
         pressing the space bar (to pause) would also invoke the default
