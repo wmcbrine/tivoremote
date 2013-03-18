@@ -1,4 +1,4 @@
-TCP/IP remote for TiVo Series 3+, v0.27
+Network Remote Control for TiVo Series 3+, v0.27
 by William McBrine <wmcbrine@gmail.com>
 March ??, 2013
 
@@ -34,12 +34,12 @@ CableCARD, & Devices", and finally "Network Remote Control", and check
 "Enabled".
 
 Once Python is installed on your system, you should be able to just 
-extract the TiVo Remote archive anywhere, and click on "remote.pyw", or 
-run it from the command line. (Mac users may have to use the context 
-menu if starting it from the GUI. If you have Xcode, consider building 
-an applet.) No installation is required. remote.pyw is the only required 
-file, although Zeroconf.py is also needed if you want to use the 
-"modern" style of TiVo autodetection, which I recommend.
+extract the Network Remote archive anywhere, and click on "Network 
+Remote.pyw", or run it from the command line. (Mac users may have to use 
+the context menu if starting it from the GUI.) No installation is 
+required. Network Remote.pyw is the only required file, although 
+Zeroconf.py is also needed if you want to use the "modern" style of TiVo 
+autodetection, which I recommend.
 
 If it's working properly, you should within a few seconds see a list of 
 available TiVos from which to select, or be immediately connected to 
