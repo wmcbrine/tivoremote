@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TCP/IP remote for TiVo Series 3+, v0.27
+# Network Remote Control for TiVo Series 3+, v0.27
 # Copyright 2013 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
 # You didn't receive a copy of the license with this program because 
 # you already have dozens of copies, don't you? If not, visit gnu.org.
 
-""" TCP/IP remote for TiVo Series 3+
+""" Network Remote Control for TiVo Series 3+
 
     A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3,
     TiVo HD or TiVo Premiere, using the port 31339 TCP/IP interface as 
@@ -94,7 +94,7 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 # Other globals: window, label, key_text, key_width (all widgets)
 
-TITLE = 'TiVo Remote'
+TITLE = 'Network Remote'
 
 # Text, IR codes (if different from the text), number of columns (if 
 # greater than one), and function (if not irsend()), for each button. 
@@ -898,7 +898,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         for opt in sys.argv[1:]:
             if opt in ('-v', '--version'):
-                print 'TCP/IP remote for TiVo Series 3+', __version__
+                print 'Network Remote Control for TiVo Series 3+', __version__
                 sys.exit()
             elif opt in ('-h', '--help'):
                 print __doc__
