@@ -5,7 +5,7 @@ March ??, 2013
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
 
-Python 2.x is required (tested on 2.3 through 2.7), as well as Tkinter 
+Python 2.x is required (tested on 2.5 through 2.7), as well as Tkinter 
 (normally part of Python's standard library) or PyGTK. Mac OS X and 
 Linux users should have what they need already; Windows users should 
 visit http://python.org/ . The remote has also been tested on Windows CE 
