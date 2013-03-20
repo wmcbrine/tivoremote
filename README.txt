@@ -138,7 +138,7 @@ Buttons with no corresponding keyboard shortcuts: Aspect, CC, Clock, and
 Standby.
 
 
-Text entry
+Text Entry
 ----------
 
 For the TiVo's on-screen keyboards, instead of moving the cursor around 
@@ -158,7 +158,7 @@ reduces the risk of arrowing into the wrong place. Where it's not
 supported, only spaces and numbers will come through in this mode.
 
 
-Command-line options
+Command-Line Options
 --------------------
 
 -t, --force-tk   Use the Tkinter GUI even if PyGTK is available.
