@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Network Remote Control for TiVo Series 3+, v0.27
-# Copyright 2013 William McBrine
+# Copyright 2008-2013 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -95,6 +95,13 @@ focus_button = None   # This is just a widget to jump to when leaving
 # Other globals: window, label, key_text, key_width (all widgets)
 
 TITLE = 'Network Remote'
+
+# About box text, for OS X only
+
+ABOUT = """Network Remote Control for TiVo
+Version %s
+Copyright 2008-2013 %s
+http://wmcbrine.com/tivo/""" % (__version__, __author__)
 
 # Text, IR codes (if different from the text), number of columns (if 
 # greater than one), and function (if not irsend()), for each button. 
@@ -635,10 +642,18 @@ def init_window():
         window = Tkinter.Tk()
         try:
             window.tk.call('console', 'hide')  # fix a problem on Mac OS X
-        except Tkinter.TclError:
+        except:
+            pass
+        try:
+            window.createcommand('tkAboutDialog', about_window)
+        except:
             pass
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
+
+def about_window():
+    """ Tk only -- pop up the "About" box. """
+    tkMessageBox.showinfo('', ABOUT)
 
 def make_widget_expandable(widget):
     """ Tk only -- mark each cell as expandable. """
@@ -941,6 +956,7 @@ if __name__ == '__main__':
         gobject.threads_init()
     except:
         import Tkinter
+        import tkMessageBox
         use_gtk = False
 
     init_window()
