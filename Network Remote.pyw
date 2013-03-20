@@ -640,19 +640,35 @@ def init_window():
         window.set_title(TITLE)
     else:
         window = Tkinter.Tk()
-        try:
-            window.tk.call('console', 'hide')  # fix a problem on Mac OS X
-        except:
-            pass
-        try:
-            window.createcommand('tkAboutDialog', about_window)
-        except:
-            pass
+        if 'aqua' == window.tk.call('tk', 'windowingsystem'):
+            mac_setup()
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
 
+def mac_setup():
+    """ Tk / OS X only -- Mac-specific setup. """
+    global window
+
+    # Hide the console
+    try:
+        window.tk.call('console', 'hide')
+    except:
+        pass
+
+    # Set up the "About" box
+    try:
+        window.createcommand('tkAboutDialog', about_window)
+    except:
+        pass
+
+    # Provide only the help menu (plus the application menu)
+    main_menu = Tkinter.Menu()
+    window.configure(menu=main_menu)
+    help_menu = Tkinter.Menu(main_menu, name='help')
+    main_menu.add_cascade(label='Help', menu=help_menu)
+
 def about_window():
-    """ Tk only -- pop up the "About" box. """
+    """ Tk / OS X only -- pop up the "About" box. """
     tkMessageBox.showinfo('', ABOUT)
 
 def make_widget_expandable(widget):
