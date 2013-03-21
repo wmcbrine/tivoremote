@@ -17,8 +17,7 @@ PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
          'CFBundleHelpBookName': 'Network Remote Help',
          'NSHumanReadableCopyright': '2008-2013 William McBrine'}
 OPTIONS = {'includes': 'Zeroconf', 'semi_standalone': True,
-           'site_packages': True, 'argv_emulation': True,
-           'argv_inject': ['-g'], 'plist': PLIST,
+           'site_packages': True, 'argv_inject': ['-g'], 'plist': PLIST,
            'iconfile': 'Network Remote.icns'}
 
 setup(
