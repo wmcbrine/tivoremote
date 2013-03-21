@@ -18,7 +18,8 @@ PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
          'NSHumanReadableCopyright': '2008-2013 William McBrine'}
 OPTIONS = {'includes': 'Zeroconf', 'semi_standalone': True,
            'site_packages': True, 'argv_emulation': True,
-           'argv_inject': ['-g'], 'plist': PLIST}
+           'argv_inject': ['-g'], 'plist': PLIST,
+           'iconfile': 'Network Remote.icns'}
 
 setup(
     app=APP,
