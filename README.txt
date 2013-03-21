@@ -1,6 +1,6 @@
 Network Remote Control for TiVo Series 3+, v0.27
 by William McBrine <wmcbrine@gmail.com>
-March ??, 2013
+March 21, 2013
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -188,7 +188,28 @@ Command-Line Options
 Changes
 -------
 
-0.27 -- 
+0.27 -- Enhancements for the Mac -- now builds a proper app bundle.
+
+        The "Aspect" button is back, but it does something different
+        from "Zoom" (which is also still present); see the "Buttons"
+        section for details. To make a place for this, I've dropped the
+        SPS30S macro button. (Since the setting is preserved across
+        reboots now, it's less needed.)
+
+        Some buttons now have an alternate, "graphical" rendering, via
+        Unicode glyphs, selected by the "-g" command-line option. (This
+        is on by default with the Mac app version.)
+
+        Bug: The Thumbs Down shortcut 'd' was overridden by the one for
+        the 'D' button. Fix: The A/B/C/D shortcuts are now capital
+        (shifted) keys.
+
+        Various minor fixes, reorganization, and doc changes.
+
+        The program's name is now standardized as "Network Remote
+        Control for TiVo", or "Network Remote" for short.
+
+        Dropped support for Python 2.3 and 2.4.
 
 0.26 -- In some Tkinter installations, with versions 0.24 and 0.25,
         pressing the space bar (to pause) would also invoke the default
