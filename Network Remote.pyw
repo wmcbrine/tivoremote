@@ -870,8 +870,8 @@ def main_window():
         outer.pack(fill='both', expand=1)
         vbox1 = Tkinter.Frame(outer, borderwidth=5)
         vbox2 = Tkinter.Frame(outer, borderwidth=5)
-        table = ([Tkinter.Frame(vbox1, borderwidth=5) for i in xrange(4)] +
-                 [Tkinter.Frame(vbox2, borderwidth=5) for i in xrange(4)])
+        table = [Tkinter.Frame(box, borderwidth=5)
+                 for box in (vbox1, vbox2) for i in xrange(4)]
         for tb in table:
             tb.grid(sticky='news')
         if landscape:
