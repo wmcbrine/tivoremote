@@ -216,6 +216,8 @@ KEYS = {'t': 'TIVO',
         'F6': 'THUMBSDOWN', 'F7': 'CHANNELUP', 'F8': 'CHANNELDOWN',
         'F9': 'RECORD', 'F10': 'INFO', 'F11': 'TIVO'}
 
+# Keyboard shortcuts for functions
+
 FUNCKEYS = {'q': 'go_away', 'a': 'aspect_change', 'c': 'closed_caption'}
 
 # Named symbols for direct text input -- these work with IRCODE and
