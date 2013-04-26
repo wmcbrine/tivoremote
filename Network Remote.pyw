@@ -564,7 +564,7 @@ def find_tivos():
 
     # Collect the queries made in response. These come quickly.
     while True:
-        isock, junk1, junk2 = select.select([hsock], [], [], 0.5)
+        isock, junk1, junk2 = select.select([hsock], [], [], 1)
         if not isock:
             break
         client, address = hsock.accept()
@@ -618,8 +618,8 @@ def find_tivos_zc():
     except:
         return tivos
 
-    # Give them half a second to respond
-    time.sleep(0.5)
+    # Give them a second to respond
+    time.sleep(1)
 
     # Now get the addresses -- this is the slow part
     swversion = re.compile('(\d*.\d*)').findall
