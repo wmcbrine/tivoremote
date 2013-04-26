@@ -210,11 +210,13 @@ KEYS = {'t': 'TIVO',
 
         'bracketleft': 'REVERSE', 'bracketright': 'FORWARD',
         'minus': 'REPLAY', 'equal': 'ADVANCE', 'e': 'ENTER',
-        'w': 'WINDOW', 'a': 'WINDOW', 'grave': 'STOP',
+        'w': 'WINDOW', 'grave': 'STOP',
 
         'F1': 'TIVO', 'F2': 'LIVETV', 'F3': 'GUIDE', 'F5': 'THUMBSUP',
         'F6': 'THUMBSDOWN', 'F7': 'CHANNELUP', 'F8': 'CHANNELDOWN',
         'F9': 'RECORD', 'F10': 'INFO', 'F11': 'TIVO'}
+
+FUNCKEYS = {'q': 'go_away', 'a': 'aspect_change', 'c': 'closed_caption'}
 
 # Named symbols for direct text input -- these work with IRCODE and
 # KEYBOARD commands
@@ -438,8 +440,8 @@ def handle_gtk_key(widget, event):
     key = gtk.gdk.keyval_name(event.keyval)
     if key in KEYS:
         irsend(KEYS[key])
-    elif key == 'q':
-        go_away()
+    elif key in FUNCKEYS:
+        eval(FUNCKEYS[key])()
     else:
         return False
     return True
@@ -911,7 +913,8 @@ def main_window():
         for each in KEYS:
             make_tk_key(each, KEYS[each])
 
-        focus_button.bind('q', go_away)
+        for each in FUNCKEYS:
+            focus_button.bind(each, eval(FUNCKEYS[each]))
         focus_button.focus_set()
 
     thread.start_new_thread(status_update, ())
