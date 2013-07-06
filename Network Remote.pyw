@@ -494,6 +494,22 @@ def status_update():
             sock = None
             break
 
+def recv_bytes(sock, length):
+    block = ''
+    while len(block) < length:
+        add = sock.recv(length - len(block))
+        if not add:
+            break
+        block += add
+    return block
+
+def recv_packet(sock):
+    length = struct.unpack('!I', recv_bytes(sock, 4))[0]
+    return recv_bytes(sock, length)
+
+def send_packet(sock, packet):
+    sock.sendall(struct.pack('!I', len(packet)) + packet)
+
 def get_namever(address):
     """ Exchange TiVo Connect Discovery beacons, and extract the machine
         name and software version.
@@ -508,15 +524,9 @@ def get_namever(address):
     try:
         tsock = socket.socket()
         tsock.connect((address, 2190))
-
-        tsock.send(struct.pack('!I', len(our_beacon)))
-        tsock.send(our_beacon)
-
-        length = struct.unpack('!I', tsock.recv(4))[0]
-        tivo_beacon = tsock.recv(length)
-
+        send_packet(tsock, our_beacon)
+        tivo_beacon = recv_packet(tsock)
         tsock.close()
-
         name = machine_name(tivo_beacon)[0]
         version = float(swversion(tivo_beacon)[0])
     except:
