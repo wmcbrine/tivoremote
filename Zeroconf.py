@@ -1,10 +1,8 @@
-""" Multicast DNS Service Discovery for Python, v0.12-wmcbrine
-    Copyright (C) 2003, Paul Scott-Murphy
+""" Multicast DNS Service Discovery for Python, v0.13-wmcbrine
+    Copyright 2003 Paul Scott-Murphy, 2013 William McBrine
 
     This module provides a framework for the use of DNS Service Discovery
-    using IP multicast.  It has been tested against the JRendezvous
-    implementation from <a href="http://strangeberry.com">StrangeBerry</a>,
-    and against the mDNSResponder from Mac OS X 10.3.8.
+    using IP multicast.
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,64 +20,10 @@
     
 """
 
-"""0.12-wmcbrine update - see git for changes"""
-
-"""0.12 update - allow selection of binding interface
-         typo fix - Thanks A. M. Kuchlingi
-         removed all use of word 'Rendezvous' - this is an API change"""
-
-"""0.11 update - correction to comments for addListener method
-                 support for new record types seen from OS X
-                  - IPv6 address
-                  - hostinfo
-                 ignore unknown DNS record types
-                 fixes to name decoding
-                 works alongside other processes using port 5353
-                 (e.g. on Mac OS X)
-                 tested against Mac OS X 10.3.2's mDNSResponder
-                 corrections to removal of list entries for service browser"""
-
-"""0.10 update - Jonathon Paisley contributed these corrections:
-                 always multicast replies, even when query is unicast
-                 correct a pointer encoding problem
-                 can now write records in any order
-                 traceback shown on failure
-                 better TXT record parsing
-                 server is now separate from name
-                 can cancel a service browser
-
-                 modified some unit tests to accommodate these changes"""
-
-"""0.09 update - remove all records on service unregistration
-                 fix DOS security problem with readName"""
-
-"""0.08 update - changed licensing to LGPL"""
-
-"""0.07 update - faster shutdown on engine
-                 pointer encoding of outgoing names
-                 ServiceBrowser now works
-                 new unit tests"""
-
-"""0.06 update - small improvements with unit tests
-                 added defined exception types
-                 new style objects
-                 fixed hostname/interface problem
-                 fixed socket timeout problem
-                 fixed addServiceListener() typo bug
-                 using select() for socket reads
-                 tested on Debian unstable with Python 2.2.2"""
-
-"""0.05 update - ensure case insensitivty on domain names
-                 support for unicast DNS queries"""
-
-"""0.04 update - added some unit tests
-                 added __ne__ adjuncts where required
-                 ensure names end in '.local.'
-                 timeout on receiving socket for clean shutdown"""
-
-__author__ = "Paul Scott-Murphy"
-__email__ = "paul at scott dash murphy dot com"
-__version__ = "0.12-wmcbrine"
+__author__ = 'Paul Scott-Murphy'
+__maintainer__ = 'William McBrine <wmcbrine@gmail.com>'
+__version__ = '0.13-wmcbrine'
+__license__ = 'LGPL'
 
 import time
 import struct
@@ -231,17 +175,11 @@ class DNSEntry(object):
 
     def getClazz(self, clazz):
         """Class accessor"""
-        try:
-            return _CLASSES[clazz]
-        except:
-            return "?(%s)" % (clazz)
+        return _CLASSES.get(clazz, "?(%s)" % clazz)
 
-    def getType(self, type):
+    def getType(self, t):
         """Type accessor"""
-        try:
-            return _TYPES[type]
-        except:
-            return "?(%s)" % (type)
+        return _TYPES.get(t, "?(%s)" % t)
 
     def toString(self, hdr, other):
         """String representation with additional information"""
@@ -462,7 +400,7 @@ class DNSIncoming(object):
         self.numAnswers = 0
         self.numAuthorities = 0
         self.numAdditionals = 0
-        
+
         self.readHeader()
         self.readQuestions()
         self.readOthers()
@@ -483,7 +421,7 @@ class DNSIncoming(object):
         for i in xrange(self.numQuestions):
             name = self.readName()
             type, clazz = self.unpack('!HH')
-            
+
             question = DNSQuestion(name, type, clazz)
             self.questions.append(question)
 
@@ -539,7 +477,7 @@ class DNSIncoming(object):
 
             if rec is not None:
                 self.answers.append(rec)
-                
+
     def isQuery(self):
         """Returns true if this is a query"""
         return (self.flags & _FLAGS_QR_MASK) == _FLAGS_QR_QUERY
@@ -548,10 +486,10 @@ class DNSIncoming(object):
         """Returns true if this is a response"""
         return (self.flags & _FLAGS_QR_MASK) == _FLAGS_QR_RESPONSE
 
-    def readUTF(self, offset, len):
+    def readUTF(self, offset, length):
         """Reads a UTF-8 string of a given length from the packet"""
-        return unicode(self.data[offset:offset+len], 'utf-8', 'replace')
-        
+        return unicode(self.data[offset:offset+length], 'utf-8', 'replace')
+
     def readName(self):
         """Reads a domain name from the packet"""
         result = ''
@@ -560,18 +498,18 @@ class DNSIncoming(object):
         first = off
 
         while True:
-            len = ord(self.data[off])
+            length = ord(self.data[off])
             off += 1
-            if len == 0:
+            if length == 0:
                 break
-            t = len & 0xC0
+            t = length & 0xC0
             if t == 0x00:
-                result = ''.join((result, self.readUTF(off, len) + '.'))
-                off += len
+                result = ''.join((result, self.readUTF(off, length) + '.'))
+                off += length
             elif t == 0xC0:
                 if next < 0:
                     next = off + 1
-                off = ((len & 0x3F) << 8) | ord(self.data[off])
+                off = ((length & 0x3F) << 8) | ord(self.data[off])
                 if off >= first:
                     raise "Bad domain name (circular) at " + str(off)
                 first = off
@@ -588,7 +526,7 @@ class DNSIncoming(object):
         
 class DNSOutgoing(object):
     """Object representation of an outgoing packet"""
-    
+
     def __init__(self, flags, multicast=True):
         self.finished = False
         self.id = 0
@@ -597,7 +535,7 @@ class DNSOutgoing(object):
         self.names = {}
         self.data = []
         self.size = 12
-        
+
         self.questions = []
         self.answers = []
         self.authorities = []
@@ -638,7 +576,7 @@ class DNSOutgoing(object):
         """Inserts an unsigned short in a certain position in the packet"""
         self.data.insert(index, struct.pack('!H', value))
         self.size += 2
-        
+
     def writeShort(self, value):
         """Writes an unsigned short to the packet"""
         self.pack('!H', value)
@@ -664,11 +602,16 @@ class DNSOutgoing(object):
     def writeName(self, name):
         """Writes a domain name to the packet"""
 
-        try:
+        if name in self.names:
             # Find existing instance of this name in packet
             #
             index = self.names[name]
-        except KeyError:
+
+            # An index was found, so write a pointer to it
+            #
+            self.writeByte((index >> 8) | 0xC0)
+            self.writeByte(index & 0xFF)
+        else:
             # No record of this name already, so write it
             # out as normal, recording the location of the name
             # for future pointers to it.
@@ -680,12 +623,6 @@ class DNSOutgoing(object):
             for part in parts:
                 self.writeUTF(part)
             self.writeByte(0)
-            return
-
-        # An index was found, so write a pointer to it
-        #
-        self.writeByte((index >> 8) | 0xC0)
-        self.writeByte(index & 0xFF)
 
     def writeQuestion(self, question):
         """Writes a question to the packet"""
@@ -731,7 +668,7 @@ class DNSOutgoing(object):
                 self.writeRecord(authority, 0)
             for additional in self.additionals:
                 self.writeRecord(additional, 0)
-        
+
             self.insertShort(0, len(self.additionals))
             self.insertShort(0, len(self.authorities))
             self.insertShort(0, len(self.answers))
@@ -746,7 +683,7 @@ class DNSOutgoing(object):
 
 class DNSCache(object):
     """A cache of DNS entries"""
-    
+
     def __init__(self):
         self.cache = {}
 
@@ -869,7 +806,7 @@ class Listener(object):
 
     It requires registration with an Engine object in order to have
     the read() method called when a socket is availble for reading."""
-    
+
     def __init__(self, zc):
         self.zc = zc
         self.zc.engine.addReader(self, self.zc.socket)
@@ -1002,11 +939,11 @@ class ServiceBrowser(threading.Thread):
 
             if event is not None:
                 event(self.zc)
-                
+
 
 class ServiceInfo(object):
     """Service information"""
-    
+
     def __init__(self, type, name, address=None, port=None, weight=0, 
                  priority=0, properties=None, server=None):
         """Create a service description.
@@ -1074,7 +1011,7 @@ class ServiceInfo(object):
                 index += 1
                 strs.append(text[index:index+length])
                 index += length
-            
+
             for s in strs:
                 try:
                     key, value = s.split('=', 1)
@@ -1095,7 +1032,7 @@ class ServiceInfo(object):
         except:
             traceback.print_exc()
             self.properties = None
-            
+
     def getType(self):
         """Type accessor"""
         return self.type
@@ -1193,7 +1130,7 @@ class ServiceInfo(object):
             result = True
         finally:
             zc.removeListener(self)
-            
+
         return result
 
     def __eq__(self, other):
@@ -1219,7 +1156,7 @@ class ServiceInfo(object):
                 result += self.text[:17] + "..."
         result += "]"
         return result
-                
+
 
 class Zeroconf(object):
     """Implementation of Zeroconf Multicast DNS Service Discovery
@@ -1278,7 +1215,7 @@ class Zeroconf(object):
         self.cache = DNSCache()
 
         self.condition = threading.Condition()
-        
+
         self.engine = Engine(self)
         self.listener = Listener(self)
         self.reaper = Reaper(self)
