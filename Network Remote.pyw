@@ -83,6 +83,7 @@ tivo_name = ''
 tivo_swversions = {}
 landscape = False
 use_gtk = True
+has_ttk = True
 use_gr = False
 have_zc = True
 captions_on = False
@@ -411,7 +412,7 @@ def make_button(widget, y, x, text, command, cols=1, width=5):
         button.connect('key_press_event', handle_gtk_key)
         widget.attach(button, x, x + cols, y, y + 1)
     else:
-        button = Tkinter.Button(widget, text=text, command=command, width=width)
+        button = ttk.Button(widget, text=text, command=command, width=width)
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
     if text == 'Enter':
         global focus_button
@@ -658,6 +659,8 @@ def init_window():
             mac_setup()
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
+        if has_ttk:
+            ttk.Style()
 
 def mac_setup():
     """ Tk / OS X only -- Mac-specific setup. """
@@ -704,9 +707,9 @@ def make_small_window(label):
         table.attach(vbox, 0, 1, 0, 1)
         window.add(table)
     else:
-        table = Tkinter.Frame(window, borderwidth=10)
+        table = ttk.Frame(window, borderwidth=10)
         table.pack(fill='both', expand=1)
-        Tkinter.Label(table, text=label).grid(column=0, row=0)
+        ttk.Label(table, text=label).grid(column=0, row=0)
 
     return table
 
@@ -727,7 +730,7 @@ def error_window(message):
         window.show_all()
         gtk.main()
     else:
-        button = Tkinter.Button(table, text='Ok', command=window.quit)
+        button = ttk.Button(table, text='Ok', command=window.quit)
         button.grid(column=0, row=1, sticky='news')
         make_widget_expandable(table)
         window.mainloop()
@@ -754,7 +757,7 @@ def get_address():
         address = gtk.Entry()
         table.attach(address, 0, 1, 1, 2)
     else:
-        address = Tkinter.Entry(table)
+        address = ttk.Entry(table)
         address.grid(column=0, row=1, sticky='news')
         address.focus_set()
 
@@ -790,7 +793,7 @@ def list_tivos(tivos):
             button.connect('clicked', command)
             widget.attach(button, 0, 1, y, y + 1)
         else:
-            button = Tkinter.Button(widget, text=text, command=command)
+            button = ttk.Button(widget, text=text, command=command)
             button.grid(column=0, row=y, sticky='news')
 
     table = make_small_window('Choose a TiVo:')
@@ -880,35 +883,40 @@ def main_window():
     else:
         # Init
         window.title(tivo_name)
-        outer = Tkinter.Frame(window, borderwidth=10)
+        outer = ttk.Frame(window, borderwidth=10)
         outer.pack(fill='both', expand=1)
-        vbox1 = Tkinter.Frame(outer, borderwidth=5)
-        vbox2 = Tkinter.Frame(outer, borderwidth=5)
-        table = [Tkinter.Frame(box, borderwidth=5)
+        vbox1 = ttk.Frame(outer, borderwidth=5)
+        vbox2 = ttk.Frame(outer, borderwidth=5)
+        table = [ttk.Frame(box, borderwidth=5)
                  for box in (vbox1, vbox2) for i in xrange(4)]
         for tb in table:
             tb.grid(sticky='news')
         if landscape:
-            label = Tkinter.Label(vbox2)
+            label = ttk.Label(vbox2)
             vbox1.grid(row=0, sticky='news')
             vbox2.grid(row=0, column=1, sticky='news')
             label.grid(row=4)
         else:
-            label = Tkinter.Label(outer)
+            label = ttk.Label(outer)
             vbox1.grid(row=0, sticky='news')
             vbox2.grid(row=1, sticky='news')
             label.grid(row=2)
 
         # Text entry
-        Tkinter.Label(table[6], text='Text:').grid(column=0, row=0)
-        Tkinter.Label(table[6], text='Cols:').grid(column=0, row=1)
+        ttk.Label(table[6], text='Text:').grid(column=0, row=0)
+        ttk.Label(table[6], text='Cols:').grid(column=0, row=1)
 
-        key_text = Tkinter.Entry(table[6], width=15)
+        key_text = ttk.Entry(table[6], width=15)
         key_text.bind('<Return>', keyboard)
         key_text.bind('<Escape>', lambda w: focus_button.focus_set())
         key_text.grid(column=1, row=0, columnspan=2, sticky='news')
 
-        key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
+        if has_ttk:
+            key_width = ttk.Combobox(table[6], width=2,
+                values=[str(i) for i in xrange(10)])
+            key_width.current(0)
+        else:
+            key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
         key_width.grid(column=1, row=1, sticky='news')
 
     for z, button_group in enumerate(BUTTONS):
@@ -989,6 +997,12 @@ if __name__ == '__main__':
         import Tkinter
         import tkMessageBox
         use_gtk = False
+        try:
+            import ttk
+        except:
+            global ttk
+            ttk = Tkinter
+            has_ttk = False
 
     init_window()
     pick_tivo()
