@@ -98,6 +98,10 @@ focus_button = None   # This is just a widget to jump to when leaving
 
 # Other globals: window, label, key_text, key_width (all widgets)
 
+# Colors for special buttons
+
+COLOR = {'red': '#d00', 'blue': '#00a', 'green': '#070', 'yellow': '#aa0'}
+
 TITLE = 'Network Remote'
 
 # About box text, for OS X only
@@ -413,6 +417,9 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
     """ Create one button, given its coordinates, text and command. """
     if use_gtk:
         button = gtk.Button(text)
+        if use_color and style:
+            button.get_child().modify_fg(gtk.STATE_NORMAL,
+                gtk.gdk.color_parse(COLOR[style]))
         button.connect('clicked', command)
         button.connect('key_press_event', handle_gtk_key)
         widget.attach(button, x, x + cols, y, y + 1)
@@ -666,12 +673,10 @@ def init_window():
             mac_setup()
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
-        if has_ttk:
+        if use_color:
             s = ttk.Style()
-            s.map('red.TButton', foreground=[('!active', '#d00')])
-            s.map('blue.TButton', foreground=[('!active', '#00a')])
-            s.map('green.TButton', foreground=[('!active', '#070')])
-            s.map('yellow.TButton', foreground=[('!active', '#aa0')])
+            for name, color in COLOR.items():
+                s.map(name + '.TButton', foreground=[('!active', color)])
 
 def mac_setup():
     """ Tk / OS X only -- Mac-specific setup. """
