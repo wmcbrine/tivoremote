@@ -46,6 +46,8 @@
 
     -g, --graphics   Use "graphical" labels for some buttons.
 
+    -c, --nocolor    Don't use color to highlight any buttons.
+
     <address>        Any other command-line option is treated as the IP
                      address (name or numeric) of the TiVo to connect
                      to. Connection is automatic on startup, and
@@ -85,6 +87,7 @@ landscape = False
 use_gtk = True
 has_ttk = True
 use_gr = False
+use_color = True
 have_zc = True
 captions_on = False
 aspect_ratio = 0
@@ -124,9 +127,11 @@ BUTTONS = [
                [{}, {'t': 'Up', 'gr': u'\u2191'}],
                [{'t': 'Left', 'gr': u'\u2190'}, {'t': 'Select'},
                 {'t': 'Right', 'gr': u'\u2192'}],
-               [{'t': 'ThDn', 'val': ['THUMBSDOWN'], 'gr': u'\u261f'},
+               [{'t': 'ThDn', 'val': ['THUMBSDOWN'], 'gr': u'\u261f',
+                 's': 'red'},
                 {'t': 'Down', 'gr': u'\u2193'},
-                {'t': 'ThUp', 'val': ['THUMBSUP'], 'gr': u'\u261d'}]
+                {'t': 'ThUp', 'val': ['THUMBSUP'], 'gr': u'\u261d',
+                 's': 'green'}]
            ],
 
            [ #2
@@ -135,14 +140,14 @@ BUTTONS = [
                 {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM9', 'SELECT', 'CLEAR']},
-                {'t': 'Rec', 'val': ['RECORD'], 'gr': u'\u25c9'},
+                {'t': 'Rec', 'val': ['RECORD'], 'gr': u'\u25c9', 's': 'red'},
                 {'t': 'Ch-', 'val': ['CHANNELDOWN']}]
            ],
 
            [ #3
                [{}, {'t': 'Play', 'gr': u'\u25b6'}],
                [{'t': 'Rev', 'val': ['REVERSE'], 'gr': u'\u25c0\u25c0'},
-                {'t': 'Pause', 'gr': u'\u2759\u2759'},
+                {'t': 'Pause', 'gr': u'\u2759\u2759', 's': 'yellow'},
                 {'t': 'FF', 'val': ['FORWARD'], 'gr': u'\u25b6\u25b6'}],
                [{'t': 'Replay', 'gr': u'\u21bb'},
                 {'t': 'Slow', 'gr': u'\u2759\u25b6'},
@@ -150,10 +155,10 @@ BUTTONS = [
            ],
 
            [ #4
-               [{'t': 'A', 'val': ['ACTION_A'], 'width': 3},
-                {'t': 'B', 'val': ['ACTION_B'], 'width': 3},
-                {'t': 'C', 'val': ['ACTION_C'], 'width': 3},
-                {'t': 'D', 'val': ['ACTION_D'], 'width': 3}]
+               [{'t': 'A', 'val': ['ACTION_A'], 'width': 3, 's': 'yellow'},
+                {'t': 'B', 'val': ['ACTION_B'], 'width': 3, 's': 'blue'},
+                {'t': 'C', 'val': ['ACTION_C'], 'width': 3, 's': 'red'},
+                {'t': 'D', 'val': ['ACTION_D'], 'width': 3, 's': 'green'}]
            ],
 
            [ #5
@@ -404,7 +409,7 @@ def keyboard(widget=None):
         key_text.delete(0, 'end')
         focus_button.focus_set()
 
-def make_button(widget, y, x, text, command, cols=1, width=5):
+def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
     """ Create one button, given its coordinates, text and command. """
     if use_gtk:
         button = gtk.Button(text)
@@ -413,6 +418,8 @@ def make_button(widget, y, x, text, command, cols=1, width=5):
         widget.attach(button, x, x + cols, y, y + 1)
     else:
         button = ttk.Button(widget, text=text, command=command, width=width)
+        if use_color and style:
+            button.configure(style=style + '.TButton')
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
     if text == 'Enter':
         global focus_button
@@ -460,7 +467,7 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn='', gr=''):
+def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn='', gr='', s=''):
     """ Make an IRCODE command, then make a button with it. """
     if fn:
         fn = eval(fn)
@@ -470,7 +477,7 @@ def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn='', gr=''):
         fn = lambda w=None: irsend(*val)
     if use_gr and gr:
         t = gr
-    make_button(widget, y, x, t, fn, cols, width)
+    make_button(widget, y, x, t, fn, cols, width, s)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
@@ -660,7 +667,11 @@ def init_window():
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
         if has_ttk:
-            ttk.Style()
+            s = ttk.Style()
+            s.map('red.TButton', foreground=[('!active', '#d00')])
+            s.map('blue.TButton', foreground=[('!active', '#00a')])
+            s.map('green.TButton', foreground=[('!active', '#070')])
+            s.map('yellow.TButton', foreground=[('!active', '#aa0')])
 
 def mac_setup():
     """ Tk / OS X only -- Mac-specific setup. """
@@ -973,6 +984,8 @@ if __name__ == '__main__':
                 have_zc = False
             elif opt in ('-g', '--graphics'):
                 use_gr = True
+            elif opt in ('-c', '--nocolor'):
+                use_color = False
             else:
                 tivo_address = opt
 
@@ -998,11 +1011,13 @@ if __name__ == '__main__':
         import tkMessageBox
         use_gtk = False
         try:
+            assert(has_ttk)
             import ttk
         except:
             global ttk
             ttk = Tkinter
             has_ttk = False
+            use_color = False
 
     init_window()
     pick_tivo()
