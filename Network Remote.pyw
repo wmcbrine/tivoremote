@@ -95,6 +95,7 @@ sock = None
 outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
                       # key_text.
+exit_all = False
 
 # Other globals: window, label, key_text, key_width (all widgets)
 
@@ -228,7 +229,8 @@ KEYS = {'t': 'TIVO',
 
 # Keyboard shortcuts for functions
 
-FUNCKEYS = {'q': 'go_away', 'a': 'aspect_change', 'c': 'closed_caption'}
+FUNCKEYS = {'q': 'go_away', 'a': 'aspect_change', 'c': 'closed_caption',
+            'L': 'orient_change', 'G': 'graphics_change'}
 
 # Named symbols for direct text input -- these work with IRCODE and
 # KEYBOARD commands
@@ -261,12 +263,14 @@ services=TiVoMediaServer:%(port)d/http
 
 def go_away(widget=None):
     """ Non-error GUI exit. """
+    global exit_all
     if sock:
         sock.close()
     if use_gtk:
         gtk.main_quit()
     else:
         window.quit()
+    exit_all = True
 
 def connect():
     """ Connect to the TiVo within five seconds or report error. """
@@ -729,8 +733,7 @@ def make_small_window(label):
 
     return table
 
-def error_window(message):
-    """ Display an error message, and exit the program. """
+def main_window_clear():
     if outer:
         if use_gtk:
             outer.destroy()
@@ -738,6 +741,10 @@ def error_window(message):
         else:
             outer.forget()
             window.quit()
+
+def error_window(message):
+    """ Display an error message, and exit the program. """
+    main_window_clear()
     table = make_small_window(message)
     if use_gtk:
         button = gtk.Button('Ok')
@@ -751,6 +758,16 @@ def error_window(message):
         make_widget_expandable(table)
         window.mainloop()
     sys.exit()
+
+def orient_change(widget=None):
+    global landscape
+    main_window_clear()
+    landscape = not landscape
+
+def graphics_change(widget=None):
+    global use_gr
+    main_window_clear()
+    use_gr = not use_gr
 
 def get_address():
     """ Prompt for an address. """
@@ -1027,4 +1044,5 @@ if __name__ == '__main__':
     init_window()
     pick_tivo()
     connect()
-    main_window()
+    while not exit_all:
+        main_window()
