@@ -430,7 +430,10 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
     else:
         button = ttk.Button(widget, text=text, command=command, width=width)
         if use_color and style:
-            button.configure(style=style + '.TButton')
+            if has_ttk:
+                button.configure(style=style + '.TButton')
+            else:
+                button.config(foreground=COLOR[style])
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
     if text == 'Enter':
         global focus_button
@@ -677,7 +680,7 @@ def init_window():
             mac_setup()
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
-        if use_color:
+        if use_color and has_ttk:
             s = ttk.Style()
             for name, color in COLOR.items():
                 s.map(name + '.TButton', foreground=[('!active', color)])
@@ -1044,7 +1047,6 @@ if __name__ == '__main__':
             global ttk
             ttk = Tkinter
             has_ttk = False
-            use_color = False
 
     init_window()
     pick_tivo()
