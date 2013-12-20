@@ -124,11 +124,15 @@ Slow          o
 Skip          s or =
 Clear         Esc
 Enter         e or .
+Aspect        a
+CC            c
 Quit          q
 
 As a bonus, only available via keyboard shortcut:
 
 Stop          `
+Toggle graphical button labels      G
+Switch between Landscape/Portrait   L
 
 Some of these are taken from the keys used with TiVo's HME simulator 
 from the Java SDK. The function keys are what the TiVo recognizes from 
