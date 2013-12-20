@@ -979,6 +979,14 @@ def main_window():
     else:
         window.mainloop()
 
+def key_print(keyl):
+    keynames = keyl.keys()
+    keynames.sort()
+    for i, each in enumerate(keynames):
+        print '   ', each.ljust(15), keyl[each].ljust(15),
+        if i & 1:
+            print
+
 if __name__ == '__main__':
     # Process the command line
 
@@ -991,12 +999,9 @@ if __name__ == '__main__':
                 print __doc__
                 sys.exit()
             elif opt in ('-k', '--keys'):
-                keynames = KEYS.keys()
-                keynames.sort()
-                for i, each in enumerate(keynames):
-                    print '   ', each.ljust(15), KEYS[each].ljust(15),
-                    if i & 1:
-                        print
+                key_print(KEYS)
+                print
+                key_print(FUNCKEYS)
                 sys.exit()
             elif opt in ('-t', '--force-tk'):
                 use_gtk = False
