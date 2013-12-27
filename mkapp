@@ -1,0 +1,7 @@
+IMG=network-remote-0.27.dmg
+rm dist/Applications $IMG
+rm -r build dist
+python2.6 setup.py py2app
+codesign -s "Developer ID Application: William McBrine" --entitlements entitlements.plist "dist/Network Remote.app"
+ln -s /Applications dist/Applications
+hdiutil create -srcfolder dist -volname "Network Remote" $IMG
