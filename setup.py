@@ -7,8 +7,9 @@ Usage:
 """
 
 from setuptools import setup
+from version import VER
 
-VER = '0.27.0'
+VER += '.0'
 APP = ['Network Remote.pyw']
 DATA_FILES = ['Network Remote.help']
 PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
