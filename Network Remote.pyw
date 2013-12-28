@@ -41,10 +41,15 @@
 
     -v, --version    Print the version and exit.
 
-    -z, --nozeroconf Don't try the Zeroconf-based method of detecting 
+    -z, --nozeroconf Don't try the Zeroconf-based method of detecting
                      TiVos.
 
-    -g, --graphics   Use "graphical" labels for some buttons.
+    -g, --graphics   Force "graphical" labels for some buttons. Normally
+                     they'll be used automatically on suitable platforms.
+
+    -p, --plaintext  Force plain text labels for all buttons. If both -g
+                     and -p are specified, the last one on the command
+                     line takes precedence.
 
     -c, --nocolor    Don't use color to highlight any buttons.
 
@@ -86,7 +91,7 @@ tivo_swversions = {}
 landscape = False
 use_gtk = True
 has_ttk = True
-use_gr = False
+use_gr = None
 use_color = True
 have_zc = True
 captions_on = False
@@ -1014,6 +1019,8 @@ if __name__ == '__main__':
                 have_zc = False
             elif opt in ('-g', '--graphics'):
                 use_gr = True
+            elif opt in ('-p', '--plaintext'):
+                use_gr = False
             elif opt in ('-c', '--nocolor'):
                 use_color = False
             else:
@@ -1047,6 +1054,12 @@ if __name__ == '__main__':
             global ttk
             ttk = Tkinter
             has_ttk = False
+
+    # use_gr if not -g or -p?
+
+    if use_gr == None:
+        use_gr = (use_gtk or sys.platform == 'darwin' or
+            (sys.platform == 'win32' and sys.getwindowsversion()[0] >= 6))
 
     init_window()
     pick_tivo()

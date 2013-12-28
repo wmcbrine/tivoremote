@@ -181,7 +181,14 @@ Command-Line Options
 
 -z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
 
--g, --graphics   Use "graphical" labels for some buttons.
+-g, --graphics   Force "graphical" labels for some buttons. Normally
+                 they'll be used automatically on suitable platforms.
+
+-p, --plaintext  Force plain text labels for all buttons. If both -g
+                 and -p are specified, the last one on the command
+                 line takes precedence.
+
+-c, --nocolor    Don't use color to highlight any buttons.
 
 <address>        Any other command-line option is treated as the IP
                  address (name or numeric) of the TiVo to connect to.
