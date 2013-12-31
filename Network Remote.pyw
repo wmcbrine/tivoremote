@@ -18,15 +18,19 @@
 
 """ Network Remote Control for TiVo Series 3+
 
-    A PyGTK/Tkinter-based virtual remote control for the TiVo Series 3,
+    A GTK/Tkinter-based virtual remote control for the TiVo Series 3,
     TiVo HD or TiVo Premiere, using the port 31339 TCP/IP interface as 
     reverse-engineered by TCF user Omikron.
 
     Command-line options:
 
-    -t, --force-tk   Use the Tkinter GUI even if PyGTK is available. As
+    -t, --force-tk   Use the Tkinter GUI even if GTK is available. As
                      an alternative to using this option, you can set
                      the "use_gtk" variable to False.
+
+    -2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is
+                     available. As an alternative to using this option,
+                     you can set the "use_gtk3" variable to False.
 
     -l, --landscape  Move the second half of the button display to a
                      position to the right of the first half, instead of
@@ -90,6 +94,7 @@ tivo_name = ''
 tivo_swversions = {}
 landscape = False
 use_gtk = True
+use_gtk3 = True
 has_ttk = True
 use_gr = None
 use_color = True
@@ -427,8 +432,7 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
     if use_gtk:
         button = gtk.Button(text)
         if use_color and style:
-            button.get_child().modify_fg(gtk.STATE_NORMAL,
-                gtk.gdk.color_parse(COLOR[style]))
+            button.get_child().modify_fg(norm, gdk.color_parse(COLOR[style]))
         button.connect('clicked', command)
         button.connect('key_press_event', handle_gtk_key)
         widget.attach(button, x, x + cols, y, y + 1)
@@ -466,7 +470,7 @@ def handle_gtk_key(widget, event):
         each button. Unhandled keys (mainly, tab) are passed on.
 
     """
-    key = gtk.gdk.keyval_name(event.keyval)
+    key = gdk.keyval_name(event.keyval)
     if key in KEYS:
         irsend(KEYS[key])
     elif key in FUNCKEYS:
@@ -480,7 +484,7 @@ def handle_escape(widget, event):
         presses the Escape key. Other keys are passed on.
 
     """
-    key = gtk.gdk.keyval_name(event.keyval)
+    key = gdk.keyval_name(event.keyval)
     if key == 'Escape':
         focus_button.grab_focus()
         return True
@@ -511,9 +515,9 @@ def status_update():
             status = ''
         status = status.strip().title()
         if use_gtk:
-            gtk.gdk.threads_enter()
+            gdk.threads_enter()
             label.set_text(status)
-            gtk.gdk.threads_leave()
+            gdk.threads_leave()
         else:
             label.config(text=status)
         if not status:
@@ -1013,6 +1017,8 @@ if __name__ == '__main__':
                 sys.exit()
             elif opt in ('-t', '--force-tk'):
                 use_gtk = False
+            elif opt in ('-2', '--force-gtk2'):
+                use_gtk3 = False
             elif opt in ('-l', '--landscape'):
                 landscape = True
             elif opt in ('-z', '--nozeroconf'):
@@ -1038,10 +1044,22 @@ if __name__ == '__main__':
 
     try:
         assert(use_gtk)
-        import pygtk
-        pygtk.require('2.0')
-        import gobject
-        import gtk
+        try:
+            assert(use_gtk3)
+            import gi
+            gi.require_version('Gtk', '3.0')
+            from gi.repository import GObject as gobject
+            from gi.repository import Gtk as gtk
+            from gi.repository import Gdk as gdk
+            norm = gtk.StateType.NORMAL
+        except:
+            use_gtk3 = False
+            import pygtk
+            pygtk.require('2.0')
+            import gobject
+            import gtk
+            from gtk import gdk
+            norm = gtk.STATE_NORMAL
         gobject.threads_init()
     except:
         import Tkinter

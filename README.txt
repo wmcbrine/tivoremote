@@ -6,10 +6,10 @@ An on-screen virtual remote control that can control your TiVo over the
 network. It works with the Series 3 or any later TiVo model.
 
 Python 2.x is required (tested on 2.5 through 2.7), as well as Tkinter 
-(normally part of Python's standard library) or PyGTK. Mac OS X and 
-Linux users should have what they need already; Windows users should 
-visit http://python.org/ . The remote has also been tested on Windows CE 
-and other platforms.
+(normally part of Python's standard library) or GTK. Mac OS X and Linux 
+users should have what they need already; Windows users should visit 
+http://python.org/ . The remote has also been tested on Windows CE and 
+other platforms.
 
 This program uses the network remote control interface first made public 
 by TCF user Omikron in this thread:
@@ -165,7 +165,9 @@ supported, only spaces and numbers will come through in this mode.
 Command-Line Options
 --------------------
 
--t, --force-tk   Use the Tkinter GUI even if PyGTK is available.
+-t, --force-tk   Use the Tkinter GUI even if GTK is available.
+
+-2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is available.
 
 -l, --landscape  Move the second half of the button display to a
                  position to the right of the first half, instead of 
