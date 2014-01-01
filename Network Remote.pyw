@@ -106,6 +106,9 @@ outer = None
 focus_button = None   # This is just a widget to jump to when leaving 
                       # key_text.
 exit_all = False
+first_size = True
+screen_width = 0
+screen_height = 0
 
 # Other globals: window, label, key_text, key_width (all widgets)
 
@@ -678,11 +681,13 @@ def find_tivos_zc():
 
 def init_window():
     """ Create the program's window. """
-    global window
+    global window, screen_width, screen_height
     if use_gtk:
         window = gtk.Window()
         window.connect('destroy', go_away)
         window.set_title(TITLE)
+        screen_width = gdk.screen_width()
+        screen_height = gdk.screen_height()
     else:
         window = Tkinter.Tk()
         if 'aqua' == window.tk.call('tk', 'windowingsystem'):
@@ -693,6 +698,8 @@ def init_window():
             s = ttk.Style()
             for name, color in COLOR.items():
                 s.map(name + '.TButton', foreground=[('!active', color)])
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
 
 def mac_setup():
     """ Tk / OS X only -- Mac-specific setup. """
@@ -882,6 +889,14 @@ def pick_tivo():
         tivo_name, version = get_namever(tivo_address)
         tivo_swversions[tivo_name] = version
 
+def win_sized(widget, event):
+    global first_size
+    if first_size:
+        first_size = False
+        if not landscape and (screen_width > screen_height and
+                              event.height > screen_height):
+            orient_change()
+
 def main_window():
     """ Draw the main window and handle its events. """
     global window, outer, label, key_text, key_width
@@ -988,6 +1003,8 @@ def main_window():
     if use_gtk:
         window.show_all()
         focus_button.grab_focus()
+        if first_size:
+            window.connect('size-allocate', win_sized)
         gtk.main()
     else:
         window.mainloop()
