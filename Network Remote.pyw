@@ -686,8 +686,12 @@ def init_window():
         window = gtk.Window()
         window.connect('destroy', go_away)
         window.set_title(TITLE)
-        screen_width = gdk.screen_width()
-        screen_height = gdk.screen_height()
+        if use_gtk3:
+            screen_width = gdk.Screen.width()
+            screen_height = gdk.Screen.height()
+        else:
+            screen_width = gdk.screen_width()
+            screen_height = gdk.screen_height()
     else:
         window = Tkinter.Tk()
         if 'aqua' == window.tk.call('tk', 'windowingsystem'):
