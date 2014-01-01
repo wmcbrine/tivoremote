@@ -749,6 +749,7 @@ def main_window_clear():
     if outer:
         if use_gtk:
             outer.destroy()
+            window.resize(1, 1)
             gtk.main_quit()
         else:
             outer.forget()
