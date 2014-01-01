@@ -899,7 +899,7 @@ def win_sized(widget, event):
 
 def main_window():
     """ Draw the main window and handle its events. """
-    global window, outer, label, key_text, key_width
+    global window, outer, label, key_text, key_width, first_size
 
     if use_gtk:
         # Init
@@ -1007,6 +1007,13 @@ def main_window():
             window.connect('size-allocate', win_sized)
         gtk.main()
     else:
+        if first_size:
+            first_size = False
+            window.update()
+            if not landscape and (screen_width > screen_height and
+                                  window.winfo_height() > screen_height):
+                orient_change()
+                return
         window.mainloop()
 
 def key_print(keyl):
