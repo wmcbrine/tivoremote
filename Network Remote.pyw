@@ -760,7 +760,6 @@ def main_window_clear():
     if outer:
         if use_gtk:
             outer.destroy()
-            window.resize(1, 1)
             gtk.main_quit()
         else:
             outer.forget()
@@ -908,6 +907,7 @@ def main_window():
     if use_gtk:
         # Init
         window.set_title(tivo_name)
+        window.resize(1, 1)
         outer = gtk.VBox()
         vbox1 = gtk.VBox()
         vbox2 = gtk.VBox()
