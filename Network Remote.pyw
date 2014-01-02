@@ -892,13 +892,14 @@ def pick_tivo():
         tivo_name, version = get_namever(tivo_address)
         tivo_swversions[tivo_name] = version
 
-def win_sized(widget, event):
+def too_tall(h):
     global first_size
     if first_size:
         first_size = False
         if not landscape and (screen_width > screen_height and
-                              event.height > screen_height):
+                              h > screen_height):
             orient_change()
+            return True
 
 def main_window():
     """ Draw the main window and handle its events. """
@@ -1008,15 +1009,12 @@ def main_window():
         window.show_all()
         focus_button.grab_focus()
         if first_size:
-            window.connect('size-allocate', win_sized)
+            window.connect('size-allocate', lambda w, e: too_tall(e.height))
         gtk.main()
     else:
         if first_size:
-            first_size = False
             window.update()
-            if not landscape and (screen_width > screen_height and
-                                  window.winfo_height() > screen_height):
-                orient_change()
+            if too_tall(window.winfo_height()):
                 return
         window.mainloop()
 
