@@ -741,22 +741,22 @@ def make_widget_expandable(widget):
 
 def make_small_window(label):
     """ Common init for get_address() and list_tivos(). """
+    global outer
     if use_gtk:
-        table = gtk.Table()
-        table.set_border_width(10)
+        outer = gtk.Table()
+        outer.set_border_width(10)
         vbox = gtk.VBox()
         for l in label.split('\n'):
             vbox.add(gtk.Label(l))
-        table.attach(vbox, 0, 1, 0, 1)
-        window.add(table)
+        outer.attach(vbox, 0, 1, 0, 1)
+        window.add(outer)
     else:
-        table = ttk.Frame(window, borderwidth=10)
-        table.pack(fill='both', expand=1)
-        ttk.Label(table, text=label).grid(column=0, row=0)
-
-    return table
+        outer = ttk.Frame(window, borderwidth=10)
+        outer.pack(fill='both', expand=1)
+        ttk.Label(outer, text=label).grid(column=0, row=0)
 
 def main_window_clear():
+    global outer
     if outer:
         if use_gtk:
             outer.destroy()
@@ -764,21 +764,22 @@ def main_window_clear():
         else:
             outer.forget()
             window.quit()
+        outer = None
 
 def error_window(message):
     """ Display an error message, and exit the program. """
     main_window_clear()
-    table = make_small_window(message)
+    make_small_window(message)
     if use_gtk:
         button = gtk.Button('Ok')
         button.connect('clicked', gtk.main_quit)
-        table.attach(button, 0, 1, 1, 2)
+        outer.attach(button, 0, 1, 1, 2)
         window.show_all()
         gtk.main()
     else:
-        button = ttk.Button(table, text='Ok', command=window.quit)
+        button = ttk.Button(outer, text='Ok', command=window.quit)
         button.grid(column=0, row=1, sticky='news')
-        make_widget_expandable(table)
+        make_widget_expandable(outer)
         window.mainloop()
     sys.exit()
 
@@ -800,20 +801,15 @@ def get_address():
             tivo_address = address.get_text()
         else:
             tivo_address = address.get()
-        if use_gtk:
-            table.destroy()
-            gtk.main_quit()
-        else:
-            table.forget()
-            window.quit()
+        main_window_clear()
 
-    table = make_small_window('Enter a TiVo address:')
+    make_small_window('Enter a TiVo address:')
 
     if use_gtk:
         address = gtk.Entry()
-        table.attach(address, 0, 1, 1, 2)
+        outer.attach(address, 0, 1, 1, 2)
     else:
-        address = ttk.Entry(table)
+        address = ttk.Entry(outer)
         address.grid(column=0, row=1, sticky='news')
         address.focus_set()
 
@@ -825,7 +821,7 @@ def get_address():
         gtk.main()
     else:
         address.bind('<Return>', command)
-        make_widget_expandable(table)
+        make_widget_expandable(outer)
         window.mainloop()
 
 def list_tivos(tivos):
@@ -834,12 +830,7 @@ def list_tivos(tivos):
         global tivo_name, tivo_address
         tivo_name = name
         tivo_address = address
-        if use_gtk:
-            table.destroy()
-            gtk.main_quit()
-        else:
-            table.forget()
-            window.quit()
+        main_window_clear()
 
     def make_tivo_button(widget, window, y, name, address):
         command = lambda w=None: choose_tivo(window, name, address)
@@ -852,18 +843,18 @@ def list_tivos(tivos):
             button = ttk.Button(widget, text=text, command=command)
             button.grid(column=0, row=y, sticky='news')
 
-    table = make_small_window('Choose a TiVo:')
+    make_small_window('Choose a TiVo:')
 
     names = tivos.keys()
     names.sort()
     for i, name in enumerate(names):
-        make_tivo_button(table, window, i + 1, name, tivos[name])
+        make_tivo_button(outer, window, i + 1, name, tivos[name])
 
     if use_gtk:
         window.show_all()
         gtk.main()
     else:
-        make_widget_expandable(table)
+        make_widget_expandable(outer)
         window.mainloop()
 
 def pick_tivo():
