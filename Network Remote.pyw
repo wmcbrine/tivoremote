@@ -24,13 +24,14 @@
 
     Command-line options:
 
-    -t, --force-tk   Use the Tkinter GUI even if GTK is available. As
-                     an alternative to using this option, you can set
-                     the "use_gtk" variable to False.
+    -v, --version    Print the version and exit.
 
-    -2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is
-                     available. As an alternative to using this option,
-                     you can set the "use_gtk3" variable to False.
+    -h, --help       Print help and exit.
+
+    -k, --keys       Print the list of keyboard shortcuts and exit.
+
+    -z, --nozeroconf Don't try the Zeroconf-based method of detecting
+                     TiVos.
 
     -l, --landscape  Move the second half of the button display to a
                      position to the right of the first half, instead of
@@ -38,15 +39,6 @@
                      TiVo peanut, which makes for a very tall, narrow
                      window -- too tall for some environments. The
                      "landscape" variable specifies the default.
-
-    -h, --help       Print help and exit.
-
-    -k, --keys       Print the list of keyboard shortcuts and exit.
-
-    -v, --version    Print the version and exit.
-
-    -z, --nozeroconf Don't try the Zeroconf-based method of detecting
-                     TiVos.
 
     -g, --graphics   Force "graphical" labels for some buttons. Normally
                      they'll be used automatically on suitable platforms.
@@ -56,6 +48,16 @@
                      line takes precedence.
 
     -c, --nocolor    Don't use color to highlight any buttons.
+
+    -t, --force-tk   Use the Tkinter GUI even if GTK is available. As
+                     an alternative to using this option, you can set
+                     the "use_gtk" variable to False.
+
+    -2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is
+                     available. As an alternative to using this option,
+                     you can set the "use_gtk3" variable to False.
+
+    -o, --old-tk     Use the pre-ttk Tkinter code even if ttk is available.
 
     <address>        Any other command-line option is treated as the IP
                      address (name or numeric) of the TiVo to connect
@@ -1033,20 +1035,22 @@ if __name__ == '__main__':
                 print
                 key_print(FUNCKEYS)
                 sys.exit()
-            elif opt in ('-t', '--force-tk'):
-                use_gtk = False
-            elif opt in ('-2', '--force-gtk2'):
-                use_gtk3 = False
-            elif opt in ('-l', '--landscape'):
-                landscape = True
             elif opt in ('-z', '--nozeroconf'):
                 have_zc = False
+            elif opt in ('-l', '--landscape'):
+                landscape = True
             elif opt in ('-g', '--graphics'):
                 use_gr = True
             elif opt in ('-p', '--plaintext'):
                 use_gr = False
             elif opt in ('-c', '--nocolor'):
                 use_color = False
+            elif opt in ('-t', '--force-tk'):
+                use_gtk = False
+            elif opt in ('-2', '--force-gtk2'):
+                use_gtk3 = False
+            elif opt in ('-o', '--old-tk'):
+                has_ttk = use_gtk = False
             else:
                 tivo_address = opt
 
