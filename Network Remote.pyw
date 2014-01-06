@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Network Remote Control for TiVo Series 3+, v0.27
-# Copyright 2008-2013 William McBrine
+# Network Remote Control for TiVo Series 3+, v0.28
+# Copyright 2008-2014 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.27'
+__version__ = '0.28'
 __license__ = 'GPL'
 
 import random
@@ -124,14 +124,15 @@ TITLE = 'Network Remote'
 
 ABOUT = """Network Remote Control for TiVo
 Version %s
-Copyright 2008-2013 %s
+Copyright 2008-2014 %s
 http://wmcbrine.com/tivo/""" % (__version__, __author__)
 
 # Text, IR codes (if different from the text), number of columns (if 
-# greater than one), and function (if not irsend()), for each button. 
-# The ACTION_ buttons have an extra parameter, which is the button 
-# "width" in "text units", vs. the default of 5. This is used only in 
-# Tk, to align the buttons.
+# greater than one), function (if not irsend()), alternate graphical 
+# representation (if defined), and color (if not black), for each 
+# button. The ACTION_ buttons have an extra parameter, which is the 
+# button "width" in "text units", vs. the default of 5. This is used 
+# only in Tk, to align the buttons.
 
 # Each list is a group, each inner list is a row, each dict is a button.
 
@@ -531,6 +532,7 @@ def status_update():
             break
 
 def recv_bytes(sock, length):
+    """ Read length bytes from the socket. """
     block = ''
     while len(block) < length:
         add = sock.recv(length - len(block))
@@ -540,10 +542,12 @@ def recv_bytes(sock, length):
     return block
 
 def recv_packet(sock):
+    """ Read a packet with a length header from the socket. """
     length = struct.unpack('!I', recv_bytes(sock, 4))[0]
     return recv_bytes(sock, length)
 
 def send_packet(sock, packet):
+    """ Write a packet to the socket with a length header. """
     sock.sendall(struct.pack('!I', len(packet)) + packet)
 
 def get_namever(address):
@@ -758,6 +762,7 @@ def make_small_window(label):
         ttk.Label(outer, text=label).grid(column=0, row=0)
 
 def main_window_clear():
+    """ Remove all widgets from the inside of the window. """
     global outer
     if outer:
         if use_gtk:
@@ -786,11 +791,13 @@ def error_window(message):
     sys.exit()
 
 def orient_change(widget=None):
+    """ Toggle between landscape and portrait orientations. """
     global landscape
     main_window_clear()
     landscape = not landscape
 
 def graphics_change(widget=None):
+    """ Toggle the use of "special" characters as button labels. """
     global use_gr
     main_window_clear()
     use_gr = not use_gr
@@ -886,6 +893,10 @@ def pick_tivo():
         tivo_swversions[tivo_name] = version
 
 def too_tall(h):
+    """ If the window is too tall for the screen, switch to landscape 
+        mode (only used when the main window is first drawn).
+
+    """
     global first_size
     if first_size:
         first_size = False
@@ -1012,12 +1023,14 @@ def main_window():
         window.mainloop()
 
 def key_print(keyl):
+    """ Print descriptions for a block of keyboard shortcuts. """
     keynames = keyl.keys()
     keynames.sort()
     for i, each in enumerate(keynames):
         print '   ', each.ljust(15), keyl[each].ljust(15),
         if i & 1:
             print
+    print
 
 if __name__ == '__main__':
     # Process the command line
@@ -1032,7 +1045,6 @@ if __name__ == '__main__':
                 sys.exit()
             elif opt in ('-k', '--keys'):
                 key_print(KEYS)
-                print
                 key_print(FUNCKEYS)
                 sys.exit()
             elif opt in ('-z', '--nozeroconf'):

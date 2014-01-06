@@ -1,6 +1,6 @@
-Network Remote Control for TiVo Series 3+, v0.27
+Network Remote Control for TiVo Series 3+, v0.28
 by William McBrine <wmcbrine@gmail.com>
-March 21, 2013
+January 5, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -138,8 +138,7 @@ Some of these are taken from the keys used with TiVo's HME simulator
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: Aspect, CC, Clock, and 
-Standby.
+Buttons with no corresponding keyboard shortcuts: Clock and Standby.
 
 
 Text Entry
@@ -165,23 +164,19 @@ supported, only spaces and numbers will come through in this mode.
 Command-Line Options
 --------------------
 
--t, --force-tk   Use the Tkinter GUI even if GTK is available.
+-v, --version    Print the version and exit.
 
--2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is available.
+-h, --help       Print help and exit.
+
+-k, --keys       Print the list of keyboard shortcuts and exit.
+
+-z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
 
 -l, --landscape  Move the second half of the button display to a
                  position to the right of the first half, instead of 
                  below it. The default layout is similar to a real TiVo 
                  peanut, which makes for a very tall, narrow window -- 
                  too tall for some environments.
-
--h, --help       Print help and exit.
-
--k, --keys       Print the list of keyboard shortcuts and exit.
-
--v, --version    Print the version and exit.
-
--z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
 
 -g, --graphics   Force "graphical" labels for some buttons. Normally
                  they'll be used automatically on suitable platforms.
@@ -192,6 +187,12 @@ Command-Line Options
 
 -c, --nocolor    Don't use color to highlight any buttons.
 
+-t, --force-tk   Use the Tkinter GUI even if GTK is available.
+
+-2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is available.
+
+-o, --old-tk     Use the pre-ttk Tkinter code even if ttk is available.
+
 <address>        Any other command-line option is treated as the IP
                  address (name or numeric) of the TiVo to connect to.
                  Connection is automatic on startup, and disconnection
@@ -200,6 +201,32 @@ Command-Line Options
 
 Changes
 -------
+
+0.28 -- The Mac app bundle is now signed (for compatibility with
+        Gatekeeper), and sandboxed -- its only permissions are network
+        access.
+
+        GTK 3+ and ttk widgets for Tkinter are now supported, with
+        fallbacks to the old APIs and options to select them. ttk often
+        looks quite a bit nicer than the old Tk version. (ttk requires
+        Python 2.7, AFAIK.)
+
+        Color highlights are now used for a few keys (A/B/C/D, Thumbs,
+        Rec, Pause), where available (can be disabled by option).
+
+        The "graphical" button labels are now the default for most
+        environments, selectable via option and, now, togglable at
+        runtime by pressing "G" (capitalized -- lowercase "g" is still
+        Guide).
+
+        Landscape mode can also now be toggled at runtime, by pressing
+        "L" (capitalized -- lowercase "l" is still LiveTV). In addition,
+        at startup, if the remote is too "tall" for the screen, it will
+        switch to landscape mode automatically.
+
+        Restored shortcut keys for Aspect ("a") and CC ("c").
+
+        More robust Zeroconf.
 
 0.27 -- Enhancements for the Mac -- now builds a proper app bundle.
 
