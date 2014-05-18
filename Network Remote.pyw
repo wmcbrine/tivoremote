@@ -621,7 +621,7 @@ def find_tivos():
         message = client.recv(1500)
         client.close()  # This is rather rude.
         tcd = tcd_id(message)[0]
-        if tcd[0] >= '6' and tcd[:3] != '649':  # We only support S3/S4.
+        if tcd[0] >= '6' and tcd[:3] != '649':  # We only support S3+.
             tcds[tcd] = address[0]
 
     hsock.close()
