@@ -196,7 +196,7 @@ Command-Line Options
 <address>        Any other command-line option is treated as the IP
                  address (name or numeric) of the TiVo to connect to.
                  Connection is automatic on startup, and disconnection
-                 on exit.
+                 on exit. May include port (defaults to 31339).
 
 
 Changes
