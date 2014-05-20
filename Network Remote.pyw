@@ -92,7 +92,9 @@ import thread
 import time
 
 tivo_address = ''
+tivo_port = 31339
 tivo_name = ''
+tivo_ports = {}
 tivo_swversions = {}
 landscape = False
 use_gtk = True
@@ -288,13 +290,23 @@ def go_away(widget=None):
         window.quit()
     exit_all = True
 
+def check_port():
+    global tivo_address, tivo_port
+    if ':' in tivo_address:
+        tivo_address, port = tivo_address.split(':')
+        try:
+            tivo_port = int(port)
+        except:
+            pass
+
 def connect():
     """ Connect to the TiVo within five seconds or report error. """
     global sock
+    check_port()
     try:
         sock = socket.socket()
         sock.settimeout(5)
-        sock.connect((tivo_address, 31339))
+        sock.connect((tivo_address, tivo_port))
         sock.settimeout(None)
     except Exception, msg:
         msg = 'Could not connect to %s:\n%s' % (tivo_name, msg)
@@ -644,7 +656,7 @@ def find_tivos_zc():
         waiting for beacons.)
 
     """
-    global tivo_swversions
+    global tivo_swversions, tivo_ports
 
     class ZCListener:
         def __init__(self, names):
@@ -680,6 +692,7 @@ def find_tivos_zc():
             address = socket.inet_ntoa(s.getAddress())
             version = float(swversion(s.getProperties()['swversion'])[0])
             tivos[name] = address
+            tivo_ports[name] = s.getPort()
             tivo_swversions[name] = version
 
     serv.close()
@@ -836,9 +849,11 @@ def get_address():
 def list_tivos(tivos):
     """ TiVo chooser -- show buttons with TiVo names. """
     def choose_tivo(window, name, address):
-        global tivo_name, tivo_address
+        global tivo_name, tivo_address, tivo_port
         tivo_name = name
         tivo_address = address
+        if name in tivo_ports:
+            tivo_port = tivo_ports[name]
         main_window_clear()
 
     def make_tivo_button(widget, window, y, name, address):
