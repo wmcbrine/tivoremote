@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Network Remote Control for TiVo Series 3+, v0.28
+# Network Remote Control for TiVo Series 3+, v0.29
 # Copyright 2008-2014 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -79,7 +79,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.28'
+__version__ = '0.29'
 __license__ = 'GPL'
 
 import random
@@ -758,21 +758,28 @@ def make_widget_expandable(widget):
     for i in xrange(height):
         widget.rowconfigure(i, weight=1)
 
+def make_label(label, y=0):
+    """ Add a label at line y. """
+    if use_gtk:
+        vbox = gtk.VBox()
+        for l in label.split('\n'):
+            vbox.add(gtk.Label(l))
+        outer.attach(vbox, 0, 1, y, y + 1)
+    else:
+        ttk.Label(outer, text=label).grid(column=0, row=y)
+
 def make_small_window(label):
-    """ Common init for get_address() and list_tivos(). """
+    """ Common init for list_tivos() and error_window(). """
     global outer
     if use_gtk:
         outer = gtk.Table()
         outer.set_border_width(10)
-        vbox = gtk.VBox()
-        for l in label.split('\n'):
-            vbox.add(gtk.Label(l))
-        outer.attach(vbox, 0, 1, 0, 1)
-        window.add(outer)
     else:
         outer = ttk.Frame(window, borderwidth=10)
         outer.pack(fill='both', expand=1)
-        ttk.Label(outer, text=label).grid(column=0, row=0)
+    make_label(label)
+    if use_gtk:
+        window.add(outer)
 
 def main_window_clear():
     """ Remove all widgets from the inside of the window. """
@@ -815,37 +822,6 @@ def graphics_change(widget=None):
     main_window_clear()
     use_gr = not use_gr
 
-def get_address():
-    """ Prompt for an address. """
-    def set_address(window, address):
-        global tivo_address
-        if use_gtk:
-            tivo_address = address.get_text()
-        else:
-            tivo_address = address.get()
-        main_window_clear()
-
-    make_small_window('Enter a TiVo address:')
-
-    if use_gtk:
-        address = gtk.Entry()
-        outer.attach(address, 0, 1, 1, 2)
-    else:
-        address = ttk.Entry(outer)
-        address.grid(column=0, row=1, sticky='news')
-        address.focus_set()
-
-    command = lambda w=None: set_address(window, address)
-
-    if use_gtk:
-        address.connect('activate', command)
-        window.show_all()
-        gtk.main()
-    else:
-        address.bind('<Return>', command)
-        make_widget_expandable(outer)
-        window.mainloop()
-
 def list_tivos(tivos):
     """ TiVo chooser -- show buttons with TiVo names. """
     def choose_tivo(window, name, address):
@@ -854,6 +830,14 @@ def list_tivos(tivos):
         tivo_address = address
         if name in tivo_ports:
             tivo_port = tivo_ports[name]
+        main_window_clear()
+
+    def set_address(window, address_box):
+        global tivo_address
+        if use_gtk:
+            tivo_address = address_box.get_text()
+        else:
+            tivo_address = address_box.get()
         main_window_clear()
 
     def make_tivo_button(widget, window, y, name, address):
@@ -867,17 +851,36 @@ def list_tivos(tivos):
             button = ttk.Button(widget, text=text, command=command)
             button.grid(column=0, row=y, sticky='news')
 
-    make_small_window('Choose a TiVo:')
+    if tivos:
+        make_small_window('Choose a TiVo:')
 
-    names = tivos.keys()
-    names.sort()
-    for i, name in enumerate(names):
-        make_tivo_button(outer, window, i + 1, name, tivos[name])
+        names = tivos.keys()
+        names.sort()
+        for i, name in enumerate(names):
+            make_tivo_button(outer, window, i + 1, name, tivos[name])
+        make_label('Or enter an address:', i + 2)
+        i += 3
+    else:
+        make_small_window('Enter a TiVo address:')
+        i = 1
 
     if use_gtk:
+        address_box = gtk.Entry()
+        outer.attach(address_box, 0, 1, i, i + 1)
+    else:
+        address_box = ttk.Entry(outer)
+        address_box.grid(column=0, row=i, sticky='news')
+        if not tivos:
+            address_box.focus_set()
+
+    command = lambda w=None: set_address(window, address_box)
+
+    if use_gtk:
+        address_box.connect('activate', command)
         window.show_all()
         gtk.main()
     else:
+        address_box.bind('<Return>', command)
         make_widget_expandable(outer)
         window.mainloop()
 
@@ -886,19 +889,14 @@ def pick_tivo():
         methods; if none is set, exit the program.
 
     """
-    global tivo_address, tivo_name, tivo_swversions
+    global tivo_name, tivo_swversions
     if not tivo_address:
         tivos = {}
         if have_zc:
             tivos = find_tivos_zc()
         if not tivos:
             tivos = find_tivos()
-        if not tivos:
-            get_address()
-        elif len(tivos) == 1:
-            tivo_name, tivo_address = list(tivos.items())[0]
-        else:
-            list_tivos(tivos)
+        list_tivos(tivos)
 
     if not tivo_address:
         sys.exit()
