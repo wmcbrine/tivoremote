@@ -199,10 +199,17 @@ BUTTONS = [
            [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': 'go_away'}]]
 ]
 
+# IR codes for direct aspect ratio control
+
 ASPECT_CODES = ['ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_PANEL',
                 'ASPECT_CORRECTION_FULL', 'ASPECT_CORRECTION_WIDE_ZOOM']
 
+# IR codes to toggle closed captions
+
 CC_CODES = ['CC_OFF', 'CC_ON']
+
+# Text, menu item names, and corresponding codes to send, for popup menu 
+# buttons
 
 MENUS = [['Aspt.', ['Zoom', 'Panel', 'Full', 'Stretch'], ASPECT_CODES],
          ['CC', ['Off', 'On'], CC_CODES]]
@@ -468,6 +475,11 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
         focus_button = button
 
 def make_menubutton(widget, y, x, text, titles, codes):
+    """ Create one button with a pull-down menu, given its coordinates, 
+        text, and menu items. Each menu item is a pair of the display 
+        title and the IR code to send.
+
+    """
     def command(code):
         return lambda w=None: irsend(code)
 
@@ -853,7 +865,10 @@ def graphics_change(widget=None):
     use_gr = not use_gr
 
 def list_tivos(tivos):
-    """ TiVo chooser -- show buttons with TiVo names. """
+    """ TiVo chooser -- show buttons with TiVo names, if available, plus 
+        an entry box for the user to specify an address if needed.
+
+    """
     def choose_tivo(window, name, address):
         global tivo_name, tivo_address, tivo_port
         tivo_name = name
