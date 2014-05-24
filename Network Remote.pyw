@@ -158,9 +158,7 @@ BUTTONS = [
            ],
 
            [ #2
-               [{'t': 'Aspect', 'fn': 'aspect_change'},
-                {'t': 'CC', 'fn': 'closed_caption'},
-                {'t': 'Ch+', 'val': ['CHANNELUP']}],
+               [{}, {}, {'t': 'Ch+', 'val': ['CHANNELUP']}],
                [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
                  'NUM9', 'SELECT', 'CLEAR']},
                 {'t': 'Rec', 'val': ['RECORD'], 'gr': u'\u25c9', 's': 'red'},
@@ -200,6 +198,14 @@ BUTTONS = [
            #7
            [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': 'go_away'}]]
 ]
+
+ASPECT_CODES = ['ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_PANEL',
+                'ASPECT_CORRECTION_FULL', 'ASPECT_CORRECTION_WIDE_ZOOM']
+
+CC_CODES = ['CC_OFF', 'CC_ON']
+
+MENUS = [['Aspt.', ['Zoom', 'Panel', 'Full', 'Stretch'], ASPECT_CODES],
+         ['CC', ['Off', 'On'], CC_CODES]]
 
 # Keyboard shortcuts and their corresponding IR codes
 
@@ -340,21 +346,16 @@ def kbsend(*codes):
 def closed_caption(widget=None):
     """ Toggle closed captioning. """
     global captions_on
-    if captions_on:
-        irsend('CC_OFF')
-    else:
-        irsend('CC_ON')
     captions_on = not captions_on
+    irsend(CC_CODES[captions_on])
 
 def aspect_change(widget=None):
     """ Toggle aspect ratio mode. """
     global aspect_ratio
-    aspect_codes = ['ASPECT_CORRECTION_PANEL', 'ASPECT_CORRECTION_FULL',
-                    'ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_WIDE_ZOOM']
+    irsend(ASPECT_CODES[aspect_ratio])
     aspect_ratio += 1
-    if aspect_ratio == len(aspect_codes):
+    if aspect_ratio == len(ASPECT_CODES):
         aspect_ratio = 0
-    irsend(aspect_codes[aspect_ratio])
 
 def kbd_arrows(text, width):
     """ Translate 'text' to a series of cursor motions for the on-screen
@@ -465,6 +466,21 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
     if text == 'Enter':
         global focus_button
         focus_button = button
+
+def make_menubutton(widget, y, x, text, titles, codes):
+    def opt_add(mb, title, code):
+        mb.menu.add_command(label=title, command=lambda: irsend(code))
+
+    if use_gtk:
+        pass
+    else:
+        mb = ttk.Menubutton(widget, text=text, width=4)
+        mb.grid(column=x, row=y, columnspan=1, sticky='news')
+        mb.menu = Tkinter.Menu(mb, tearoff=0)
+        mb['menu'] = mb.menu
+        for title, code in zip(titles, codes):
+            opt_add(mb, title, code)
+        mb.grid()
 
 def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
@@ -1007,6 +1023,9 @@ def main_window():
             for x, each in enumerate(row):
                 if each:
                     make_ircode(table[z], y, x, **each)
+
+    for x, m in enumerate(MENUS):
+        make_menubutton(table[2], 0, x, *m)
 
     if not use_gtk:
         for w in table + [vbox1, vbox2, outer]:
