@@ -1,6 +1,6 @@
-Network Remote Control for TiVo Series 3+, v0.28
+Network Remote Control for TiVo Series 3+, pre-v0.29
 by William McBrine <wmcbrine@gmail.com>
-January 5, 2014
+May 24, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -42,10 +42,10 @@ Zeroconf.py is also needed if you want to use the "modern" style of TiVo
 autodetection, which I recommend.
 
 If it's working properly, you should within a few seconds see a list of 
-available TiVos from which to select, or be immediately connected to 
-your TiVo if only one is found. If autodetection fails, you'll instead 
-get a prompt for your TiVo's address. Alternatively, you can directly 
-specify the TiVo's address on the command line (see below).
+available TiVos from which to select, if any were found, along with a 
+box to enter the address manually, in case it wasn't autodetected. 
+Alternatively, you can directly specify the TiVo's address on the 
+command line (see below).
 
 Zeroconf-based autodetection needs to send and recieve UDP on port 5353. 
 Old-style autodetection sends and recieves TCP and UDP on port 2190, and 
@@ -62,13 +62,12 @@ explanation:
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
 
-Aspect -- Rather then sending the IRCODE, as the Zoom button does, this
-          cycles between zoom modes by sending discrete codes for each
-          mode. This is the only way to access the TiVo's hidden stretch
-          mode, and it's useful in HME apps that do video streaming, but
-          don't act on the Zoom IRCODE.
+Aspect -- This displays a menu that lets you send discrete codes to
+          select each mode. It's the only way to access the TiVo's
+          hidden stretch mode, and it's useful in HME apps that do video
+          streaming, but don't act on the Zoom IRCODE.
 
-CC -- Closed-caption toggle; now uses discrete commands for this purpose
+CC -- Closed-caption menu; now uses discrete commands for this purpose
       instead of the Info-Down-etc. sequence used in older versions.
 
 Clock -- Sends Select-Play-Select-9-Select, to toggle the on-screen clock.
@@ -124,8 +123,8 @@ Slow          o
 Skip          s or =
 Clear         Esc
 Enter         e or .
-Aspect        a
-CC            c
+Aspect        a (cycles instead of showing menu)
+CC            c (toggles instead of showing menu)
 Quit          q
 
 As a bonus, only available via keyboard shortcut:
