@@ -471,16 +471,23 @@ def make_menubutton(widget, y, x, text, titles, codes):
     def command(code):
         return lambda w=None: irsend(code)
 
+    def popup(menu):
+        return lambda w=None: menu.popup(None, None, None, 0, 0)
+
     if use_gtk:
-        mb = gtk.MenuButton(text)
-        widget.attach(mb, x, x + 1, y, y + 1)
         menu = gtk.Menu()
         for title, code in zip(titles, codes):
             item = gtk.MenuItem(title)
             menu.append(item)
             item.connect('activate', command(code))
             item.show()
-        mb.set_popup(menu)
+        if use_gtk3:
+            mb = gtk.MenuButton(text)
+            mb.set_popup(menu)
+        else:
+            mb = gtk.Button(text)
+            mb.connect('clicked', popup(menu))
+        widget.attach(mb, x, x + 1, y, y + 1)
     else:
         mb = ttk.Menubutton(widget, text=text, width=4)
         mb.grid(column=x, row=y, columnspan=1, sticky='news')
