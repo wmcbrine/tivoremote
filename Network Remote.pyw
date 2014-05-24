@@ -468,19 +468,26 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
         focus_button = button
 
 def make_menubutton(widget, y, x, text, titles, codes):
-    def opt_add(mb, title, code):
-        mb.menu.add_command(label=title, command=lambda: irsend(code))
+    def command(code):
+        return lambda w=None: irsend(code)
 
     if use_gtk:
-        pass
+        mb = gtk.MenuButton(text)
+        widget.attach(mb, x, x + 1, y, y + 1)
+        menu = gtk.Menu()
+        for title, code in zip(titles, codes):
+            item = gtk.MenuItem(title)
+            menu.append(item)
+            item.connect('activate', command(code))
+            item.show()
+        mb.set_popup(menu)
     else:
         mb = ttk.Menubutton(widget, text=text, width=4)
         mb.grid(column=x, row=y, columnspan=1, sticky='news')
-        mb.menu = Tkinter.Menu(mb, tearoff=0)
-        mb['menu'] = mb.menu
+        menu = Tkinter.Menu(mb, tearoff=0)
+        mb['menu'] = menu
         for title, code in zip(titles, codes):
-            opt_add(mb, title, code)
-        mb.grid()
+            menu.add_command(label=title, command=command(code))
 
 def make_tk_key(key, code):
     """ Tk only -- bind handler functions for each keyboard shortcut.
