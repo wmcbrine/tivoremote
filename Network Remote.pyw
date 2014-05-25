@@ -304,6 +304,10 @@ def go_away(widget=None):
     exit_all = True
 
 def check_port():
+    """ If tivo_address specifies a port, split it off and set
+        tivo_port.
+
+    """
     global tivo_address, tivo_port
     if ':' in tivo_address:
         tivo_address, port = tivo_address.split(':')
