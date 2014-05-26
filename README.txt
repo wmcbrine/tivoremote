@@ -1,6 +1,6 @@
-Network Remote Control for TiVo Series 3+, pre-v0.29
+Network Remote Control for TiVo Series 3+, v0.29
 by William McBrine <wmcbrine@gmail.com>
-May 24, 2014
+May 26, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -200,6 +200,36 @@ Command-Line Options
 
 Changes
 -------
+
+0.29 -- The Aspect and CC buttons now pull down menus with all the 
+        options for each, instead of cycling through. The "Aspect" label
+        has been shortened to "Aspt." to fit. The keyboard shortcuts
+        still cycle as before.
+
+        On startup, the TiVo selector is now always displayed (unless an
+        address is given on the command line), even when only a single
+        TiVo is found; and the entry box is included after the list of
+        TiVos, so you can always enter an address that's not on the
+        list. These changes can help in some cases where the TiVos'
+        announcements aren't making it through the network, or for
+        connecting to things (like rproxy without Zeroconf) that aren't
+        announcing.
+
+        Ports other than 31339 can now be specified, on the command
+        line, in the entry window, etc. (via colon notation, e.g.
+        "1.2.3.4:5678"), and are now recognized via Zeroconf. Although
+        no TiVos use ports other than 31339, this feature can be useful
+        with rproxy (q.v.). When no port is given, 31339 is the default.
+
+        For Tivos proxied via rproxy (and assuming that the proxy is
+        announcing via Zeroconf), the entry for the original TiVo is
+        now automatically removed from the list of TiVos available to
+        connect to at startup (since you can't connect to it anyway).
+
+        The Mac app bundle now uses the default Python (2.7) instead of
+        2.6. This is necessary to get the benefits of ttk, but it drops
+        support for OS X 10.6 in the resulting app. (You can still use
+        the non-app version.) Let me know if this is an issue.
 
 0.28 -- The Mac app bundle is now signed (for compatibility with
         Gatekeeper), and sandboxed -- its only permissions are network
