@@ -729,6 +729,15 @@ def find_tivos_zc():
     # Give them a second to respond
     time.sleep(1)
 
+    # For proxied TiVos, remove the original
+    for t in tivo_names[:]:
+        if t.startswith('Proxy('):
+            try:
+                t = t.replace('.' + REMOTE, '')[6:-1] + '.' + REMOTE
+                tivo_names.remove(t)
+            except:
+                pass
+
     # Now get the addresses -- this is the slow part
     swversion = re.compile('(\d*.\d*)').findall
     for t in tivo_names:
