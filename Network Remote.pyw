@@ -745,7 +745,10 @@ def find_tivos_zc():
         if s:
             name = t.replace('.' + REMOTE, '')
             address = socket.inet_ntoa(s.getAddress())
-            version = float(swversion(s.getProperties()['swversion'])[0])
+            try:
+                version = float(swversion(s.getProperties()['swversion'])[0])
+            except:
+                version = 0.0
             tivos[name] = address
             tivo_ports[name] = s.getPort()
             tivo_swversions[name] = version
