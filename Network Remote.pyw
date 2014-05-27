@@ -717,6 +717,7 @@ def find_tivos_zc():
     REMOTE = '_tivo-remote._tcp.local.'
 
     tivos = {}
+    tivos_rev = {}
     tivo_names = []
 
     # Get the names of TiVos offering network remote control
@@ -750,8 +751,16 @@ def find_tivos_zc():
             except:
                 version = 0.0
             tivos[name] = address
+            tivos_rev[address] = name
             tivo_ports[name] = s.getPort()
             tivo_swversions[name] = version
+
+    # For proxies with numeric names, remove the original
+    for t in tivo_names:
+        if t.startswith('Proxy('):
+            address = t.replace('.' + REMOTE, '')[6:-1]
+            if address in tivos_rev:
+                tivos.pop(tivos_rev[address])
 
     serv.close()
     return tivos
