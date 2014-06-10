@@ -1,6 +1,6 @@
-Network Remote Control for TiVo Series 3+, v0.29
+Network Remote Control for TiVo Series 3+, v0.30
 by William McBrine <wmcbrine@gmail.com>
-May 26, 2014
+June 9, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -201,7 +201,17 @@ Command-Line Options
 Changes
 -------
 
-0.29 -- The Aspect and CC buttons now pull down menus with all the 
+0.30 -- Zeroconf announcements without an "swversion" field no longer
+        cause errors. (These could be returned by rproxy in some cases.)
+
+        Expanded the function that skips over proxied TiVos to include
+        those in the form "Proxy(xx.xx.xx.xx)", and not just
+        "Proxy(tivoname)".
+
+        New icon for OS X -- includes the new ttk look, and uses a
+        Roamio as the background (and is also a smaller file).
+
+0.29 -- The Aspect and CC buttons now pull down menus with all the
         options for each, instead of cycling through. The "Aspect" label
         has been shortened to "Aspt." to fit. The keyboard shortcuts
         still cycle as before.
