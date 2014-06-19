@@ -38,7 +38,7 @@ extract the Network Remote archive anywhere, and click on "Network
 Remote.pyw", or run it from the command line. (Mac users may have to use 
 the context menu if starting it from the GUI.) No installation is 
 required. Network Remote.pyw is the only required file, although 
-Zeroconf.py is also needed if you want to use the "modern" style of TiVo 
+zeroconf.py is also needed if you want to use the "modern" style of TiVo 
 autodetection, which I recommend.
 
 If it's working properly, you should within a few seconds see a list of 

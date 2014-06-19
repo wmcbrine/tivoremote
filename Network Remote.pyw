@@ -722,8 +722,8 @@ def find_tivos_zc():
 
     # Get the names of TiVos offering network remote control
     try:
-        serv = Zeroconf.Zeroconf()
-        browser = Zeroconf.ServiceBrowser(serv, REMOTE, ZCListener(tivo_names))
+        serv = zeroconf.Zeroconf()
+        browser = zeroconf.ServiceBrowser(serv, REMOTE, ZCListener(tivo_names))
     except:
         return tivos
 
@@ -1156,7 +1156,7 @@ if __name__ == '__main__':
 
     try:
         assert(have_zc)
-        import Zeroconf
+        import zeroconf
     except:
         have_zc = False
 
