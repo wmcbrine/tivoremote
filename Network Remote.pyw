@@ -228,6 +228,8 @@ KEYS = {'t': 'TIVO',
         'Page_Up': 'CHANNELUP', 'r': 'RECORD',
         'Page_Down': 'CHANNELDOWN',
 
+        'Prior': 'CHANNELUP', 'Next': 'CHANNELDOWN',
+
         'p': 'PLAY', 'v': 'REVERSE',
         'space': 'PAUSE', 'f': 'FORWARD',
         'x': 'REPLAY', 'o': 'SLOW', 's': 'ADVANCE',
@@ -473,6 +475,7 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
                 button.configure(style=style + '.TButton')
             else:
                 button.config(foreground=COLOR[style])
+        button.bind('<Key>', handle_tk_key)
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
     if text == 'Enter':
         global focus_button
@@ -512,29 +515,11 @@ def make_menubutton(widget, y, x, text, titles, codes):
         for title, code in zip(titles, codes):
             menu.add_command(label=title, command=command(code))
 
-def make_tk_key(key, code):
-    """ Tk only -- bind handler functions for each keyboard shortcut.
+def handle_key(key):
+    """ Look up the code or other command for a keyboard shortcut.
+        Unhandled keys (mainly, tab) are passed on.
 
     """
-    def send_and_break(code):
-        irsend(code)
-        return 'break'
-
-    key = key.replace('Page_Up', 'Prior').replace('Page_Down', 'Next')
-    if len(key) > 1:
-        key = '<' + key + '>'
-    try:
-        focus_button.bind(key, lambda w: send_and_break(code))
-    except:
-        pass  # allow for unknown keys
-
-def handle_gtk_key(widget, event):
-    """ Gtk only -- look up the code or other command for a keyboard
-        shortcut. This function is connected to the key_press_event for
-        each button. Unhandled keys (mainly, tab) are passed on.
-
-    """
-    key = gdk.keyval_name(event.keyval)
     if key in KEYS:
         irsend(KEYS[key])
     elif key in FUNCKEYS:
@@ -542,6 +527,23 @@ def handle_gtk_key(widget, event):
     else:
         return False
     return True
+
+def handle_tk_key(event):
+    """ Tk only -- This function is connected to the <Key> event
+        for each button.
+
+    """
+    key = event.keysym
+    if handle_key(key):
+        return 'break'
+
+def handle_gtk_key(widget, event):
+    """ Gtk only -- This function is connected to the key_press_event
+        for each button.
+
+    """
+    key = gdk.keyval_name(event.keyval)
+    return handle_key(key)
 
 def handle_escape(widget, event):
     """ Gtk only -- when in key_text, take focus away if the user
@@ -1085,12 +1087,6 @@ def main_window():
         for w in table + [vbox1, vbox2, outer]:
             make_widget_expandable(w)
 
-        # Keyboard shortcuts
-        for each in KEYS:
-            make_tk_key(each, KEYS[each])
-
-        for each in FUNCKEYS:
-            focus_button.bind(each, eval(FUNCKEYS[each]))
         focus_button.focus_set()
 
     thread.start_new_thread(status_update, ())
