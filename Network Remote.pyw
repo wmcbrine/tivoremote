@@ -506,9 +506,11 @@ def make_menubutton(widget, y, x, text, titles, codes):
         else:
             mb = gtk.Button(text)
             mb.connect('clicked', popup(menu))
+        mb.connect('key_press_event', handle_gtk_key)
         widget.attach(mb, x, x + 1, y, y + 1)
     else:
         mb = ttk.Menubutton(widget, text=text, width=4)
+        mb.bind('<Key>', handle_tk_key)
         mb.grid(column=x, row=y, columnspan=1, sticky='news')
         menu = Tkinter.Menu(mb, tearoff=0)
         mb['menu'] = menu
