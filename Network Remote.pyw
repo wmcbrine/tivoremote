@@ -143,7 +143,7 @@ BUTTONS = [
                [{'t': 'TiVo', 'cols': 3}],
                [{'t': 'Zoom', 'val': ['WINDOW']},
                 {'t': 'Info'}, {'t': 'LiveTV'}],
-               [{'t': 'Guide', 'cols': 3}]
+               [{'t': 'Back'}, {'t': 'Guide', 'cols': 2}]
            ],
 
            [ #1
@@ -218,7 +218,7 @@ MENUS = [['Aspt.', ['Zoom', 'Panel', 'Full', 'Stretch'], ASPECT_CODES],
 
 KEYS = {'t': 'TIVO',
         'z': 'WINDOW', 'i': 'INFO', 'l': 'LIVETV',
-        'g': 'GUIDE',
+        'b': 'BACK', 'g': 'GUIDE',
 
         'Up': 'UP',
         'Left': 'LEFT', 'Return': 'SELECT', 'Right': 'RIGHT',
