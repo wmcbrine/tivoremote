@@ -129,6 +129,22 @@ Version %s
 Copyright 2008-2014 %s
 http://wmcbrine.com/tivo/""" % (__version__, __author__)
 
+# IR codes for direct aspect ratio control
+
+ASPECT_CODES = ['ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_PANEL',
+                'ASPECT_CORRECTION_FULL', 'ASPECT_CORRECTION_WIDE_ZOOM']
+
+# IR codes to toggle closed captions
+
+CC_CODES = ['CC_OFF', 'CC_ON']
+
+# IR codes to switch video modes
+
+VMODE_CODES = ['VIDEO_MODE_FIXED_480i', 'VIDEO_MODE_FIXED_480p',
+               'VIDEO_MODE_FIXED_720p', 'VIDEO_MODE_FIXED_1080i',
+               'VIDEO_MODE_HYBRID', 'VIDEO_MODE_HYBRID_720p',
+               'VIDEO_MODE_HYBRID_1080i', 'VIDEO_MODE_NATIVE']
+
 # Text, IR codes (if different from the text), number of columns (if 
 # greater than one), function (if not irsend()), alternate graphical 
 # representation (if defined), and color (if not black), for each 
@@ -141,55 +157,64 @@ http://wmcbrine.com/tivo/""" % (__version__, __author__)
 BUTTONS = [
            [ #0
                [{'t': 'TiVo', 'cols': 3}],
-               [{'t': 'Zoom', 'val': ['WINDOW']},
+               [{'t': 'Zoom', 'val': 'WINDOW'},
                 {'t': 'Info'}, {'t': 'LiveTV'}],
-               [{'t': 'Back'}, {'t': 'Guide', 'cols': 2}]
+               [{'t': 'Back'}, {'t': 'Guide'},
+                {'t': 'Mcr.', 'titles': ['Clock', 'SPS30'],
+                 'codes': [['SELECT', 'PLAY', 'SELECT', 'NUM9', 
+                 'SELECT', 'CLEAR'], ['SELECT', 'PLAY', 'SELECT', 
+                 'NUM3', 'NUM0', 'SELECT', 'CLEAR']]}]
            ],
 
            [ #1
                [{}, {'t': 'Up', 'gr': u'\u2191'}],
                [{'t': 'Left', 'gr': u'\u2190'}, {'t': 'Select'},
                 {'t': 'Right', 'gr': u'\u2192'}],
-               [{'t': 'ThDn', 'val': ['THUMBSDOWN'], 'gr': u'\u261f',
+               [{'t': 'ThDn', 'val': 'THUMBSDOWN', 'gr': u'\u261f',
                  's': 'red'},
                 {'t': 'Down', 'gr': u'\u2193'},
-                {'t': 'ThUp', 'val': ['THUMBSUP'], 'gr': u'\u261d',
+                {'t': 'ThUp', 'val': 'THUMBSUP', 'gr': u'\u261d',
                  's': 'green'}]
            ],
 
            [ #2
-               [{}, {}, {'t': 'Ch+', 'val': ['CHANNELUP']}],
-               [{'t': 'Clock', 'val': ['SELECT', 'PLAY', 'SELECT', 
-                 'NUM9', 'SELECT', 'CLEAR']},
-                {'t': 'Rec', 'val': ['RECORD'], 'gr': u'\u25c9', 's': 'red'},
-                {'t': 'Ch-', 'val': ['CHANNELDOWN']}]
+               [{'t': 'Aspt.', 'titles': ['Zoom', 'Panel', 'Full', 'Stretch'],
+                 'codes': ASPECT_CODES},
+                {'t': 'CC', 'titles': ['Off', 'On'], 'codes': CC_CODES},
+                {'t': 'Ch+', 'val': 'CHANNELUP'}],
+               [{'t': 'Vid.', 'titles': ['480i Fixed', '480p Fixed',
+                 '720p Fixed', '1080i Fixed', 'Hybrid',
+                 '720p Hybrid', '1080i Hybrid', 'Native'],
+                 'codes': VMODE_CODES},
+                {'t': 'Rec', 'val': 'RECORD', 'gr': u'\u25c9', 's': 'red'},
+                {'t': 'Ch-', 'val': 'CHANNELDOWN'}]
            ],
 
            [ #3
                [{}, {'t': 'Play', 'gr': u'\u25b6'}],
-               [{'t': 'Rev', 'val': ['REVERSE'], 'gr': u'\u25c0\u25c0'},
+               [{'t': 'Rev', 'val': 'REVERSE', 'gr': u'\u25c0\u25c0'},
                 {'t': 'Pause', 'gr': u'\u2759\u2759', 's': 'yellow'},
-                {'t': 'FF', 'val': ['FORWARD'], 'gr': u'\u25b6\u25b6'}],
+                {'t': 'FF', 'val': 'FORWARD', 'gr': u'\u25b6\u25b6'}],
                [{'t': 'Replay', 'gr': u'\u21bb'},
                 {'t': 'Slow', 'gr': u'\u2759\u25b6'},
-                {'t': 'Skip', 'val': ['ADVANCE'], 'gr': u'\u21e5'}]
+                {'t': 'Skip', 'val': 'ADVANCE', 'gr': u'\u21e5'}]
            ],
 
            [ #4
-               [{'t': 'A', 'val': ['ACTION_A'], 'width': 3, 's': 'yellow'},
-                {'t': 'B', 'val': ['ACTION_B'], 'width': 3, 's': 'blue'},
-                {'t': 'C', 'val': ['ACTION_C'], 'width': 3, 's': 'red'},
-                {'t': 'D', 'val': ['ACTION_D'], 'width': 3, 's': 'green'}]
+               [{'t': 'A', 'val': 'ACTION_A', 'width': 3, 's': 'yellow'},
+                {'t': 'B', 'val': 'ACTION_B', 'width': 3, 's': 'blue'},
+                {'t': 'C', 'val': 'ACTION_C', 'width': 3, 's': 'red'},
+                {'t': 'D', 'val': 'ACTION_D', 'width': 3, 's': 'green'}]
            ],
 
            [ #5
-               [{'t': '1', 'val': ['NUM1']}, {'t': '2', 'val': ['NUM2']},
-                {'t': '3', 'val': ['NUM3']}],
-               [{'t': '4', 'val': ['NUM4']}, {'t': '5', 'val': ['NUM5']},
-                {'t': '6', 'val': ['NUM6']}],
-               [{'t': '7', 'val': ['NUM7']}, {'t': '8', 'val': ['NUM8']},
-                {'t': '9', 'val': ['NUM9']}],
-               [{'t': 'Clear'}, {'t': '0', 'val': ['NUM0']}, {'t': 'Enter'}]
+               [{'t': '1', 'val': 'NUM1'}, {'t': '2', 'val': 'NUM2'},
+                {'t': '3', 'val': 'NUM3'}],
+               [{'t': '4', 'val': 'NUM4'}, {'t': '5', 'val': 'NUM5'},
+                {'t': '6', 'val': 'NUM6'}],
+               [{'t': '7', 'val': 'NUM7'}, {'t': '8', 'val': 'NUM8'},
+                {'t': '9', 'val': 'NUM9'}],
+               [{'t': 'Clear'}, {'t': '0', 'val': 'NUM0'}, {'t': 'Enter'}]
            ],
 
            #6 - Text entry widgets will be added here
@@ -198,21 +223,6 @@ BUTTONS = [
            #7
            [[{'t': 'Standby', 'cols': 2}, {}, {'t': 'Quit', 'fn': 'go_away'}]]
 ]
-
-# IR codes for direct aspect ratio control
-
-ASPECT_CODES = ['ASPECT_CORRECTION_ZOOM', 'ASPECT_CORRECTION_PANEL',
-                'ASPECT_CORRECTION_FULL', 'ASPECT_CORRECTION_WIDE_ZOOM']
-
-# IR codes to toggle closed captions
-
-CC_CODES = ['CC_OFF', 'CC_ON']
-
-# Text, menu item names, and corresponding codes to send, for popup menu 
-# buttons
-
-MENUS = [['Aspt.', ['Zoom', 'Panel', 'Full', 'Stretch'], ASPECT_CODES],
-         ['CC', ['Off', 'On'], CC_CODES]]
 
 # Keyboard shortcuts and their corresponding IR codes
 
@@ -349,7 +359,10 @@ def send(message):
 def irsend(*codes):
     """ Expand a command sequence for send(). """
     for each in codes:
-        send('IRCODE %s\r' % each)
+        if type(each) == list:
+            irsend(*each)
+        else:
+            send('IRCODE %s\r' % each)
 
 def kbsend(*codes):
     """ Expand a KEYBOARD command sequence for send(). """
@@ -481,7 +494,7 @@ def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
         global focus_button
         focus_button = button
 
-def make_menubutton(widget, y, x, text, titles, codes):
+def make_menubutton(widget, y, x, t, titles, codes):
     """ Create one button with a pull-down menu, given its coordinates, 
         text, and menu items. Each menu item is a pair of the display 
         title and the IR code to send.
@@ -501,15 +514,15 @@ def make_menubutton(widget, y, x, text, titles, codes):
             item.connect('activate', command(code))
             item.show()
         if use_gtk3:
-            mb = gtk.MenuButton(text)
+            mb = gtk.MenuButton(t)
             mb.set_popup(menu)
         else:
-            mb = gtk.Button(text)
+            mb = gtk.Button(t)
             mb.connect('clicked', popup(menu))
         mb.connect('key_press_event', handle_gtk_key)
         widget.attach(mb, x, x + 1, y, y + 1)
     else:
-        mb = ttk.Menubutton(widget, text=text, width=4)
+        mb = ttk.Menubutton(widget, text=t, width=4)
         mb.bind('<Key>', handle_tk_key)
         mb.grid(column=x, row=y, columnspan=1, sticky='news')
         menu = Tkinter.Menu(mb, tearoff=0)
@@ -558,14 +571,14 @@ def handle_escape(widget, event):
         return True
     return False
 
-def make_ircode(widget, y, x, t, val=[], cols=1, width=5, fn='', gr='', s=''):
+def make_ircode(widget, y, x, t, val='', cols=1, width=5, fn='', gr='', s=''):
     """ Make an IRCODE command, then make a button with it. """
     if fn:
         fn = eval(fn)
     else:
         if not val:
-            val = [t.upper()]
-        fn = lambda w=None: irsend(*val)
+            val = t.upper()
+        fn = lambda w=None: irsend(val)
     if use_gr and gr:
         t = gr
     make_button(widget, y, x, t, fn, cols, width, s)
@@ -1080,10 +1093,10 @@ def main_window():
         for y, row in enumerate(button_group):
             for x, each in enumerate(row):
                 if each:
-                    make_ircode(table[z], y, x, **each)
-
-    for x, m in enumerate(MENUS):
-        make_menubutton(table[2], 0, x, *m)
+                    if 'titles' in each:
+                        make_menubutton(table[z], y, x, **each)
+                    else:
+                        make_ircode(table[z], y, x, **each)
 
     if not use_gtk:
         for w in table + [vbox1, vbox2, outer]:
