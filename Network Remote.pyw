@@ -537,7 +537,7 @@ def make_button(widget, y, x, t, val=None, cols=1, width=5, fn=None,
 
     if use_gtk:
         button.connect('key_press_event', handle_gtk_key)
-        parent.attach(button, x, x + cols, y, y + 1)
+        widget.attach(button, x, x + cols, y, y + 1)
     else:
         button.bind('<Key>', handle_tk_key)
         button.grid(column=x, row=y, columnspan=cols, sticky='news')
