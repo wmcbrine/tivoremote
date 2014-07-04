@@ -183,9 +183,8 @@ BUTTONS = [
                 {'t': 'CC', 'titles': ['Off', 'On'], 'codes': CC_CODES},
                 {'t': 'Ch+', 'val': 'CHANNELUP'}],
                [{'t': 'Vid.', 'titles': ['480i Fixed', '480p Fixed',
-                 '720p Fixed', '1080i Fixed', 'Hybrid',
-                 '720p Hybrid', '1080i Hybrid', 'Native'],
-                 'codes': VMODE_CODES},
+                 '720p Fixed', '1080i Fixed', 'Hybrid', '720p Hybrid',
+                 '1080i Hybrid', 'Native'], 'codes': VMODE_CODES},
                 {'t': 'Rec', 'val': 'RECORD', 'gr': u'\u25c9', 's': 'red'},
                 {'t': 'Ch-', 'val': 'CHANNELDOWN'}]
            ],
