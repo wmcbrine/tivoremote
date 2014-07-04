@@ -471,32 +471,10 @@ def keyboard(widget=None):
         key_text.delete(0, 'end')
         focus_button.focus_set()
 
-def make_button(widget, y, x, text, command, cols=1, width=5, style=''):
-    """ Create one button, given its coordinates, text and command. """
-    if use_gtk:
-        button = gtk.Button(text)
-        if use_color and style:
-            button.get_child().modify_fg(norm, gdk.color_parse(COLOR[style]))
-        button.connect('clicked', command)
-        button.connect('key_press_event', handle_gtk_key)
-        widget.attach(button, x, x + cols, y, y + 1)
-    else:
-        button = ttk.Button(widget, text=text, command=command, width=width)
-        if use_color and style:
-            if has_ttk:
-                button.configure(style=style + '.TButton')
-            else:
-                button.config(foreground=COLOR[style])
-        button.bind('<Key>', handle_tk_key)
-        button.grid(column=x, row=y, columnspan=cols, sticky='news')
-    if text == 'Enter':
-        global focus_button
-        focus_button = button
-
-def make_menubutton(widget, y, x, t, titles, codes):
-    """ Create one button with a pull-down menu, given its coordinates, 
-        text, and menu items. Each menu item is a pair of the display 
-        title and the IR code to send.
+def make_button(widget, y, x, t, val=None, cols=1, width=5, fn=None, 
+                gr=None, s=None, titles=None, codes=None):
+    """ Create one button, given its coordinates, text, and command, or
+        menu items.
 
     """
     def command(code):
@@ -505,29 +483,68 @@ def make_menubutton(widget, y, x, t, titles, codes):
     def popup(menu):
         return lambda w=None: menu.popup(None, None, None, 0, 0)
 
-    if use_gtk:
-        menu = gtk.Menu()
-        for title, code in zip(titles, codes):
-            item = gtk.MenuItem(title)
-            menu.append(item)
-            item.connect('activate', command(code))
-            item.show()
-        if use_gtk3:
-            mb = gtk.MenuButton(t)
-            mb.set_popup(menu)
+    if titles:
+        # Menu button
+        if use_gr and gr:
+            t = gr
+        if use_gtk:
+            menu = gtk.Menu()
+            if use_gtk3:
+                button = gtk.MenuButton(t)
+                button.set_popup(menu)
+            else:
+                button = gtk.Button(t)
+                button.connect('clicked', popup(menu))
         else:
-            mb = gtk.Button(t)
-            mb.connect('clicked', popup(menu))
-        mb.connect('key_press_event', handle_gtk_key)
-        widget.attach(mb, x, x + 1, y, y + 1)
-    else:
-        mb = ttk.Menubutton(widget, text=t, width=4)
-        mb.bind('<Key>', handle_tk_key)
-        mb.grid(column=x, row=y, columnspan=1, sticky='news')
-        menu = Tkinter.Menu(mb, tearoff=0)
-        mb['menu'] = menu
+            button = ttk.Menubutton(widget, text=t, width=4)
+            menu = Tkinter.Menu(button, tearoff=0)
+            button['menu'] = menu
+
         for title, code in zip(titles, codes):
-            menu.add_command(label=title, command=command(code))
+            if use_gtk:
+                item = gtk.MenuItem(title)
+                menu.append(item)
+                item.connect('activate', command(code))
+                item.show()
+            else:
+                menu.add_command(label=title, command=command(code))
+    else:
+        # Simple button
+        if fn:
+            fn = eval(fn)
+        else:
+            if not val:
+                val = t.upper()
+            fn = command(val)
+        if use_gr and gr:
+            t = gr
+
+        if use_gtk:
+            button = gtk.Button(t)
+            button.connect('clicked', fn)
+        else:
+            button = ttk.Button(widget, text=t, command=fn, width=width)
+
+    # Common
+    if use_color and s:
+        if use_gtk:
+            button.get_child().modify_fg(norm, gdk.color_parse(COLOR[s]))
+        else:
+            if has_ttk:
+                button.configure(style=s + '.TButton')
+            else:
+                button.config(foreground=COLOR[s])
+
+    if use_gtk:
+        button.connect('key_press_event', handle_gtk_key)
+        parent.attach(button, x, x + cols, y, y + 1)
+    else:
+        button.bind('<Key>', handle_tk_key)
+        button.grid(column=x, row=y, columnspan=cols, sticky='news')
+
+    if t == 'Enter':
+        global focus_button
+        focus_button = button
 
 def handle_key(key):
     """ Look up the code or other command for a keyboard shortcut.
@@ -569,18 +586,6 @@ def handle_escape(widget, event):
         focus_button.grab_focus()
         return True
     return False
-
-def make_ircode(widget, y, x, t, val='', cols=1, width=5, fn='', gr='', s=''):
-    """ Make an IRCODE command, then make a button with it. """
-    if fn:
-        fn = eval(fn)
-    else:
-        if not val:
-            val = t.upper()
-        fn = lambda w=None: irsend(val)
-    if use_gr and gr:
-        t = gr
-    make_button(widget, y, x, t, fn, cols, width, s)
 
 def status_update():
     """ Read incoming messages from the socket in a separate thread and 
@@ -1092,10 +1097,7 @@ def main_window():
         for y, row in enumerate(button_group):
             for x, each in enumerate(row):
                 if each:
-                    if 'titles' in each:
-                        make_menubutton(table[z], y, x, **each)
-                    else:
-                        make_ircode(table[z], y, x, **each)
+                    make_button(table[z], y, x, **each)
 
     if not use_gtk:
         for w in table + [vbox1, vbox2, outer]:
