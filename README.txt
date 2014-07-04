@@ -5,9 +5,9 @@ June 9, 2014
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
 
-Python 2.x is required (tested on 2.5 through 2.7), as well as Tkinter 
-(normally part of Python's standard library) or GTK. Mac OS X and Linux 
-users should have what they need already; Windows users should visit 
+Python 2.x is required (tested on 2.7), as well as Tkinter (normally 
+part of Python's standard library) or GTK. Mac OS X and Linux users 
+should have what they need already; Windows users should visit 
 http://python.org/ . The remote has also been tested on Windows CE and 
 other platforms.
 
@@ -62,15 +62,26 @@ explanation:
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
 
-Aspect -- This displays a menu that lets you send discrete codes to
-          select each mode. It's the only way to access the TiVo's
-          hidden stretch mode, and it's useful in HME apps that do video
-          streaming, but don't act on the Zoom IRCODE.
+Aspt. -- This displays a menu that lets you send discrete codes to
+         select each mode. It's the only way to access the TiVo's
+         hidden stretch mode, and it's useful in HME apps that do video
+         streaming, but don't act on the Zoom IRCODE.
 
 CC -- Closed-caption menu; now uses discrete commands for this purpose
       instead of the Info-Down-etc. sequence used in older versions.
 
-Clock -- Sends Select-Play-Select-9-Select, to toggle the on-screen clock.
+Vid. -- A menu of options to change the output video mode. Note that
+        these actually change the options set in Settings > Video >
+        Video Output Format. They may or may not change the current
+        video mode! Also, the list of codes has not been updated to
+        include 1080p modes. Use with caution.
+
+Mcr. -- A menu of macros (multi-code sequences). "Clock" sends
+        Select-Play-Select-9-Select, to toggle the on-screen clock.
+        "SPS30" sends Select-Play-Select-3-0-Select, to change the
+        behavior of the Advance/Skip button between the default mode and
+        30-second skip. These should be used during playback of a
+        recording, not LiveTV.
 
 Skip -- Also known as "Advance" and "the button with an arrow pointing
         to a line". This is your 30-second skip/slip or catch-up button,
@@ -89,9 +100,6 @@ Standby -- Puts the TiVo into standby mode, or pulls it out of it (into
            standard peanuts.
 
 Quit -- Exits the remote program; doesn't send anything to the TiVo.
-
-Clock should be used only when playing back a recording. Otherwise, the 
-results are unpredictable.
 
 
 Keyboard Shortcuts
@@ -124,7 +132,7 @@ Slow          o
 Skip          s or =
 Clear         Esc
 Enter         e or .
-Aspect        a (cycles instead of showing menu)
+Aspt.         a (cycles instead of showing menu)
 CC            c (toggles instead of showing menu)
 Quit          q
 
@@ -138,7 +146,7 @@ Some of these are taken from the keys used with TiVo's HME simulator
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: Clock and Standby.
+Buttons with no corresponding keyboard shortcuts: Mcr., Vid. and Standby.
 
 
 Text Entry
