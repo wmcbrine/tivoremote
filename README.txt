@@ -1,6 +1,6 @@
-Network Remote Control for TiVo Series 3+, v0.30
+Network Remote Control for TiVo Series 3+, v0.31
 by William McBrine <wmcbrine@gmail.com>
-June 9, 2014
+July 6, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -209,6 +209,29 @@ Command-Line Options
 
 Changes
 -------
+
+0.31 -- Added the new "Back" button, as found on Roamio remotes (sends
+        "IRCODE BACK"). This also has the keyboard shortcut 'b'.
+
+        New menu button "Mcr." (Macros) provides the functions formerly
+        done by the "Clock" and (in 0.4 through 0.26) "SPS30" buttons
+        (although "Vid." actually takes Clock's space in the grid.) Let 
+        me know if there are any other macro sequences I should include 
+        here.
+
+        New menu button "Vid." (Video Mode) to send the direct video
+        switching codes -- see above for details. I don't recommend
+        actually using this, but I include it for completeness.
+
+        Keyboard shortcuts are now bound to all buttons in Tkinter (as
+        they had already been in Gtk), eliminating the problem of
+        clicking on a button and losing keyboard shortcuts. Also, the 
+        shortcuts work with menu buttons now.
+
+        Version 0.14 of zeroconf.py -- see the pyzeroconf project for 
+        details.
+
+        New icon, reflecting new layout (as well as OS X 10.10).
 
 0.30 -- Zeroconf announcements without an "swversion" field no longer
         cause errors. (These could be returned by rproxy in some cases.)

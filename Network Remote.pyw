@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Network Remote Control for TiVo Series 3+, v0.30
+# Network Remote Control for TiVo Series 3+, v0.31
 # Copyright 2008-2014 William McBrine
 #
 # This program is free software; you can redistribute it and/or
@@ -79,7 +79,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.30'
+__version__ = '0.31'
 __license__ = 'GPL'
 
 import random
