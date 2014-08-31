@@ -1,5 +1,5 @@
 source version.py
-rm -r build dist *.dmg
+rm -r build dist *.dmg *.pkg
 python setup.py py2app
 codesign -s "Developer ID Application: William McBrine" --entitlements entitlements.plist "dist/Network Remote.app"
 ln -s /Applications dist/Applications
