@@ -13,12 +13,13 @@ VER += '.0'
 APP = ['Network Remote.pyw']
 DATA_FILES = ['Network Remote.help']
 PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
-         'CFBundleIdentifier': 'com.wmcbrine.NetworkRemote',
+         'CFBundleIdentifier': 'com.wmcbrine.networkremote',
          'CFBundleHelpBookFolder': 'Network Remote.help',
          'CFBundleHelpBookName': 'Network Remote Help',
-         'NSHumanReadableCopyright': '2008-2014 William McBrine'}
-OPTIONS = {'includes': 'zeroconf', 'semi_standalone': True,
-           'site_packages': True, 'argv_inject': ['-g', '-t'],
+         'NSHumanReadableCopyright': '2008-2014 William McBrine',
+         'LSApplicationCategoryType': 'public.app-category.utilities'}
+OPTIONS = {'includes': 'zeroconf', 'semi_standalone': False,
+           'site_packages': False, 'argv_inject': ['-g', '-t'],
            'plist': PLIST, 'iconfile': 'Network Remote.icns'}
 
 setup(
