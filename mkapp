@@ -1,6 +1,6 @@
 source version.py
 rm -r build dist *.dmg *.pkg
-python setup.py py2app
-codesign -s "Developer ID Application: William McBrine" --deep --entitlements entitlements.plist "dist/Network Remote.app"
+/usr/bin/python setup-dmg.py py2app
+codesign --deep --force -s "Developer ID Application: William McBrine" --entitlements entitlements.plist "dist/Network Remote.app"
 ln -s /Applications dist/Applications
 hdiutil create -srcfolder dist -volname "Network Remote" network-remote-${VER}.dmg
