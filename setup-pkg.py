@@ -20,7 +20,7 @@ PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
          'LSApplicationCategoryType': 'public.app-category.utilities'}
 OPTIONS = {'includes': 'zeroconf', 'semi_standalone': False,
            'site_packages': False, 'argv_inject': ['-g', '-t'],
-           'plist': PLIST, 'iconfile': 'Network Remote.icns'}
+           'plist': PLIST, 'iconfile': 'retina.icns'}
 
 setup(
     app=APP,
