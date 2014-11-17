@@ -803,6 +803,8 @@ def init_window():
         window = Tkinter.Tk()
         if 'aqua' == window.tk.call('tk', 'windowingsystem'):
             mac_setup()
+        elif 'win32' == sys.platform:
+            window.iconbitmap('remote.ico')
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
         if use_color and has_ttk:
