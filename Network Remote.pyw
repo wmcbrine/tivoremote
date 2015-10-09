@@ -160,7 +160,7 @@ BUTTONS = [
                [{'t': 'Zoom', 'val': 'WINDOW'},
                 {'t': 'Info'}, {'t': 'LiveTV'}],
                [{'t': 'Back'}, {'t': 'Guide'},
-                {'t': 'Mcr.', 'titles': ['Clock', 'SPS30'],
+                {'t': 'Mcr', 'titles': ['Clock', 'SPS30'],
                  'codes': [['SELECT', 'PLAY', 'SELECT', 'NUM9', 
                  'SELECT', 'CLEAR'], ['SELECT', 'PLAY', 'SELECT', 
                  'NUM3', 'NUM0', 'SELECT', 'CLEAR']]}]
@@ -178,11 +178,11 @@ BUTTONS = [
            ],
 
            [ #2
-               [{'t': 'Aspt.', 'titles': ['Zoom', 'Panel', 'Full', 'Stretch'],
+               [{'t': 'Aspt', 'titles': ['Zoom', 'Panel', 'Full', 'Stretch'],
                  'codes': ASPECT_CODES},
                 {'t': 'CC', 'titles': ['Off', 'On'], 'codes': CC_CODES},
                 {'t': 'Ch+', 'val': 'CHANNELUP'}],
-               [{'t': 'Vid.', 'titles': ['480i Fixed', '480p Fixed',
+               [{'t': 'Vid', 'titles': ['480i Fixed', '480p Fixed',
                  '720p Fixed', '1080i Fixed', 'Hybrid', '720p Hybrid',
                  '1080i Hybrid', 'Native'], 'codes': VMODE_CODES},
                 {'t': 'Rec', 'val': 'RECORD', 'gr': u'\u25c9', 's': 'red'},
@@ -196,7 +196,7 @@ BUTTONS = [
                 {'t': 'FF', 'val': 'FORWARD', 'gr': u'\u25b6\u25b6'}],
                [{'t': 'Replay', 'gr': u'\u21bb'},
                 {'t': 'Slow', 'gr': u'\u2759\u25b6'},
-                {'t': 'Skip', 'val': 'ADVANCE', 'gr': u'\u21e5'}]
+                {'t': 'Adv', 'val': 'ADVANCE', 'gr': u'\u21e5'}]
            ],
 
            [ #4

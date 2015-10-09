@@ -62,7 +62,7 @@ explanation:
 Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
         all use the same code.
 
-Aspt. -- This displays a menu that lets you send discrete codes to
+Aspt  -- This displays a menu that lets you send discrete codes to
          select each mode. It's the only way to access the TiVo's
          hidden stretch mode, and it's useful in HME apps that do video
          streaming, but don't act on the Zoom IRCODE.
@@ -70,21 +70,21 @@ Aspt. -- This displays a menu that lets you send discrete codes to
 CC -- Closed-caption menu; now uses discrete commands for this purpose
       instead of the Info-Down-etc. sequence used in older versions.
 
-Vid. -- A menu of options to change the output video mode. Note that
+Vid  -- A menu of options to change the output video mode. Note that
         these actually change the options set in Settings > Video >
         Video Output Format. They may or may not change the current
         video mode! Also, the list of codes has not been updated to
         include 1080p modes. Use with caution.
 
-Mcr. -- A menu of macros (multi-code sequences). "Clock" sends
+Mcr  -- A menu of macros (multi-code sequences). "Clock" sends
         Select-Play-Select-9-Select, to toggle the on-screen clock.
         "SPS30" sends Select-Play-Select-3-0-Select, to change the
-        behavior of the Advance/Skip button between the default mode and
+        behavior of the Advance button between the default mode and
         30-second skip. These should be used during playback of a
         recording, not LiveTV.
 
-Skip -- Also known as "Advance" and "the button with an arrow pointing
-        to a line". This is your 30-second skip/slip or catch-up button,
+Adv  -- Advance, also known as "the button with an arrow pointing to a
+        line". This is your 30-second skip/slip or catch-up button,
         also used to enter the dash for OTA channels.
 
 A/B/C/D -- The multicolored buttons found on the latest TiVo remotes.
@@ -129,10 +129,10 @@ Pause         Spacebar
 Forward       f or ]
 Replay        x or -
 Slow          o
-Skip          s or =
+Adv           s or =
 Clear         Esc
 Enter         e or .
-Aspt.         a (cycles instead of showing menu)
+Aspt          a (cycles instead of showing menu)
 CC            c (toggles instead of showing menu)
 Quit          q
 
