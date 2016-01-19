@@ -1,6 +1,9 @@
-Network Remote Control for TiVo Series 3+, v0.31
-by William McBrine <wmcbrine@gmail.com>
-July 6, 2014
+Network Remote Control for TiVo Series 3+
+=========================================
+
+:Author:  William McBrine <wmcbrine@gmail.com>
+:Version: 0.31
+:Date:    July 6, 2014
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -59,47 +62,55 @@ Buttons
 The function of most buttons should be obvious, but a few may need 
 explanation:
 
-Zoom -- Also known as "Aspect" or "Window" on pre-Premiere remotes; they
-        all use the same code.
+Zoom
+    Also known as "Aspect" or "Window" on pre-Premiere remotes; they all
+    use the same code.
 
-Aspt  -- This displays a menu that lets you send discrete codes to
-         select each mode. It's the only way to access the TiVo's
-         hidden stretch mode, and it's useful in HME apps that do video
-         streaming, but don't act on the Zoom IRCODE.
+Aspt
+    This displays a menu that lets you send discrete codes to select
+    each mode. It's the only way to access the TiVo's hidden stretch
+    mode, and it's useful in HME apps that do video streaming, but don't
+    act on the Zoom IRCODE.
 
-CC -- Closed-caption menu; now uses discrete commands for this purpose
-      instead of the Info-Down-etc. sequence used in older versions.
+CC
+    Closed-caption menu; now uses discrete commands for this purpose
+    instead of the Info-Down-etc. sequence used in older versions.
 
-Vid  -- A menu of options to change the output video mode. Note that
-        these actually change the options set in Settings > Video >
-        Video Output Format. They may or may not change the current
-        video mode! Also, the list of codes has not been updated to
-        include 1080p modes. Use with caution.
+Vid
+    A menu of options to change the output video mode. Note that these
+    actually change the options set in Settings > Video > Video Output
+    Format. They may or may not change the current video mode! Also, the
+    list of codes has not been updated to include 1080p modes. Use with
+    caution.
 
-Mcr  -- A menu of macros (multi-code sequences). "Clock" sends
-        Select-Play-Select-9-Select, to toggle the on-screen clock.
-        "SPS30" sends Select-Play-Select-3-0-Select, to change the
-        behavior of the Advance button between the default mode and
-        30-second skip. These should be used during playback of a
-        recording, not LiveTV.
+Mcr
+    A menu of macros (multi-code sequences). "Clock" sends
+    Select-Play-Select-9-Select, to toggle the on-screen clock. "SPS30"
+    sends Select-Play-Select-3-0-Select, to change the behavior of the
+    Advance button between the default mode and 30-second skip. These
+    should be used during playback of a recording, not LiveTV.
 
-Adv  -- Advance, also known as "the button with an arrow pointing to a
-        line". This is your 30-second skip/slip or catch-up button,
-        also used to enter the dash for OTA channels.
+Adv
+    Advance, also known as "the button with an arrow pointing to a
+    line". This is your 30-second skip/slip or catch-up button, also
+    used to enter the dash for OTA channels.
 
-A/B/C/D -- The multicolored buttons found on the latest TiVo remotes.
+A/B/C/D
+    The multicolored buttons found on the latest TiVo remotes.
 
-Kbd -- Sends the text in the "Text:" window (see below). Note that you
-       can just hit "Enter" on your keyboard when the text field is in
-       focus to accomplish the same thing (not to be confused with
-       "Enter" on the remote).
+Kbd
+    Sends the text in the "Text:" window (see below). Note that you can
+    just hit "Enter" on your keyboard when the text field is in focus to
+    accomplish the same thing (not to be confused with "Enter" on the
+    remote).
 
-Standby -- Puts the TiVo into standby mode, or pulls it out of it (into
-           LiveTV) if it already was. This function is available as a
-           discrete remote code for universal remotes, but isn't on the 
-           standard peanuts.
+Standby
+    Puts the TiVo into standby mode, or pulls it out of it (into LiveTV)
+    if it already was. This function is available as a discrete remote
+    code for universal remotes, but isn't on the standard peanuts.
 
-Quit -- Exits the remote program; doesn't send anything to the TiVo.
+Quit
+    Exits the remote program; doesn't send anything to the TiVo.
 
 
 Keyboard Shortcuts
@@ -109,44 +120,44 @@ Most buttons have keyboard shortcuts, which can be much more convenient
 to use than mousing around and clicking. Of course these don't work when 
 the text input window has focus. Numbers, letters (A/B/C/D buttons only; 
 not for direct text input) and arrow keys are what you'd expect (use 
-uppercase for A/B/C/D); other shortcuts are:
+uppercase for A/B/C/D); other shortcuts are::
 
-TiVo          t, F1, or F11
-Zoom          z or w
-Info          i or F10
-LiveTV        l or F2
-Back          b
-Guide         g or F3
-Select        Enter/Return
-Thumbs Down   d or F6
-Thumbs Up     u or F5
-Channel Up    PgUp or F7
-Channel Down  PgDn or F8
-Record        r or F9
-Play          p
-Reverse       v or [
-Pause         Spacebar
-Forward       f or ]
-Replay        x or -
-Slow          o
-Adv           s or =
-Clear         Esc
-Enter         e or .
-Aspt          a (cycles instead of showing menu)
-CC            c (toggles instead of showing menu)
-Quit          q
+    TiVo          t, F1, or F11
+    Zoom          z or w
+    Info          i or F10
+    LiveTV        l or F2
+    Back          b
+    Guide         g or F3
+    Select        Enter/Return
+    Thumbs Down   d or F6
+    Thumbs Up     u or F5
+    Channel Up    PgUp or F7
+    Channel Down  PgDn or F8
+    Record        r or F9
+    Play          p
+    Reverse       v or [
+    Pause         Spacebar
+    Forward       f or ]
+    Replay        x or -
+    Slow          o
+    Adv           s or =
+    Clear         Esc
+    Enter         e or .
+    Aspt          a (cycles instead of showing menu)
+    CC            c (toggles instead of showing menu)
+    Quit          q
 
-As a bonus, only available via keyboard shortcut:
+As a bonus, only available via keyboard shortcut::
 
-Stop          `
-Toggle graphical button labels      G
-Switch between Landscape/Portrait   L
+    Stop          `
+    Toggle graphical button labels      G
+    Switch between Landscape/Portrait   L
 
 Some of these are taken from the keys used with TiVo's HME simulator 
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: Mcr., Vid. and Standby.
+Buttons with no corresponding keyboard shortcuts: Mcr, Vid and Standby.
 
 
 Text Entry
@@ -172,39 +183,38 @@ supported, only spaces and numbers will come through in this mode.
 Command-Line Options
 --------------------
 
--v, --version    Print the version and exit.
+-v, --version     Print the version and exit.
 
--h, --help       Print help and exit.
+-h, --help        Print help and exit.
 
--k, --keys       Print the list of keyboard shortcuts and exit.
+-k, --keys        Print the list of keyboard shortcuts and exit.
 
--z, --nozeroconf Don't try the Zeroconf-based method of detecting TiVos.
+-z, --nozeroconf  Don't try the Zeroconf-based method of detecting TiVos.
 
--l, --landscape  Move the second half of the button display to a
-                 position to the right of the first half, instead of 
-                 below it. The default layout is similar to a real TiVo 
-                 peanut, which makes for a very tall, narrow window -- 
-                 too tall for some environments.
+-l, --landscape   Move the second half of the button display to a
+                  position to the right of the first half, instead of
+                  below it. The default layout is similar to a real TiVo
+                  peanut, which makes for a very tall, narrow window --
+                  too tall for some environments.
 
--g, --graphics   Force "graphical" labels for some buttons. Normally
-                 they'll be used automatically on suitable platforms.
+-g, --graphics    Force "graphical" labels for some buttons. Normally
+                  they'll be used automatically on suitable platforms.
 
--p, --plaintext  Force plain text labels for all buttons. If both -g
-                 and -p are specified, the last one on the command
-                 line takes precedence.
+-p, --plaintext   Force plain text labels for all buttons. If both -g
+                  and -p are specified, the last one on the command
+                  line takes precedence.
 
--c, --nocolor    Don't use color to highlight any buttons.
+-c, --nocolor     Don't use color to highlight any buttons.
 
--t, --force-tk   Use the Tkinter GUI even if GTK is available.
+-t, --force-tk    Use the Tkinter GUI even if GTK is available.
 
--2, --force-gtk2 Use the GTK 2 (PyGTK) GUI even if GTK 3 is available.
+-2, --force-gtk2  Use the GTK 2 (PyGTK) GUI even if GTK 3 is available.
 
--o, --old-tk     Use the pre-ttk Tkinter code even if ttk is available.
+-o, --old-tk      Use the pre-ttk Tkinter code even if ttk is available.
 
-<address>        Any other command-line option is treated as the IP
-                 address (name or numeric) of the TiVo to connect to.
-                 Connection is automatic on startup, and disconnection
-                 on exit. May include port (defaults to 31339).
+Any other command-line option is treated as the IP address (name or 
+numeric) of the TiVo to connect to. Connection is automatic on startup, 
+and disconnection on exit. May include port (defaults to 31339).
 
 
 Changes
