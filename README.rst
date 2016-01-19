@@ -220,216 +220,240 @@ and disconnection on exit. May include port (defaults to 31339).
 Changes
 -------
 
-0.31 -- Added the new "Back" button, as found on Roamio remotes (sends
-        "IRCODE BACK"). This also has the keyboard shortcut 'b'.
+0.31
+    Added the new "Back" button, as found on Roamio remotes (sends
+    "IRCODE BACK"). This also has the keyboard shortcut 'b'.
 
-        New menu button "Mcr." (Macros) provides the functions formerly
-        done by the "Clock" and (in 0.4 through 0.26) "SPS30" buttons
-        (although "Vid." actually takes Clock's space in the grid.) Let 
-        me know if there are any other macro sequences I should include 
-        here.
+    New menu button "Mcr." (Macros) provides the functions formerly done
+    by the "Clock" and (in 0.4 through 0.26) "SPS30" buttons (although
+    "Vid." actually takes Clock's space in the grid.) Let me know if
+    there are any other macro sequences I should include here.
 
-        New menu button "Vid." (Video Mode) to send the direct video
-        switching codes -- see above for details. I don't recommend
-        actually using this, but I include it for completeness.
+    New menu button "Vid." (Video Mode) to send the direct video
+    switching codes -- see above for details. I don't recommend actually
+    using this, but I include it for completeness.
 
-        Keyboard shortcuts are now bound to all buttons in Tkinter (as
-        they had already been in Gtk), eliminating the problem of
-        clicking on a button and losing keyboard shortcuts. Also, the 
-        shortcuts work with menu buttons now.
+    Keyboard shortcuts are now bound to all buttons in Tkinter (as they
+    had already been in Gtk), eliminating the problem of clicking on a
+    button and losing keyboard shortcuts. Also, the shortcuts work with
+    menu buttons now.
 
-        Version 0.14 of zeroconf.py -- see the pyzeroconf project for 
-        details.
+    Version 0.14 of zeroconf.py -- see the pyzeroconf project for
+    details.
 
-        New icon, reflecting new layout (as well as OS X 10.10).
+    New icon, reflecting new layout (as well as OS X 10.10).
 
-0.30 -- Zeroconf announcements without an "swversion" field no longer
-        cause errors. (These could be returned by rproxy in some cases.)
+0.30
+    Zeroconf announcements without an "swversion" field no longer cause
+    errors. (These could be returned by rproxy in some cases.)
 
-        Expanded the function that skips over proxied TiVos to include
-        those in the form "Proxy(xx.xx.xx.xx)", and not just
-        "Proxy(tivoname)".
+    Expanded the function that skips over proxied TiVos to include those
+    in the form "Proxy(xx.xx.xx.xx)", and not just "Proxy(tivoname)".
 
-        New icon for OS X -- includes the new ttk look, and uses a
-        Roamio as the background (and is also a smaller file).
+    New icon for OS X -- includes the new ttk look, and uses a Roamio as
+    the background (and is also a smaller file).
 
-0.29 -- The Aspect and CC buttons now pull down menus with all the
-        options for each, instead of cycling through. The "Aspect" label
-        has been shortened to "Aspt." to fit. The keyboard shortcuts
-        still cycle as before.
+0.29
+    The Aspect and CC buttons now pull down menus with all the options
+    for each, instead of cycling through. The "Aspect" label has been
+    shortened to "Aspt." to fit. The keyboard shortcuts still cycle as
+    before.
 
-        On startup, the TiVo selector is now always displayed (unless an
-        address is given on the command line), even when only a single
-        TiVo is found; and the entry box is included after the list of
-        TiVos, so you can always enter an address that's not on the
-        list. These changes can help in some cases where the TiVos'
-        announcements aren't making it through the network, or for
-        connecting to things (like rproxy without Zeroconf) that aren't
-        announcing.
+    On startup, the TiVo selector is now always displayed (unless an
+    address is given on the command line), even when only a single TiVo
+    is found; and the entry box is included after the list of TiVos, so
+    you can always enter an address that's not on the list. These
+    changes can help in some cases where the TiVos' announcements aren't
+    making it through the network, or for connecting to things (like
+    rproxy without Zeroconf) that aren't announcing.
 
-        Ports other than 31339 can now be specified, on the command
-        line, in the entry window, etc. (via colon notation, e.g.
-        "1.2.3.4:5678"), and are now recognized via Zeroconf. Although
-        no TiVos use ports other than 31339, this feature can be useful
-        with rproxy (q.v.). When no port is given, 31339 is the default.
+    Ports other than 31339 can now be specified, on the command line, in
+    the entry window, etc. (via colon notation, e.g. "1.2.3.4:5678"),
+    and are now recognized via Zeroconf. Although no TiVos use ports
+    other than 31339, this feature can be useful with rproxy (q.v.).
+    When no port is given, 31339 is the default.
 
-        For Tivos proxied via rproxy (and assuming that the proxy is
-        announcing via Zeroconf), the entry for the original TiVo is
-        now automatically removed from the list of TiVos available to
-        connect to at startup (since you can't connect to it anyway).
+    For Tivos proxied via rproxy (and assuming that the proxy is
+    announcing via Zeroconf), the entry for the original TiVo is now
+    automatically removed from the list of TiVos available to connect to
+    at startup (since you can't connect to it anyway).
 
-        The Mac app bundle now uses the default Python (2.7) instead of
-        2.6. This is necessary to get the benefits of ttk, but it drops
-        support for OS X 10.6 in the resulting app. (You can still use
-        the non-app version.) Let me know if this is an issue.
+    The Mac app bundle now uses the default Python (2.7) instead of 2.6.
+    This is necessary to get the benefits of ttk, but it drops support
+    for OS X 10.6 in the resulting app. (You can still use the non-app
+    version.) Let me know if this is an issue.
 
-0.28 -- The Mac app bundle is now signed (for compatibility with
-        Gatekeeper), and sandboxed -- its only permissions are network
-        access.
+0.28
+    The Mac app bundle is now signed (for compatibility with
+    Gatekeeper), and sandboxed -- its only permissions are network
+    access.
 
-        GTK 3+ and ttk widgets for Tkinter are now supported, with
-        fallbacks to the old APIs and options to select them. ttk often
-        looks quite a bit nicer than the old Tk version. (ttk requires
-        Python 2.7, AFAIK.)
+    GTK 3+ and ttk widgets for Tkinter are now supported, with fallbacks
+    to the old APIs and options to select them. ttk often looks quite a
+    bit nicer than the old Tk version. (ttk requires Python 2.7, AFAIK.)
 
-        Color highlights are now used for a few keys (A/B/C/D, Thumbs,
-        Rec, Pause), where available (can be disabled by option).
+    Color highlights are now used for a few keys (A/B/C/D, Thumbs, Rec,
+    Pause), where available (can be disabled by option).
 
-        The "graphical" button labels are now the default for most
-        environments, selectable via option and, now, togglable at
-        runtime by pressing "G" (capitalized -- lowercase "g" is still
-        Guide).
+    The "graphical" button labels are now the default for most
+    environments, selectable via option and, now, togglable at runtime
+    by pressing "G" (capitalized -- lowercase "g" is still Guide).
 
-        Landscape mode can also now be toggled at runtime, by pressing
-        "L" (capitalized -- lowercase "l" is still LiveTV). In addition,
-        at startup, if the remote is too "tall" for the screen, it will
-        switch to landscape mode automatically.
+    Landscape mode can also now be toggled at runtime, by pressing "L"
+    (capitalized -- lowercase "l" is still LiveTV). In addition, at
+    startup, if the remote is too "tall" for the screen, it will switch
+    to landscape mode automatically.
 
-        Restored shortcut keys for Aspect ("a") and CC ("c").
+    Restored shortcut keys for Aspect ("a") and CC ("c").
 
-        More robust Zeroconf.
+    More robust Zeroconf.
 
-0.27 -- Enhancements for the Mac -- now builds a proper app bundle.
+0.27
+    Enhancements for the Mac -- now builds a proper app bundle.
 
-        The "Aspect" button is back, but it does something different
-        from "Zoom" (which is also still present); see the "Buttons"
-        section for details. To make a place for this, I've dropped the
-        SPS30S macro button. (Since the setting is preserved across
-        reboots now, it's less needed.)
+    The "Aspect" button is back, but it does something different from
+    "Zoom" (which is also still present); see the "Buttons" section for
+    details. To make a place for this, I've dropped the SPS30S macro
+    button. (Since the setting is preserved across reboots now, it's
+    less needed.)
 
-        Some buttons now have an alternate, "graphical" rendering, via
-        Unicode glyphs, selected by the "-g" command-line option. (This
-        is on by default with the Mac app version.)
+    Some buttons now have an alternate, "graphical" rendering, via
+    Unicode glyphs, selected by the "-g" command-line option. (This is
+    on by default with the Mac app version.)
 
-        Bug: The Thumbs Down shortcut 'd' was overridden by the one for
-        the 'D' button. Fix: The A/B/C/D shortcuts are now capital
-        (shifted) keys.
+    Bug: The Thumbs Down shortcut 'd' was overridden by the one for the
+    'D' button. Fix: The A/B/C/D shortcuts are now capital (shifted)
+    keys.
 
-        Various minor fixes, reorganization, and doc changes.
+    Various minor fixes, reorganization, and doc changes.
 
-        The program's name is now standardized as "Network Remote
-        Control for TiVo", or "Network Remote" for short.
+    The program's name is now standardized as "Network Remote Control
+    for TiVo", or "Network Remote" for short.
 
-        Dropped support for Python 2.3 and 2.4.
+    Dropped support for Python 2.3 and 2.4.
 
-0.26 -- In some Tkinter installations, with versions 0.24 and 0.25,
-        pressing the space bar (to pause) would also invoke the default
-        button widget response of the space bar selecting the button
-        (in this case, the "Enter" button). First reported by "mjh".
+0.26
+    In some Tkinter installations, with versions 0.24 and 0.25, pressing
+    the space bar (to pause) would also invoke the default button widget
+    response of the space bar selecting the button (in this case, the
+    "Enter" button). First reported by "mjh".
 
-0.25 -- The closed caption toggle is no longer a macro, but instead uses
-        IRCODE CC_ON/OFF to change the mode directly. (The program
-        assumes that captions are off at startup; if not, it just takes
-        an extra button press to synchronize with the TiVo's state.)
+0.25
+    The closed caption toggle is no longer a macro, but instead uses
+    IRCODE CC_ON/OFF to change the mode directly. (The program assumes
+    that captions are off at startup; if not, it just takes an extra
+    button press to synchronize with the TiVo's state.)
 
-0.24 -- Back to using the KEYBOARD command on the Premiere (only), as it
-        turns out it's not quite equivalent after all. This new mode
-        allows direct input of mixed case (instead of uppercasing
-        everything, as previously, and still on pre-Premiere units), and
-        of all standard keyboard symbols -- very close to the behavior
-        of a Slide remote or other USB keyboard.
+0.24
+    Back to using the KEYBOARD command on the Premiere (only), as it
+    turns out it's not quite equivalent after all. This new mode allows
+    direct input of mixed case (instead of uppercasing everything, as
+    previously, and still on pre-Premiere units), and of all standard
+    keyboard symbols -- very close to the behavior of a Slide remote or
+    other USB keyboard.
 
-        The rearrangement of widget creation (?) in 0.20 effectively
-        broke the setting of focus to the label in Tk -- since tabbing
-        no longer went directly to the text entry field. Especialy
-        noticeable on Macs, where there's no button highlighting. So, I
-        now use focus_button, as in Gtk. Reported by "MelSmith".
+    The rearrangement of widget creation (?) in 0.20 effectively broke
+    the setting of focus to the label in Tk -- since tabbing no longer
+    went directly to the text entry field. Especially noticeable on
+    Macs, where there's no button highlighting. So, I now use
+    focus_button, as in Gtk. Reported by "MelSmith".
 
-        Changed the "SPS30", "Clock", and "CC" buttons from hardwired
-        functions to ones built from a tuple, "MACROS". Perhaps these
-        will be easier to redefine?
+    Changed the "SPS30", "Clock", and "CC" buttons from hardwired
+    functions to ones built from a tuple, "MACROS". Perhaps these will
+    be easier to redefine?
 
-0.23 -- Direct text input for all supported TiVos, now based on the
-        IRCODE command instead of the KEYBOARD command (which is
-        equivalent except for being limited to the Premiere). This even
-        works in HME apps now (if they're updated to recognize it), so
-        this mode is now the default. Thanks to CT McCurdy for
-        discovering this.
+0.23
+    Direct text input for all supported TiVos, now based on the IRCODE
+    command instead of the KEYBOARD command (which is equivalent except
+    for being limited to the Premiere). This even works in HME apps now
+    (if they're updated to recognize it), so this mode is now the
+    default. Thanks to CT McCurdy for discovering this.
 
-0.22 -- The new keyboard shortcut for the 'C' button conflicted with the
-        one to toggle closed captions. Maybe closed caption toggling is
-        too dangerous to have a keyboard shortcut anyway.
+0.22
+    The new keyboard shortcut for the 'C' button conflicted with the one
+    to toggle closed captions. Maybe closed caption toggling is too
+    dangerous to have a keyboard shortcut anyway.
 
-        Attempt to reconnect automatically.
+    Attempt to reconnect automatically.
 
-        Report more (hopefully all) errors to the GUI instead of the 
-        console.
+    Report more (hopefully all) errors to the GUI instead of the
+    console.
 
-        Expand elements of small windows in Tk, as with the main window.
+    Expand elements of small windows in Tk, as with the main window.
 
-        Some restructuring of the code, hopefully easier to follow.
+    Some restructuring of the code, hopefully easier to follow.
 
-        Finally added a README.txt.
+    Finally added a README.txt.
 
-0.21 -- Use a single window instead of creating and destroying multiple
-        windows (eliminates the losing focus problem). Note that this
-        causes some weirdness with Tkinter: if you manually resize the
-        selector window, the new size is retained for the full window,
-        otherwise the full window resizes itself properly.
+0.21
+    Use a single window instead of creating and destroying multiple
+    windows (eliminates the losing focus problem). Note that this causes
+    some weirdness with Tkinter: if you manually resize the selector
+    window, the new size is retained for the full window, otherwise the
+    full window resizes itself properly.
 
-0.20 -- A, B, C and D buttons for the Premiere; new layout with less
-        excess space; function key shortcuts; "Aspect" becomes "Zoom".
+0.20
+    A, B, C and D buttons for the Premiere; new layout with less excess
+    space; function key shortcuts; "Aspect" becomes "Zoom".
 
-0.19 -- Space and numbers weren't working in direct text input.
+0.19
+    Space and numbers weren't working in direct text input.
 
-0.18 -- Direct text input for the Premiere; minor Zeroconf fixes;
-        support for Australian/NZ TiVos and the Premiere in non-Zeroconf
-        autodection.
+0.18
+    Direct text input for the Premiere; minor Zeroconf fixes; support
+    for Australian/NZ TiVos and the Premiere in non-Zeroconf
+    autodection.
 
-0.17 -- Zeroconf-based autodetection. (This was the last version for 14
-        months, until the release of the Premiere motivated me to resume
-        development.)
+0.17
+    Zeroconf-based autodetection. (This was the last version for 14
+    months, until the release of the Premiere motivated me to resume
+    development.)
 
-0.16 -- Add TiVo HD XL to the supported list.
+0.16
+    Add TiVo HD XL to the supported list.
 
-0.15 -- Make it compatible with Python 2.3; suppress the console window
-        on Macs.
+0.15
+    Make it compatible with Python 2.3; suppress the console window on
+    Macs.
 
-0.14 -- Adapt CC button for 9.4; pop up error on connection failure.
+0.14
+    Adapt CC button for 9.4; pop up error on connection failure.
 
-0.13 -- Autoconnect was failing on single-TiVo networks.
+0.13
+    Autoconnect was failing on single-TiVo networks.
 
-0.12 -- Delay between commands to address crashing TiVos; prompt for
-        address if autodetect fails; minor fixes.
+0.12
+    Delay between commands to address crashing TiVos; prompt for address
+    if autodetect fails; minor fixes.
 
-0.11 -- Autodetect TiVos; fix -h.
+0.11
+    Autodetect TiVos; fix -h.
 
-0.10 -- Fixes for numeric keypad in Tkinter on some platforms.
+0.10
+    Fixes for numeric keypad in Tkinter on some platforms.
 
-0.9  -- Shortcuts from the HME simulator, fix for Gtk in Windows, CLEAR
-        at end of SPS30 and Clock, support numeric keypad.
+0.9
+    Shortcuts from the HME simulator, fix for Gtk in Windows, CLEAR at
+    end of SPS30 and Clock, support numeric keypad.
 
-0.8  -- More command-line options, fixes for keyboard shortcuts.
+0.8
+    More command-line options, fixes for keyboard shortcuts.
 
-0.7  -- Landscape mode.
+0.7
+    Landscape mode.
 
-0.6  -- Keyboard shortcuts.
+0.6
+    Keyboard shortcuts.
 
-0.5  -- Text entry.
+0.5
+    Text entry.
 
-0.4  -- CC, SPS30, Clock.
+0.4
+    CC, SPS30, Clock.
 
-0.3  -- Show status messages; allow address on command line; minor
-        layout changes.
+0.3
+    Show status messages; allow address on command line; minor layout
+    changes.
 
-0.2  -- Added Tkinter support.
+0.2
+    Added Tkinter support.
