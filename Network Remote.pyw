@@ -642,9 +642,11 @@ def get_namever(address):
 
     try:
         tsock = socket.socket()
+        tsock.settimeout(5)
         tsock.connect((address, 2190))
         send_packet(tsock, our_beacon)
         tivo_beacon = recv_packet(tsock)
+        tsock.settimeout(None)
         tsock.close()
         name = machine_name(tivo_beacon)[0]
         version = float(swversion(tivo_beacon)[0])
