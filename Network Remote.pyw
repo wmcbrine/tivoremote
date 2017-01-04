@@ -642,7 +642,7 @@ def get_namever(address):
 
     try:
         tsock = socket.socket()
-        tsock.settimeout(5)
+        tsock.settimeout(2)
         tsock.connect((address, 2190))
         send_packet(tsock, our_beacon)
         tivo_beacon = recv_packet(tsock)
