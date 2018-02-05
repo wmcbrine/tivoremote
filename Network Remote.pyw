@@ -160,10 +160,12 @@ BUTTONS = [
                [{'t': 'Zoom', 'val': 'WINDOW'},
                 {'t': 'Info'}, {'t': 'LiveTV'}],
                [{'t': 'Back'}, {'t': 'Guide'},
-                {'t': 'Misc', 'titles': ['Clock', 'SPS30', 'Find remote'],
+                {'t': 'Misc', 'titles': ['Clock', 'SPS30', 'Find remote',
+                 'Netflix'],
                  'codes': [['SELECT', 'PLAY', 'SELECT', 'NUM9', 
                  'SELECT', 'CLEAR'], ['SELECT', 'PLAY', 'SELECT', 
-                 'NUM3', 'NUM0', 'SELECT', 'CLEAR'], ['FIND_REMOTE']]}]
+                 'NUM3', 'NUM0', 'SELECT', 'CLEAR'], ['FIND_REMOTE'],
+                 ['NETFLIX']]}]
            ],
 
            [ #1
