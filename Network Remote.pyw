@@ -369,6 +369,7 @@ def kbsend(*codes):
     """ Expand a KEYBOARD command sequence for send(). """
     for each in codes:
         send('KEYBOARD %s\r' % each)
+        time.sleep(0.1)
 
 def closed_caption(widget=None):
     """ Toggle closed captioning. """
