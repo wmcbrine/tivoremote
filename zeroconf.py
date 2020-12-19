@@ -822,7 +822,7 @@ class Listener(object):
             if e.args[0] == socket.EBADF:
                 return
             else:
-                raise e
+                raise
         self.data = data
         msg = DNSIncoming(data)
         if msg.isQuery():
