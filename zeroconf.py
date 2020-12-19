@@ -32,6 +32,7 @@ import socket
 import threading
 import select
 import traceback
+from functools import reduce
 
 __all__ = ["Zeroconf", "ServiceInfo", "ServiceBrowser"]
 
@@ -419,7 +420,7 @@ class DNSIncoming(object):
 
     def readQuestions(self):
         """Reads questions section of packet"""
-        for i in xrange(self.numQuestions):
+        for i in range(self.numQuestions):
             name = self.readName()
             type, clazz = self.unpack('!HH')
 
@@ -450,7 +451,7 @@ class DNSIncoming(object):
         """Reads the answers, authorities and additionals section of the
         packet"""
         n = self.numAnswers + self.numAuthorities + self.numAdditionals
-        for i in xrange(n):
+        for i in range(n):
             domain = self.readName()
             type, clazz, ttl, length = self.unpack('!HHiH')
 
@@ -489,7 +490,7 @@ class DNSIncoming(object):
 
     def readUTF(self, offset, length):
         """Reads a UTF-8 string of a given length from the packet"""
-        return unicode(self.data[offset:offset+length], 'utf-8', 'replace')
+        return self.data[offset:offset+length].decode('utf-8', 'replace')
 
     def readName(self):
         """Reads a domain name from the packet"""
@@ -512,10 +513,10 @@ class DNSIncoming(object):
                     next = off + 1
                 off = ((length & 0x3F) << 8) | ord(self.data[off])
                 if off >= first:
-                    raise "Bad domain name (circular) at " + str(off)
+                    raise Exception("Bad domain name (circular) at " + str(off))
                 first = off
             else:
-                raise "Bad domain name at " + str(off)
+                raise Exception("Bad domain name at " + str(off))
 
         if next >= 0:
             self.offset = next
@@ -777,9 +778,8 @@ class Engine(threading.Thread):
                     pass
 
     def getReaders(self):
-        result = []
         self.condition.acquire()
-        result = self.readers.keys()
+        result = list(self.readers.keys())
         self.condition.release()
         return result
     
@@ -815,11 +815,11 @@ class Listener(object):
     def handle_read(self):
         try:
             data, (addr, port) = self.zc.socket.recvfrom(_MAX_MSG_ABSOLUTE)
-        except socket.error, e:
+        except socket.error as e:
             # If the socket was closed by another thread -- which happens
             # regularly on shutdown -- an EBADF exception is thrown here.
             # Ignore it.
-            if e[0] == socket.EBADF:
+            if e.args[0] == socket.EBADF:
                 return
             else:
                 raise e
@@ -1527,26 +1527,27 @@ class Zeroconf(object):
 # query (for Zoe), and service unregistration.
 
 if __name__ == '__main__':
-    print "Multicast DNS Service Discovery for Python, version", __version__
+    print("Multicast DNS Service Discovery for Python, version %s" %
+          __version__)
     r = Zeroconf()
-    print "1. Testing registration of a service..."
+    print("1. Testing registration of a service...")
     desc = {'version':'0.10','a':'test value', 'b':'another value'}
     info = ServiceInfo("_http._tcp.local.",
                        "My Service Name._http._tcp.local.",
                        socket.inet_aton("127.0.0.1"), 1234, 0, 0, desc)
-    print "   Registering service..."
+    print("   Registering service...")
     r.registerService(info)
-    print "   Registration done."
-    print "2. Testing query of service information..."
-    print "   Getting ZOE service:",
-    print str(r.getServiceInfo("_http._tcp.local.", "ZOE._http._tcp.local."))
-    print "   Query done."
-    print "3. Testing query of own service..."
-    print "   Getting self:",
-    print str(r.getServiceInfo("_http._tcp.local.",
-                               "My Service Name._http._tcp.local."))
-    print "   Query done."
-    print "4. Testing unregister of service information..."
+    print("   Registration done.")
+    print("2. Testing query of service information...")
+    print("   Getting ZOE service:")
+    print(str(r.getServiceInfo("_http._tcp.local.", "ZOE._http._tcp.local.")))
+    print("   Query done.")
+    print("3. Testing query of own service...")
+    print("   Getting self:")
+    print(str(r.getServiceInfo("_http._tcp.local.",
+                               "My Service Name._http._tcp.local.")))
+    print("   Query done.")
+    print("4. Testing unregister of service information...")
     r.unregisterService(info)
-    print "   Unregister done."
+    print("   Unregister done.")
     r.close()
