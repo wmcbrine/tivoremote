@@ -607,6 +607,8 @@ def status_update():
     while True:
         try:
             status = sock.recv(80)
+            if pythree:
+                status = status.decode('utf-8')
         except:
             status = ''
         status = status.strip().title()
