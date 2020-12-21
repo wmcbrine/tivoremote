@@ -124,7 +124,8 @@ screen_height = 0
 
 # Colors for special buttons
 
-COLOR = {'red': '#d00', 'blue': '#00a', 'green': '#070', 'yellow': '#aa0'}
+COLOR = {'red': '#d00', 'blue': '#00a', 'green': '#070', 'yellow': '#aa0',
+         'black': '#000'}
 
 TITLE = 'Network Remote'
 
@@ -813,7 +814,8 @@ def init_window():
             screen_height = gdk.screen_height()
     else:
         window = tkinter.Tk()
-        if 'aqua' == window.tk.call('tk', 'windowingsystem'):
+        mac_mode = ('aqua' == window.tk.call('tk', 'windowingsystem'))
+        if mac_mode:
             mac_setup()
         elif 'win32' == sys.platform:
             window.iconbitmap('remote.ico')
@@ -821,6 +823,11 @@ def init_window():
         window.protocol('WM_DELETE_WINDOW', go_away)
         if use_color and has_ttk:
             s = ttk.Style()
+            if mac_mode:
+                s.configure('TLabel', foreground='black')
+                s.configure('TButton', foreground='black')
+                s.configure('TMenubutton', foreground='black')
+                s.configure('TEntry', foreground='black')
             for name, color in COLOR.items():
                 s.map(name + '.TButton', foreground=[('!active', color)])
         screen_width = window.winfo_screenwidth()
