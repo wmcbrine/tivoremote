@@ -88,8 +88,14 @@ import select
 import socket
 import struct
 import sys
-import thread
 import time
+
+pythree = (sys.version_info[0] == 3)
+
+if pythree:
+    import _thread
+else:
+    import thread as _thread
 
 tivo_address = ''
 tivo_port = 31339
@@ -338,8 +344,8 @@ def connect():
         sock.settimeout(5)
         sock.connect((tivo_address, tivo_port))
         sock.settimeout(None)
-    except Exception, msg:
-        msg = 'Could not connect to %s:\n%s' % (tivo_name, msg)
+    except Exception as e:
+        msg = 'Could not connect to %s:\n%s' % (tivo_name, e.args[1])
         error_window(msg)
 
 def send(message):
@@ -350,11 +356,13 @@ def send(message):
     """
     if not sock:
         connect()
-        thread.start_new_thread(status_update, ())
+        _thread.start_new_thread(status_update, ())
     try:
+        if pythree:
+            message = message.encode('utf-8')
         sock.sendall(message)
         time.sleep(0.1)
-    except Exception, msg:
+    except Exception as msg:
         error_window(str(msg))
 
 def irsend(*codes):
@@ -401,16 +409,16 @@ def kbd_arrows(text, width):
             target_y = pos / width
             target_x = pos % width
             if target_y > current_y:
-                for i in xrange(target_y - current_y):
+                for i in range(target_y - current_y):
                     irsend('DOWN')
             else:
-                for i in xrange(current_y - target_y):
+                for i in range(current_y - target_y):
                     irsend('UP')
             if target_x > current_x:
-                for i in xrange(target_x - current_x):
+                for i in range(target_x - current_x):
                     irsend('RIGHT')
             else:
-                for i in xrange(current_x - target_x):
+                for i in range(current_x - target_x):
                     irsend('LEFT')
             irsend('SELECT')
             current_y = target_y
@@ -499,7 +507,7 @@ def make_button(widget, y, x, t, val=None, cols=1, width=5, fn=None,
                 button.connect('clicked', popup(menu))
         else:
             button = ttk.Menubutton(widget, text=t, width=4)
-            menu = Tkinter.Menu(button, tearoff=0)
+            menu = tkinter.Menu(button, tearoff=0)
             button['menu'] = menu
 
         for title, code in zip(titles, codes):
@@ -804,7 +812,7 @@ def init_window():
             screen_width = gdk.screen_width()
             screen_height = gdk.screen_height()
     else:
-        window = Tkinter.Tk()
+        window = tkinter.Tk()
         if 'aqua' == window.tk.call('tk', 'windowingsystem'):
             mac_setup()
         elif 'win32' == sys.platform:
@@ -835,21 +843,21 @@ def mac_setup():
         pass
 
     # Provide only the help menu (plus the application menu)
-    main_menu = Tkinter.Menu()
+    main_menu = tkinter.Menu()
     window.configure(menu=main_menu)
-    help_menu = Tkinter.Menu(main_menu, name='help')
+    help_menu = tkinter.Menu(main_menu, name='help')
     main_menu.add_cascade(label='Help', menu=help_menu)
 
 def about_window():
     """ Tk / OS X only -- pop up the "About" box. """
-    tkMessageBox.showinfo('', ABOUT)
+    messagebox.showinfo('', ABOUT)
 
 def make_widget_expandable(widget):
     """ Tk only -- mark each cell as expandable. """
     width, height = widget.grid_size()
-    for i in xrange(width):
+    for i in range(width):
         widget.columnconfigure(i, weight=1)
-    for i in xrange(height):
+    for i in range(height):
         widget.rowconfigure(i, weight=1)
 
 def make_label(label, y=0):
@@ -951,7 +959,7 @@ def list_tivos(tivos):
     if tivos:
         make_small_window('Choose a TiVo:')
 
-        names = tivos.keys()
+        names = list(tivos.keys())
         names.sort()
         for i, name in enumerate(names):
             make_tivo_button(outer, window, i + 1, name, tivos[name])
@@ -1027,11 +1035,11 @@ def main_window():
         vbox1 = gtk.VBox()
         vbox2 = gtk.VBox()
         label = gtk.Label()
-        table = [gtk.Table(homogeneous=True) for i in xrange(8)]
+        table = [gtk.Table(homogeneous=True) for i in range(8)]
         outer.set_border_width(10)
         for tb in table:
             tb.set_border_width(5)
-        for i in xrange(4):
+        for i in range(4):
             vbox1.add(table[i])
             vbox2.add(table[i + 4])
         vbox1.set_border_width(5)
@@ -1068,7 +1076,7 @@ def main_window():
         vbox1 = ttk.Frame(outer, borderwidth=5)
         vbox2 = ttk.Frame(outer, borderwidth=5)
         table = [ttk.Frame(box, borderwidth=5)
-                 for box in (vbox1, vbox2) for i in xrange(4)]
+                 for box in (vbox1, vbox2) for i in range(4)]
         for tb in table:
             tb.grid(sticky='news')
         if landscape:
@@ -1093,10 +1101,10 @@ def main_window():
 
         if has_ttk:
             key_width = ttk.Combobox(table[6], width=2,
-                values=[str(i) for i in xrange(10)])
+                values=[str(i) for i in range(10)])
             key_width.current(0)
         else:
-            key_width = Tkinter.Spinbox(table[6], from_=0, to=9, width=2)
+            key_width = tkinter.Spinbox(table[6], from_=0, to=9, width=2)
         key_width.grid(column=1, row=1, sticky='news')
 
     for z, button_group in enumerate(BUTTONS):
@@ -1111,7 +1119,7 @@ def main_window():
 
         focus_button.focus_set()
 
-    thread.start_new_thread(status_update, ())
+    _thread.start_new_thread(status_update, ())
 
     if use_gtk:
         window.show_all()
@@ -1128,13 +1136,13 @@ def main_window():
 
 def key_print(keyl):
     """ Print descriptions for a block of keyboard shortcuts. """
-    keynames = keyl.keys()
+    keynames = list(keyl.keys())
     keynames.sort()
     for i, each in enumerate(keynames):
-        print '   ', each.ljust(15), keyl[each].ljust(15),
+        sys.stdout.write('    ' + each.ljust(16) + keyl[each].ljust(16))
         if i & 1:
-            print
-    print
+            sys.stdout.write('\n')
+    sys.stdout.write('\n')
 
 if __name__ == '__main__':
     # Process the command line
@@ -1142,10 +1150,11 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         for opt in sys.argv[1:]:
             if opt in ('-v', '--version'):
-                print 'Network Remote Control for TiVo Series 3+', __version__
+                print('Network Remote Control for TiVo Series 3+ %s' %
+                      __version__)
                 sys.exit()
             elif opt in ('-h', '--help'):
-                print __doc__
+                print(__doc__)
                 sys.exit()
             elif opt in ('-k', '--keys'):
                 key_print(KEYS)
@@ -1200,15 +1209,22 @@ if __name__ == '__main__':
             norm = gtk.STATE_NORMAL
         gobject.threads_init()
     except:
-        import Tkinter
-        import tkMessageBox
+        if pythree:
+            import tkinter
+            import tkinter.messagebox as messagebox
+        else:
+            import Tkinter as tkinter
+            import tkMessageBox as messagebox
         use_gtk = False
         try:
             assert(has_ttk)
-            import ttk
+            if pythree:
+                import tkinter.ttk as ttk
+            else:
+                import ttk
         except:
             global ttk
-            ttk = Tkinter
+            ttk = tkinter
             has_ttk = False
 
     # use_gr if not -g or -p?
