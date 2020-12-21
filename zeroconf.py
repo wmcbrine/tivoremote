@@ -1,4 +1,4 @@
-""" Multicast DNS Service Discovery for Python, v0.15-wmcbrine
+""" Multicast DNS Service Discovery for Python, v0.16-wmcbrine
     Copyright 2003 Paul Scott-Murphy, 2014-2020 William McBrine
 
     This module provides a framework for the use of DNS Service Discovery
@@ -23,7 +23,7 @@
 
 __author__ = 'Paul Scott-Murphy'
 __maintainer__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.15-wmcbrine'
+__version__ = '0.16-wmcbrine'
 __license__ = 'LGPL'
 
 import sys
@@ -142,7 +142,7 @@ def getByte(n):
 
 def putByte(n):
     if pythree:
-        return n.to_bytes(1, byteorder='little')
+        return n.to_bytes(1, 'little')
     else:
         return chr(n)
 
@@ -839,8 +839,8 @@ class Listener(object):
         except socket.error as e:
             # If the socket was closed by another thread -- which happens
             # regularly on shutdown -- an EBADF exception is thrown here.
-            # Ignore it.
-            if e.args[0] == socket.EBADF:
+            # (Under Windows, it instead appears as error 10038.) Ignore it.
+            if e.args[0] in (socket.EBADF, 10038):
                 return
             else:
                 raise
@@ -1474,7 +1474,7 @@ class Zeroconf(object):
         for question in msg.questions:
             if question.type == _TYPE_PTR:
                 if question.name == "_services._dns-sd._udp.local.":
-                    for stype in self.servicetypes.keys():
+                    for stype in self.servicetypes:
                         if out is None:
                             out = DNSOutgoing(_FLAGS_QR_RESPONSE | _FLAGS_AA)
                         out.addAnswer(msg,
