@@ -2,28 +2,28 @@ Network Remote Control for TiVo Series 3+
 =========================================
 
 :Author:  William McBrine <wmcbrine@gmail.com>
-:Version: 0.31
-:Date:    July 6, 2014
+:Version: 0.32
+:Date:    December 21, 2020
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
 
-Python 2.x is required (tested on 2.7), as well as Tkinter (normally 
-part of Python's standard library) or GTK. Mac OS X and Linux users 
-should have what they need already; Windows users should visit 
-http://python.org/ . The remote has also been tested on Windows CE and 
+Python 2.6 or later (including 3.x) is required, as well as Tkinter 
+(normally part of Python's standard library) or GTK. Linux and macOS 
+users should have what they need already; Windows users should visit 
+https://python.org/ . The remote has also been tested on Windows CE and 
 other platforms.
 
 This program uses the network remote control interface first made public 
 by TCF user Omikron in this thread:
 
-http://tivocommunity.com/tivo-vb/showthread.php?t=392385
+https://tivocommunity.com/tivo-vb/showthread.php?t=392385
 
 which has doubled as the support thread for the app, and, previously, 
 the only place where it was distributed. Nowadays, the latest version 
 can be found at:
 
-http://wmcbrine.com/tivo/
+https://wmcbrine.com/tivo/
 
 Released under the GPL 2+.
 
@@ -219,6 +219,26 @@ and disconnection on exit. May include port (defaults to 31339).
 
 Changes
 -------
+
+0.32
+    Added "Find remote" and "Netflix" under "Misc" (formerly "Mcr.").
+
+    The button previously labelled "Skip" in non-graphical mode is now
+    "Adv" (advance), since TiVo started calling the "D" button "Skip",
+    and then introduced a dedicated button with that label.
+
+    Made compatible with Python 3.x; dropped support for Python 2.5.
+
+    Kludges to allow running in Dark Mode under macOS (sadly, it doesn't
+    actually *use* Dark Mode, since the background can't be changed).
+
+    Timeout get_namever() after two seconds -- often, when the TiVo
+    isn't responding to the tivo-remote MDNS, it isn't answering on
+    2190, either. That meant long waits on manual connections.
+
+    README reformatted as reStructuredText.
+
+    New icon for macOS, based on the Bolt.
 
 0.31
     Added the new "Back" button, as found on Roamio remotes (sends
