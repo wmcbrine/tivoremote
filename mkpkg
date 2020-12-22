@@ -1,8 +1,8 @@
 source version.py
-rm -r build dist *.pkg *.dmg
+rm -rf build dist *.pkg *.dmg
 python3 setup-pkg.py py2app
 cd "dist/Network Remote.app/Contents/Resources/lib/python3.9/lib-dynload"
-for f in *.so; do echo $f; codesign --force -s "3rd Party Mac Developer Application: William McBrine" $f; done
+for f in *.so; do echo $f; codesign --force -s "Developer ID Application: William McBrine" $f; done
 cd ../../../../../../..
-codesign --deep --force -s "3rd Party Mac Developer Application: William McBrine" --entitlements entitlements.plist "dist/Network Remote.app"
-productbuild --component "dist/Network Remote.app" /Applications --sign "3rd Party Mac Developer Installer: William McBrine" NetworkRemote.pkg
+codesign --deep --force -s "Developer ID Application: William McBrine" --entitlements entitlements.plist "dist/Network Remote.app"
+productbuild --component "dist/Network Remote.app" /Applications --sign "Developer ID Installer: William McBrine" NetworkRemote.pkg
