@@ -16,7 +16,7 @@ PLIST = {'CFBundleVersion': VER, 'CFBundleShortVersionString': VER,
          'CFBundleIdentifier': 'com.wmcbrine.networkremote',
          'CFBundleHelpBookFolder': 'Network Remote.help',
          'CFBundleHelpBookName': 'Network Remote Help',
-         'NSHumanReadableCopyright': '2008-2014 William McBrine',
+         'NSHumanReadableCopyright': '2008-2020 William McBrine',
          'LSApplicationCategoryType': 'public.app-category.utilities'}
 OPTIONS = {'includes': 'zeroconf', 'semi_standalone': True,
            'site_packages': True, 'argv_inject': ['-g', '-t'],
