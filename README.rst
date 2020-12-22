@@ -3,7 +3,7 @@ Network Remote Control for TiVo Series 3+
 
 :Author:  William McBrine <wmcbrine@gmail.com>
 :Version: 0.32
-:Date:    December 21, 2020
+:Date:    December 22, 2020
 
 An on-screen virtual remote control that can control your TiVo over the 
 network. It works with the Series 3 or any later TiVo model.
@@ -83,12 +83,13 @@ Vid
     list of codes has not been updated to include 1080p modes. Use with
     caution.
 
-Mcr
-    A menu of macros (multi-code sequences). "Clock" sends
-    Select-Play-Select-9-Select, to toggle the on-screen clock. "SPS30"
-    sends Select-Play-Select-3-0-Select, to change the behavior of the
-    Advance button between the default mode and 30-second skip. These
-    should be used during playback of a recording, not LiveTV.
+Misc
+    A menu of macros (multi-code sequences) and other functions. "Clock"
+    sends Select-Play-Select-9-Select, to toggle the on-screen clock.
+    "SPS30" sends Select-Play-Select-3-0-Select, to change the behavior
+    of the Advance button between the default mode and 30-second skip.
+    These should be used during playback of a recording, not LiveTV.
+    "Find remote" and "Netflix" are also here.
 
 Adv
     Advance, also known as "the button with an arrow pointing to a
@@ -157,7 +158,7 @@ Some of these are taken from the keys used with TiVo's HME simulator
 from the Java SDK. The function keys are what the TiVo recognizes from 
 an attached USB keyboard.
 
-Buttons with no corresponding keyboard shortcuts: Mcr, Vid and Standby.
+Buttons with no corresponding keyboard shortcuts: Misc, Vid and Standby.
 
 
 Text Entry
