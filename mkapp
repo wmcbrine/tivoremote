@@ -1,6 +1,6 @@
 source version.py
 rm -rf __pycache__ build dist *.dmg *.pkg
-python3 setup-dmg.py py2app
+python3 setup.py py2app
 cd "dist/Network Remote.app/Contents/Resources/lib/python3.9/lib-dynload"
 for f in *.so; do echo $f; codesign -f -o runtime -s "Developer ID Application: William McBrine" $f; done
 cd ../../..
