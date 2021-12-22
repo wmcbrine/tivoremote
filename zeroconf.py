@@ -16,9 +16,9 @@
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
     USA
-    
+
 """
 
 __author__ = 'Paul Scott-Murphy'
@@ -35,7 +35,7 @@ import select
 import traceback
 from functools import reduce
 
-pythree = (sys.version_info[0] == 3)
+pythree = (sys.version_info[0] >= 3)
 
 __all__ = ["Zeroconf", "ServiceInfo", "ServiceBrowser", "pythree"]
 
@@ -52,7 +52,7 @@ _LISTENER_TIME = 200
 _BROWSER_TIME = 500
 
 # Some DNS constants
-    
+
 _MDNS_ADDR = '224.0.0.251'
 _MDNS_PORT = 5353
 _DNS_PORT = 53
@@ -234,7 +234,7 @@ class DNSQuestion(DNSEntry):
 
 class DNSRecord(DNSEntry):
     """A DNS record - like a DNS entry, but has a TTL"""
-    
+
     def __init__(self, name, type, clazz, ttl):
         DNSEntry.__init__(self, name, type, clazz)
         self.ttl = ttl
@@ -803,7 +803,7 @@ class Engine(threading.Thread):
         result = list(self.readers.keys())
         self.condition.release()
         return result
-    
+
     def addReader(self, reader, socket):
         self.condition.acquire()
         self.readers[socket] = reader
@@ -899,7 +899,7 @@ class ServiceBrowser(threading.Thread):
         self.nextTime = currentTimeMillis()
         self.delay = _BROWSER_TIME
         self.list = []
-        
+
         self.done = False
 
         self.zc.addListener(self, DNSQuestion(self.type, _TYPE_PTR, _CLASS_IN))
