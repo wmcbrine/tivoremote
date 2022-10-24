@@ -128,7 +128,7 @@ COLOR = {'red': '#d00', 'blue': '#00a', 'green': '#070', 'yellow': '#aa0'}
 
 TITLE = 'Network Remote'
 
-# About box text, for OS X only
+# About box text, for macOS only
 
 ABOUT = """Network Remote Control for TiVo
 Version %s
@@ -816,10 +816,10 @@ def init_window():
             screen_height = gdk.screen_height()
     else:
         window = tkinter.Tk()
-        if 'aqua' == window.tk.call('tk', 'windowingsystem'):
+        if 'win32' == sys.platform:
+            win_setup()
+        elif 'aqua' == window.tk.call('tk', 'windowingsystem'):
             mac_setup()
-        elif 'win32' == sys.platform:
-            window.iconbitmap('remote.ico')
         window.title(TITLE)
         window.protocol('WM_DELETE_WINDOW', go_away)
         if use_color and has_ttk:
@@ -829,8 +829,18 @@ def init_window():
         screen_width = window.winfo_screenwidth()
         screen_height = window.winfo_screenheight()
 
+def win_setup():
+    """ Tk / Windows-specific setup. """
+    try:
+        import os
+        dir = os.path.dirname(__file__)
+        fname = os.path.join(dir, 'remote.ico')
+        window.iconbitmap(fname)
+    except:
+        pass
+
 def mac_setup():
-    """ Tk / OS X only -- Mac-specific setup. """
+    """ Tk / macOS-specific setup. """
     global window
 
     # Hide the console
@@ -852,7 +862,7 @@ def mac_setup():
     main_menu.add_cascade(label='Help', menu=help_menu)
 
 def about_window():
-    """ Tk / OS X only -- pop up the "About" box. """
+    """ Tk / macOS only -- pop up the "About" box. """
     messagebox.showinfo('', ABOUT)
 
 def make_widget_expandable(widget):
