@@ -167,11 +167,11 @@ BUTTONS = [
                 {'t': 'Info'}, {'t': 'LiveTV'}],
                [{'t': 'Back'}, {'t': 'Guide'},
                 {'t': 'Misc', 'titles': ['Clock', 'SPS30', 'Find remote',
-                 'Netflix'],
+                 'Netflix', 'Stream Stats'],
                  'codes': [['SELECT', 'PLAY', 'SELECT', 'NUM9', 
                  'SELECT', 'CLEAR'], ['SELECT', 'PLAY', 'SELECT', 
                  'NUM3', 'NUM0', 'SELECT', 'CLEAR'], ['FIND_REMOTE'],
-                 ['NETFLIX']]}]
+                 ['NETFLIX'], ['PAUSE', 'FORWARD', 'REVERSE', 'PAUSE', 'UP', 'UP', 'RIGHT']]}]
            ],
 
            [ #1
