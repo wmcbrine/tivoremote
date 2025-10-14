@@ -650,8 +650,8 @@ def get_namever(address):
     method = 'connected'
     port = 0
     our_beacon = ANNOUNCE % locals()
-    machine_name = re.compile('machine=(.*)\n').findall
-    swversion = re.compile('swversion=(\d*.\d*)').findall
+    machine_name = re.compile(r'machine=(.*)\n').findall
+    swversion = re.compile(r'swversion=(\d*.\d*)').findall
 
     try:
         tsock = socket.socket()
@@ -677,7 +677,7 @@ def find_tivos():
     """
     global tivo_swversions
 
-    tcd_id = re.compile('TiVo_TCD_ID: (.*)\r\n').findall
+    tcd_id = re.compile(r'TiVo_TCD_ID: (.*)\r\n').findall
     tcds = {}
 
     # Find and bind a free port for our fake server.
@@ -776,7 +776,7 @@ def find_tivos_zc():
                 pass
 
     # Now get the addresses -- this is the slow part
-    swversion = re.compile('(\d*.\d*)').findall
+    swversion = re.compile(r'(\d*.\d*)').findall
     for t in tivo_names:
         s = serv.getServiceInfo(REMOTE, t)
         if s:
