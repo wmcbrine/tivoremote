@@ -15,13 +15,9 @@ https://python.org/ . The remote has also been tested on Windows CE and
 other platforms.
 
 This program uses the network remote control interface first made public 
-by TCF user Omikron in this thread:
+by TCF user Omikron.
 
-https://tivocommunity.com/tivo-vb/showthread.php?t=392385
-
-which has doubled as the support thread for the app, and, previously, 
-the only place where it was distributed. Nowadays, the latest version 
-can be found at:
+The latest version can be found at:
 
 https://wmcbrine.com/tivo/
 
