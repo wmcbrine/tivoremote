@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Network Remote Control for TiVo Series 3+, v0.32
-# Copyright 2008-2020 William McBrine
+# Network Remote Control for TiVo Series 3+, v0.33
+# Copyright 2008-2025 William McBrine
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@
 """
 
 __author__ = 'William McBrine <wmcbrine@gmail.com>'
-__version__ = '0.32'
+__version__ = '0.33'
 __license__ = 'GPL'
 
 import random
@@ -132,7 +132,7 @@ TITLE = 'Network Remote'
 
 ABOUT = """Network Remote Control for TiVo
 Version %s
-Copyright 2008-2020 %s
+Copyright 2008-2025 %s
 https://wmcbrine.com/tivo/""" % (__version__, __author__)
 
 # IR codes for direct aspect ratio control

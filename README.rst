@@ -2,17 +2,13 @@ Network Remote Control for TiVo Series 3+
 =========================================
 
 :Author:  William McBrine <wmcbrine@gmail.com>
-:Version: 0.32
-:Date:    December 22, 2020
+:Version: 0.33
+:Date:    November 11, 2025
 
 An on-screen virtual remote control that can control your TiVo over the 
-network. It works with the Series 3 or any later TiVo model.
-
-Python 2.6 or later (including 3.x) is required, as well as Tkinter 
-(normally part of Python's standard library) or GTK. Linux and macOS 
-users should have what they need already; Windows users should visit 
-https://python.org/ . The remote has also been tested on Windows CE and 
-other platforms.
+network. It works with the Series 3 or any later TiVo model. You need 
+Python ( https://python.org/ ) 2.6 or later (including 3.x), as well as 
+Tkinter or GTK. Tested on Linux, macOS, Windows and other platforms.
 
 This program uses the network remote control interface first made public 
 by TCF user Omikron.
@@ -32,19 +28,16 @@ go into the "Messages and Settings" menu, then "Settings", "Remote,
 CableCARD, & Devices", and finally "Network Remote Control", and check 
 "Enabled".
 
-Once Python is installed on your system, you should be able to just 
-extract the Network Remote archive anywhere, and click on "Network 
-Remote.pyw", or run it from the command line. (Mac users may have to use 
-the context menu if starting it from the GUI.) No installation is 
-required. Network Remote.pyw is the only required file, although 
-zeroconf.py is also needed if you want to use the "modern" style of TiVo 
-autodetection, which I recommend.
+Besides Python, you only need Network Remote.pyw, plus zeroconf.py if you 
+want to use the "modern" style of TiVo autodetection (recommended).
 
-If it's working properly, you should within a few seconds see a list of 
-available TiVos from which to select, if any were found, along with a 
-box to enter the address manually, in case it wasn't autodetected. 
-Alternatively, you can directly specify the TiVo's address on the 
-command line (see below).
+Start the app, and within a few seconds you should see a list of available 
+TiVos from which to select, if any were found, along with a box to enter 
+an IP address manually. Alternatively, you can directly specify the TiVo's 
+address on the command line (see below). In some cases, you may only see 
+the manual address box, until you approve the app's network rights. And 
+sometimes, the autodetection just doesn't work, but will if you exit (just 
+hit enter on the box) and run the app again.
 
 Zeroconf-based autodetection needs to send and recieve UDP on port 5353. 
 Old-style autodetection sends and recieves TCP and UDP on port 2190, and 
@@ -216,6 +209,32 @@ and disconnection on exit. May include port (defaults to 31339).
 
 Changes
 -------
+
+0.33
+    Since 0.31, I've tried a couple of times to get the Network Remote 
+    updated in the Mac App Store. Both versions have been rejected, on the 
+    grounds that Tkinter was using (different) deprecated APIs, which I 
+    can't easily correct. So, for now, I recommend that you not use the 
+    version there, and instead download it from the "macOS app" link on my 
+    site. The version there now is a Universal (x86/ARM) binary, with 
+    working Dark Mode support, properly signed, etc.
+
+    The latest macOS app was built with pyinstaller rather than py2app, 
+    and I haven't quite got the procdeures worked into a shareable form 
+    yet, so for now I'm removing the unused setuptools stuff from git.
+
+    Dark mode on the Mac actually works now. :)
+
+    Contributed change: "Adds ability to see Stream stats from IP 
+    channels." This is a command sequence for some models of TiVo that I 
+    don't have access to, so I can't vouch for it, but it seems benign.
+
+    Aligned with current pyzeroconf.
+
+    Short delay between each key press in multi-key sequences to avoid 
+    jamming.
+
+    Various documentation updates.
 
 0.32
     Added "Find remote" and "Netflix" under "Misc" (formerly "Mcr.").
