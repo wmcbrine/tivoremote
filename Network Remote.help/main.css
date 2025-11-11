@@ -1,6 +1,0 @@
-body { font-family: sans-serif }
-
-@media (prefers-color-scheme: dark) {
-  body { background: #222; color: #fff }
-  a { color: #77f }
-}

@@ -1,3 +1,0 @@
-source version.py
-rm *.zip
-zip -9o network-remote-${VER}.zip README.rst "Network Remote.pyw" zeroconf.py
