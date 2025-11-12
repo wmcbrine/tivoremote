@@ -220,7 +220,7 @@ Changes
     working Dark Mode support, properly signed, etc.
 
     The latest macOS app was built with pyinstaller rather than py2app, 
-    and I haven't quite got the procdeures worked into a shareable form 
+    and I haven't quite got the procedures worked into a shareable form 
     yet, so for now I'm removing the unused setuptools stuff from git.
 
     Dark mode on the Mac actually works now. :)
